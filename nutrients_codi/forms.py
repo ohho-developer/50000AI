@@ -9,8 +9,7 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = [
-            'gender', 'birth_date', 'height', 'weight', 
-            'goal', 'activity_level'
+            'gender', 'birth_date', 'height', 'weight'
         ]
         widgets = {
             'gender': forms.Select(attrs={
@@ -32,26 +31,16 @@ class ProfileForm(forms.ModelForm):
                 'max': '300',
                 'class': 'w-full bg-gray-dark/50 border border-gray-600 rounded-xl px-4 py-3 text-white focus:border-accent focus:ring-2 focus:ring-accent/20 focus:outline-none transition-all duration-200'
             }),
-            'goal': forms.Select(attrs={
-                'class': 'w-full bg-gray-dark/50 border border-gray-600 rounded-xl px-4 py-3 text-white focus:border-accent focus:ring-2 focus:ring-accent/20 focus:outline-none transition-all duration-200'
-            }),
-            'activity_level': forms.Select(attrs={
-                'class': 'w-full bg-gray-dark/50 border border-gray-600 rounded-xl px-4 py-3 text-white focus:border-accent focus:ring-2 focus:ring-accent/20 focus:outline-none transition-all duration-200'
-            }),
         }
         labels = {
             'gender': '성별',
             'birth_date': '생년월일',
             'height': '키 (cm)',
             'weight': '체중 (kg)',
-            'goal': '목표',
-            'activity_level': '활동 수준',
         }
         help_texts = {
             'height': '정확한 키를 입력해주세요 (100-250cm)',
             'weight': '현재 체중을 입력해주세요 (30-300kg)',
-            'goal': '영양 관리 목표를 선택해주세요',
-            'activity_level': '평소 활동 수준을 선택해주세요',
         }
 
 
