@@ -49,17 +49,16 @@ LOGGING['loggers']['django']['level'] = 'WARNING'
 LOGGING['loggers']['nutrients_codi']['level'] = 'INFO'
 LOGGING['root']['level'] = 'WARNING'
 
-# Cache configuration (Redis recommended for production)
+# Cache configuration (using database cache for simplicity)
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        'LOCATION': config('REDIS_URL', default='redis://127.0.0.1:6379/1'),
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'django_cache_table',
     }
 }
 
-# Session engine
-SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
-SESSION_CACHE_ALIAS = 'default'
+# Session engine (using database for simplicity)
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 # Production static files
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
