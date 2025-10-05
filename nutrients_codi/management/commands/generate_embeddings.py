@@ -28,15 +28,40 @@ class Command(BaseCommand):
         # AI 서비스 초기화
         try:
             ai_service = GeminiAIService()
+            self.stdout.write('AI 서비스 초기화 성공')
         except ValueError as e:
             self.stdout.write(
                 self.style.ERROR(f'AI 서비스 초기화 실패: {e}')
             )
             return
+        except Exception as e:
+            self.stdout.write(
+                self.style.ERROR(f'AI 서비스 초기화 중 예상치 못한 오류: {e}')
+            )
+            return
+        
+        # 임베딩 모델 로드 시도
+        ai_service._load_embedding_model()
         
         if not ai_service.embedding_model:
             self.stdout.write(
                 self.style.ERROR('임베딩 모델이 로드되지 않았습니다.')
+            )
+            return
+        
+        # 임베딩 테스트
+        try:
+            test_embedding = ai_service.get_embedding("테스트")
+            if test_embedding:
+                self.stdout.write(f'임베딩 테스트 성공 (차원: {len(test_embedding)})')
+            else:
+                self.stdout.write(
+                    self.style.ERROR('임베딩 테스트 실패')
+                )
+                return
+        except Exception as e:
+            self.stdout.write(
+                self.style.ERROR(f'임베딩 테스트 중 오류: {e}')
             )
             return
         

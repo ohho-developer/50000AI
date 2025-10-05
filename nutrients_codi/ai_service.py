@@ -224,28 +224,23 @@ Analyze this sentence: "{user_input}"
             return None
     
     def _load_embedding_model(self):
-        """임베딩 모델을 지연 로딩합니다."""
+        """Gemini Embedding API를 사용합니다."""
         if self._embedding_model_loaded:
             return
         
         try:
-            # 지연 로딩으로 모듈 import
-            from sentence_transformers import SentenceTransformer
-            self.embedding_model = SentenceTransformer('jhgan/ko-sroberta-multitask')
+            # Gemini Embedding API 사용
+            self.embedding_model = "gemini-embedding-001"
             self._embedding_model_loaded = True
-            logger.info("한국어 임베딩 모델 로드 완료")
-        except ImportError as e:
-            logger.warning(f"sentence_transformers 모듈을 찾을 수 없습니다: {e}")
-            self.embedding_model = None
-            self._embedding_model_loaded = True
+            logger.info("Gemini Embedding API 초기화 완료")
         except Exception as e:
-            logger.warning(f"임베딩 모델 로드 실패: {e}")
+            logger.warning(f"Gemini Embedding API 초기화 실패: {e}")
             self.embedding_model = None
-            self._embedding_model_loaded = True  # 실패했어도 다시 시도하지 않음
+            self._embedding_model_loaded = True
 
     def get_embedding(self, text: str) -> Optional[List[float]]:
         """
-        텍스트의 임베딩 벡터를 생성합니다.
+        Gemini Embedding API를 사용하여 텍스트의 임베딩 벡터를 생성합니다.
         """
         try:
             # 지연 로딩
@@ -254,9 +249,14 @@ Analyze this sentence: "{user_input}"
             if not self.embedding_model:
                 return None
             
-            # 임베딩 생성
-            embedding = self.embedding_model.encode(text, convert_to_tensor=False)
-            return embedding.tolist()
+            # Gemini Embedding API 호출
+            result = genai.embed_content(
+                model=self.embedding_model,
+                content=text,
+                task_type="retrieval_document"
+            )
+            
+            return result['embedding']
             
         except Exception as e:
             logger.error(f"임베딩 생성 중 오류 발생: {e}")
@@ -293,12 +293,19 @@ Analyze this sentence: "{user_input}"
             for food in foods_with_embeddings:
                 if food.embedding:
                     try:
-                        # 코사인 유사도 계산 (지연 로딩)
-                        from sklearn.metrics.pairwise import cosine_similarity
-                        similarity = cosine_similarity(
-                            [input_embedding], 
-                            [food.embedding]
-                        )[0][0]
+                        # 코사인 유사도 계산 (numpy 사용)
+                        import numpy as np
+                        
+                        # numpy 배열로 변환
+                        input_vec = np.array(input_embedding)
+                        food_vec = np.array(food.embedding)
+                        
+                        # 코사인 유사도 계산
+                        dot_product = np.dot(input_vec, food_vec)
+                        norm_input = np.linalg.norm(input_vec)
+                        norm_food = np.linalg.norm(food_vec)
+                        
+                        similarity = dot_product / (norm_input * norm_food)
                         
                         if similarity > best_similarity and similarity >= threshold:
                             best_similarity = similarity
