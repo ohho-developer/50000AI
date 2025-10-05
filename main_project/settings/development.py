@@ -18,6 +18,7 @@ DATABASES = {
     }
 }
 
+
 # Development email backend
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
@@ -30,7 +31,19 @@ CSRF_COOKIE_SECURE = False
 # Development CSRF settings
 CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://127.0.0.1:8000']
 
-# Development logging (more verbose)
-LOGGING['loggers']['django']['level'] = 'DEBUG'
+# Development logging (reduced verbosity)
+LOGGING['loggers']['django']['level'] = 'INFO'
 LOGGING['loggers']['nutrients_codi']['level'] = 'DEBUG'
 LOGGING['root']['level'] = 'INFO'
+
+# Add specific loggers to reduce verbosity
+LOGGING['loggers']['django.db.backends'] = {
+    'handlers': ['console'],
+    'level': 'WARNING',
+    'propagate': False,
+}
+LOGGING['loggers']['django.db.migrations'] = {
+    'handlers': ['console'],
+    'level': 'WARNING',
+    'propagate': False,
+}

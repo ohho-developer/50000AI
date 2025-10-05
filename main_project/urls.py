@@ -26,6 +26,7 @@ urlpatterns = [
     path('nutrients-codi/', include('nutrients_codi.urls')),
 ]
 
-# Media files serving in development
+# Media and static files serving in development
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

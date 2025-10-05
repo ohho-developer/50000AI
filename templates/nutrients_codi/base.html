@@ -70,10 +70,10 @@
                     
                     <!-- Desktop Navigation -->
                     <div class="flex items-center space-x-8">
-                        <a href="{% url 'nutrients_codi:dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}text-accent font-medium{% else %}text-gray-300 hover:text-white{% endif %} transition-colors duration-200" id="navNutrientsCodi">
+                        <a href="{% url 'nutrients_codi:dashboard' %}" class="{% if 'profile' not in request.path %}text-accent font-medium{% else %}text-gray-300 hover:text-white{% endif %} transition-colors duration-200" id="navNutrientsCodi">
                             뉴트리언트코디
                         </a>
-                        <a href="{% url 'nutrients_codi:profile_setup' %}" class="{% if request.resolver_match.url_name == 'profile_setup' %}text-accent font-medium{% else %}text-gray-300 hover:text-white{% endif %} transition-colors duration-200" id="navProfile">
+                        <a href="{% url 'nutrients_codi:profile_setup' %}" class="{% if 'profile' in request.path %}text-accent font-medium{% else %}text-gray-300 hover:text-white{% endif %} transition-colors duration-200" id="navProfile">
                             프로필 설정
                         </a>
                     </div>
@@ -87,10 +87,10 @@
                 <!-- Mobile Navigation Menu -->
                 <div id="mobileMenu" class="md:hidden hidden pb-4 border-t border-gray-700">
                     <div class="pt-4 space-y-4">
-                        <a href="{% url 'nutrients_codi:dashboard' %}" class="block px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition-colors duration-200 {% if request.resolver_match.url_name == 'dashboard' %}text-accent font-medium{% endif %}" id="mobileNavNutrientsCodi">
+                        <a href="{% url 'nutrients_codi:dashboard' %}" class="block px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition-colors duration-200 {% if 'nutrients-codi' in request.path %}text-accent font-medium{% endif %}" id="mobileNavNutrientsCodi">
                             뉴트리언트코디
                         </a>
-                        <a href="{% url 'nutrients_codi:profile_setup' %}" class="block px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition-colors duration-200 {% if request.resolver_match.url_name == 'profile_setup' %}text-accent font-medium{% endif %}" id="mobileNavProfile">
+                        <a href="{% url 'nutrients_codi:profile_setup' %}" class="block px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition-colors duration-200 {% if 'profile-setup' in request.path %}text-accent font-medium{% endif %}" id="mobileNavProfile">
                             프로필 설정
                         </a>
                         <a href="{% url 'account_logout' %}" class="block px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition-colors duration-200" id="mobileNavLogout">
