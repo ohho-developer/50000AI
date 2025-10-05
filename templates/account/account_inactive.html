@@ -1,0 +1,72 @@
+{% extends "account/base.html" %}
+
+{% block head_title %}계정 비활성화{% endblock %}
+
+{% block badge_text %}ACCOUNT INACTIVE{% endblock %}
+
+{% block page_title %}계정이 비활성화되었습니다{% endblock %}
+
+{% block page_description %}이 계정은 현재 사용할 수 없습니다{% endblock %}
+
+{% block content %}
+<div class="text-center space-y-6">
+    <div class="w-20 h-20 bg-red-500/20 rounded-full flex items-center justify-center mx-auto">
+        <svg class="w-10 h-10 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+        </svg>
+    </div>
+
+    <div class="bg-red-500/20 border border-red-500/50 rounded-xl p-6">
+        <h3 class="text-lg font-semibold text-red-300 mb-3">계정 접근 불가</h3>
+        <p class="text-red-200 text-sm leading-relaxed">
+            죄송합니다. 이 계정은 현재 비활성화되어 있습니다.<br>
+            계정 활성화나 복구를 위해 고객지원팀에 문의해주세요.
+        </p>
+    </div>
+
+    <div class="bg-gray-dark/30 rounded-xl p-6 border border-gray-700">
+        <h4 class="text-white font-medium mb-4">계정이 비활성화될 수 있는 이유</h4>
+        <div class="space-y-3 text-left text-sm">
+            <div class="flex items-start space-x-3">
+                <div class="w-2 h-2 bg-gray-400 rounded-full mt-2"></div>
+                <span class="text-gray-300">이메일 인증이 완료되지 않음</span>
+            </div>
+            <div class="flex items-start space-x-3">
+                <div class="w-2 h-2 bg-gray-400 rounded-full mt-2"></div>
+                <span class="text-gray-300">보안 정책 위반으로 인한 일시적 제재</span>
+            </div>
+            <div class="flex items-start space-x-3">
+                <div class="w-2 h-2 bg-gray-400 rounded-full mt-2"></div>
+                <span class="text-gray-300">계정 보안을 위한 관리자 조치</span>
+            </div>
+            <div class="flex items-start space-x-3">
+                <div class="w-2 h-2 bg-gray-400 rounded-full mt-2"></div>
+                <span class="text-gray-300">서비스 이용약관 위반</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex space-x-4">
+        <a 
+            href="{% url 'accounts:home' %}" 
+            class="flex-1 bg-gray-medium/50 border border-gray-600 text-white py-3 rounded-xl font-medium hover:bg-gray-medium transition-all duration-200 text-center"
+        >
+            홈으로
+        </a>
+        <a 
+            href="#" 
+            class="flex-1 bg-gradient-to-r from-accent to-accent-dark text-dark py-3 rounded-xl font-semibold hover:shadow-lg hover:shadow-accent/25 transition-all duration-300 text-center"
+        >
+            고객지원 문의
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer_links %}
+<p class="text-gray-400">
+    <a href="{% url 'account_login' %}" class="text-accent hover:text-accent-dark transition-colors duration-200">
+        다른 계정으로 로그인
+    </a>
+</p>
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends "account/base.html" %}
+{% load account %}
+
+{% block head_title %}이메일 인증{% endblock %}
+
+{% block badge_text %}EMAIL CONFIRMATION{% endblock %}
+
+{% block page_title %}이메일 인증{% endblock %}
+
+{% block page_description %}이메일 인증을 완료해주세요{% endblock %}
+
+{% block content %}
+{% if confirmation %}
+    {% user_display confirmation.email_address.user as user_display %}
+    
+    <div class="text-center space-y-6">
+        <div class="w-20 h-20 bg-accent/20 rounded-full flex items-center justify-center mx-auto">
+            <svg class="w-10 h-10 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+        </div>
+
+        <div class="bg-gray-dark/30 rounded-xl p-6 border border-gray-700">
+            <h3 class="text-lg font-semibold text-white mb-3">이메일 인증</h3>
+            <p class="text-gray-300 text-sm leading-relaxed">
+                <span class="font-semibold text-accent">{{ confirmation.email_address.email }}</span><br>
+                이 이메일 주소가 귀하의 계정인지 확인해주세요.
+            </p>
+        </div>
+
+        <form method="POST" action="{% url 'account_confirm_email' confirmation.key %}">
+            {% csrf_token %}
+            <button 
+                type="submit" 
+                class="w-full bg-gradient-to-r from-accent to-accent-dark text-dark py-3 rounded-xl font-semibold hover:shadow-lg hover:shadow-accent/25 transition-all duration-300 transform hover:-translate-y-0.5"
+            >
+                <span class="flex items-center justify-center space-x-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    <span>이메일 인증하기</span>
+                </span>
+            </button>
+        </form>
+    </div>
+{% else %}
+    <div class="text-center space-y-6">
+        <div class="w-20 h-20 bg-red-500/20 rounded-full flex items-center justify-center mx-auto">
+            <svg class="w-10 h-10 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+            </svg>
+        </div>
+
+        <div class="bg-red-500/20 border border-red-500/50 rounded-xl p-6">
+            <h3 class="text-lg font-semibold text-red-300 mb-3">인증 링크가 유효하지 않습니다</h3>
+            <p class="text-red-200 text-sm leading-relaxed">
+                이메일 인증 링크가 만료되었거나 이미 사용되었습니다.<br>
+                새로운 인증 링크를 요청해주세요.
+            </p>
+        </div>
+
+        <a 
+            href="{% url 'account_email' %}" 
+            class="inline-block bg-gradient-to-r from-accent to-accent-dark text-dark px-8 py-3 rounded-xl font-semibold hover:shadow-lg hover:shadow-accent/25 transition-all duration-300"
+        >
+            새로운 인증 링크 요청하기
+        </a>
+    </div>
+{% endif %}
+{% endblock %}
+
+{% block footer_links %}
+<p class="text-gray-400">
+    <a href="{% url 'accounts:home' %}" class="text-accent hover:text-accent-dark transition-colors duration-200">
+        홈으로 돌아가기
+    </a>
+</p>
+{% endblock %}

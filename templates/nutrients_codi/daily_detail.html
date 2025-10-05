@@ -1,0 +1,372 @@
+{% extends "nutrients_codi/base.html" %}
+{% load i18n %}
+
+{% block title %}
+<script>
+    // 브라우저 언어 감지
+    const browserLanguage = navigator.language || navigator.userLanguage;
+    const isKorean = browserLanguage.startsWith('ko');
+    
+    if (isKorean) {
+        document.title = '{{ target_date|date:"Y년 m월 d일" }} - 뉴트리언트코디';
+    } else {
+        document.title = '{{ target_date|date:"M d, Y" }} - Nutrients-Codi';
+    }
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-8">
+        <div>
+            <a href="{% url 'nutrients_codi:dashboard' %}" class="text-accent hover:text-accent-dark transition-colors duration-200 flex items-center space-x-2 mb-4">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+                <span id="backToDashboard">대시보드로 돌아가기</span>
+            </a>
+            <h1 class="text-3xl font-bold text-white" id="dailyDetailTitle">{{ target_date|date:"Y년 m월 d일" }} 식단</h1>
+            <p class="text-gray-400 mt-2" id="dailyDetailSubtitle">상세한 영양 정보와 음식 목록</p>
+        </div>
+        <div class="text-right">
+            <div class="text-2xl font-bold text-accent">{{ daily_nutrition.calories|floatformat:0 }} kcal</div>
+            <div class="text-sm text-gray-400" id="totalFoods">{{ daily_logs|length }}개 음식</div>
+        </div>
+    </div>
+
+    <!-- 주요 영양소 요약 -->
+    <div class="bg-gray-medium/30 backdrop-blur-xl border border-gray-600 rounded-2xl p-8 mb-8">
+        <h2 class="text-xl font-semibold text-white mb-6" id="nutritionSummary">영양소 요약</h2>
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="bg-gray-dark/50 rounded-lg p-4">
+                <div class="text-sm text-gray-400 mb-1" id="caloriesLabel">칼로리</div>
+                <div class="text-2xl font-bold text-accent">{{ daily_nutrition.calories|floatformat:0 }} kcal</div>
+                <div class="text-xs text-gray-500 mt-1">권장: {{ profile.daily_calories|floatformat:0 }} kcal</div>
+                <div class="mt-2 bg-gray-dark rounded-full h-2 relative overflow-hidden">
+                    <div class="bg-gradient-to-r from-accent to-accent-dark h-2 rounded-full transition-all duration-300" 
+                         style="width: {% if profile.daily_calories > 0 %}{% widthratio daily_nutrition.calories profile.daily_calories 100 %}{% else %}0{% endif %}%"></div>
+                </div>
+            </div>
+            <div class="bg-gray-dark/50 rounded-lg p-4">
+                <div class="text-sm text-gray-400 mb-1" id="proteinLabel">단백질</div>
+                <div class="text-2xl font-bold text-blue-400">{{ daily_nutrition.protein|floatformat:1 }}g</div>
+                <div class="text-xs text-gray-500 mt-1">권장: {{ profile.daily_protein|floatformat:1 }}g</div>
+                <div class="mt-2 bg-gray-dark rounded-full h-2 relative overflow-hidden">
+                    <div class="bg-gradient-to-r from-blue-400 to-blue-500 h-2 rounded-full transition-all duration-300" 
+                         style="width: {% if profile.daily_protein > 0 %}{% widthratio daily_nutrition.protein profile.daily_protein 100 %}{% else %}0{% endif %}%"></div>
+                </div>
+            </div>
+            <div class="bg-gray-dark/50 rounded-lg p-4">
+                <div class="text-sm text-gray-400 mb-1" id="carbsLabel">탄수화물</div>
+                <div class="text-2xl font-bold text-green-400">{{ daily_nutrition.carbs|floatformat:1 }}g</div>
+                <div class="text-xs text-gray-500 mt-1">권장: {{ profile.daily_carbs|floatformat:1 }}g</div>
+                <div class="mt-2 bg-gray-dark rounded-full h-2 relative overflow-hidden">
+                    <div class="bg-gradient-to-r from-green-400 to-green-500 h-2 rounded-full transition-all duration-300" 
+                         style="width: {% if profile.daily_carbs > 0 %}{% widthratio daily_nutrition.carbs profile.daily_carbs 100 %}{% else %}0{% endif %}%"></div>
+                </div>
+            </div>
+            <div class="bg-gray-dark/50 rounded-lg p-4">
+                <div class="text-sm text-gray-400 mb-1" id="fatLabel">지방</div>
+                <div class="text-2xl font-bold text-yellow-400">{{ daily_nutrition.fat|floatformat:1 }}g</div>
+                <div class="text-xs text-gray-500 mt-1">권장: {{ profile.daily_fat|floatformat:1 }}g</div>
+                <div class="mt-2 bg-gray-dark rounded-full h-2 relative overflow-hidden">
+                    <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 h-2 rounded-full transition-all duration-300" 
+                         style="width: {% if profile.daily_fat > 0 %}{% widthratio daily_nutrition.fat profile.daily_fat 100 %}{% else %}0{% endif %}%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 음식 목록 -->
+    <div class="bg-gray-medium/30 backdrop-blur-xl border border-gray-600 rounded-2xl p-8 mb-8">
+        <h2 class="text-xl font-semibold text-white mb-6" id="foodListTitle">섭취한 음식</h2>
+        <div class="space-y-4">
+            {% for log in daily_logs %}
+            <div class="bg-gray-dark/50 rounded-xl p-6 border border-gray-700 hover:border-gray-600 transition-colors duration-200" id="food-log-{{ log.id }}">
+                <!-- 상단: 음식명, 시간, 칼로리, 액션 버튼 -->
+                <div class="flex items-start justify-between mb-4">
+                    <div class="flex-1">
+                        <h4 class="font-semibold text-white text-lg mb-1">{{ log.food.name }}</h4>
+                        <div class="flex items-center space-x-3">
+                            <!-- 수정 모드가 아닐 때 -->
+                            <div id="quantity-display-{{ log.id }}" class="flex items-center space-x-2">
+                                <span class="text-sm text-gray-400">
+                                    <span id="quantity-value-{{ log.id }}">{{ log.quantity }}</span>g
+                                </span>
+                                <span class="text-xs text-gray-500">•</span>
+                                <span class="text-xs text-gray-500">{{ log.consumed_at|time:"H:i" }}</span>
+                            </div>
+                            <!-- 수정 모드일 때 -->
+                            <div id="quantity-edit-{{ log.id }}" class="hidden">
+                                <form method="post" action="{% url 'nutrients_codi:edit_food_log' log.id %}" class="flex items-center space-x-2">
+                                    {% csrf_token %}
+                                    <input type="number" 
+                                           name="quantity" 
+                                           value="{{ log.quantity }}" 
+                                           step="0.1" 
+                                           min="0.1" 
+                                           max="10000"
+                                           class="w-24 px-3 py-1 bg-gray-dark border border-gray-600 rounded-lg text-white text-sm focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent"
+                                           id="quantity-input-{{ log.id }}">
+                                    <span class="text-sm text-gray-400">g</span>
+                                    <button type="submit" 
+                                            class="bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded-lg text-xs transition-colors duration-200"
+                                            title="저장">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </button>
+                                    <button type="button" 
+                                            onclick="cancelEdit({{ log.id }})"
+                                            class="bg-gray-600 hover:bg-gray-700 text-white px-2 py-1 rounded-lg text-xs transition-colors duration-200"
+                                            title="취소">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4">
+                        <!-- 칼로리 -->
+                        <div class="text-right">
+                            <div class="text-accent font-bold text-xl" id="calories-{{ log.id }}">{{ log.total_calories|floatformat:0 }} kcal</div>
+                        </div>
+                        
+                        <!-- 액션 버튼 -->
+                        <div class="flex space-x-2" id="action-buttons-{{ log.id }}">
+                            <button onclick="editQuantity({{ log.id }})" 
+                                    class="bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 hover:text-blue-300 p-2 rounded-lg transition-colors duration-200"
+                                    title="수정">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                </svg>
+                            </button>
+                            <form method="post" action="{% url 'nutrients_codi:delete_food_log' log.id %}" class="inline" 
+                                  onsubmit="return confirm('정말로 이 음식을 삭제하시겠습니까?');">
+                                {% csrf_token %}
+                                <button type="submit" 
+                                        class="bg-red-600/20 hover:bg-red-600/30 text-red-400 hover:text-red-300 p-2 rounded-lg transition-colors duration-200"
+                                        title="삭제">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 하단: 주요 영양소 -->
+                <div class="grid grid-cols-3 gap-4 pt-4 border-t border-gray-700">
+                    <div class="text-center">
+                        <div class="text-xs text-gray-400 mb-1" id="proteinLabelSmall">단백질</div>
+                        <div class="text-sm font-medium text-blue-400">{{ log.total_protein|floatformat:1 }}g</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-xs text-gray-400 mb-1" id="carbsLabelSmall">탄수화물</div>
+                        <div class="text-sm font-medium text-green-400">{{ log.total_carbs|floatformat:1 }}g</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-xs text-gray-400 mb-1" id="fatLabelSmall">지방</div>
+                        <div class="text-sm font-medium text-yellow-400">{{ log.total_fat|floatformat:1 }}g</div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- 상세 영양소 정보 -->
+    <div class="bg-gray-medium/30 backdrop-blur-xl border border-gray-600 rounded-2xl p-8">
+        <h2 class="text-xl font-semibold text-white mb-6" id="detailedNutritionTitle">상세 영양소 정보</h2>
+        
+        {% for category_key, category_data in nutrient_categories.items %}
+        <div class="mb-8">
+            <h3 class="text-lg font-semibold text-white mb-4 flex items-center category-title">
+                {{ category_data.title }}
+            </h3>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {% for nutrient in category_data.nutrients %}
+                <div class="bg-gray-dark/50 rounded-lg p-4">
+                    <div class="text-sm text-gray-400 mb-1">{{ nutrient.name }}</div>
+                    <div class="text-lg font-semibold text-white">
+                        {% if nutrient.unit == 'μg' %}
+                            {{ nutrient.current|floatformat:0 }}{{ nutrient.unit }}
+                        {% else %}
+                            {{ nutrient.current|floatformat:1 }}{{ nutrient.unit }}
+                        {% endif %}
+                    </div>
+                    <div class="text-xs text-gray-500 mt-1 recommended-label">권장: {{ nutrient.recommended }}</div>
+                    <div class="mt-2 bg-gray-dark rounded-full h-1.5 relative overflow-hidden">
+                        <div class="bg-gradient-to-r {{ nutrient.color }} h-1.5 rounded-full transition-all duration-300" 
+                             style="width: {% if nutrient.percentage > 100 %}100{% else %}{{ nutrient.percentage }}{% endif %}%"></div>
+                        {% if nutrient.percentage > 100 %}
+                        <div class="absolute inset-0 bg-gradient-to-r from-red-400 to-red-500 h-1.5 rounded-full opacity-60"></div>
+                        <div class="absolute -top-6 right-0 text-xs text-red-400 font-medium">{{ nutrient.percentage|floatformat:0 }}%</div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // 다국어 지원
+    if (typeof window.isKorean === 'undefined') {
+        window.isKorean = (navigator.language || navigator.userLanguage).startsWith('ko');
+    }
+    
+    const dailyDetailTranslations = {
+        ko: {
+                   backToDashboard: '대시보드로 돌아가기',
+                   dailyDetailTitle: '{{ target_date|date:"Y년 m월 d일" }} 식단',
+                   dailyDetailSubtitle: '상세한 영양 정보와 음식 목록',
+                   totalFoods: '{{ daily_logs|length }}개 음식',
+                   editButton: '수정',
+                   deleteButton: '삭제',
+            nutritionSummary: '영양소 요약',
+            caloriesLabel: '칼로리',
+            proteinLabel: '단백질',
+            carbsLabel: '탄수화물',
+            fatLabel: '지방',
+            foodListTitle: '섭취한 음식',
+            proteinText: '단백질',
+            proteinLabelSmall: '단백질',
+            carbsLabelSmall: '탄수화물',
+            fatLabelSmall: '지방',
+            fiberLabelSmall: '식이섬유',
+            detailedNutritionTitle: '상세 영양소 정보',
+            basicNutrients: '기초 영양소',
+            minerals: '미네랄',
+            vitamins: '비타민',
+            otherNutrients: '기타 영양소',
+            recommended: '권장'
+        },
+        en: {
+                   backToDashboard: 'Back to Dashboard',
+                   dailyDetailTitle: '{{ target_date|date:"M d, Y" }} Diet',
+                   dailyDetailSubtitle: 'Detailed nutrition information and food list',
+                   totalFoods: '{{ daily_logs|length }} foods',
+                   editButton: 'Edit',
+                   deleteButton: 'Delete',
+            nutritionSummary: 'Nutrition Summary',
+            caloriesLabel: 'Calories',
+            proteinLabel: 'Protein',
+            carbsLabel: 'Carbs',
+            fatLabel: 'Fat',
+            foodListTitle: 'Consumed Foods',
+            proteinText: 'Protein',
+            proteinLabelSmall: 'Protein',
+            carbsLabelSmall: 'Carbs',
+            fatLabelSmall: 'Fat',
+            fiberLabelSmall: 'Fiber',
+            detailedNutritionTitle: 'Detailed Nutrition Information',
+            basicNutrients: 'Basic Nutrients',
+            minerals: 'Minerals',
+            vitamins: 'Vitamins',
+            otherNutrients: 'Other Nutrients',
+            recommended: 'Recommended'
+        }
+    };
+    
+    const t = dailyDetailTranslations[window.isKorean ? 'ko' : 'en'];
+    
+    // 페이지 로드 시 텍스트 업데이트
+    function updatePageLanguage() {
+        document.getElementById('backToDashboard').textContent = t.backToDashboard;
+        document.getElementById('dailyDetailTitle').textContent = t.dailyDetailTitle;
+        document.getElementById('dailyDetailSubtitle').textContent = t.dailyDetailSubtitle;
+        document.getElementById('totalFoods').textContent = t.totalFoods;
+        document.getElementById('nutritionSummary').textContent = t.nutritionSummary;
+        document.getElementById('caloriesLabel').textContent = t.caloriesLabel;
+        document.getElementById('proteinLabel').textContent = t.proteinLabel;
+        document.getElementById('carbsLabel').textContent = t.carbsLabel;
+        document.getElementById('fatLabel').textContent = t.fatLabel;
+        document.getElementById('foodListTitle').textContent = t.foodListTitle;
+        document.getElementById('detailedNutritionTitle').textContent = t.detailedNutritionTitle;
+        
+        // 버튼 텍스트 업데이트
+        const editButtons = document.querySelectorAll('#editButtonText');
+        const deleteButtons = document.querySelectorAll('#deleteButtonText');
+        
+        editButtons.forEach(button => {
+            if (button) button.textContent = t.editButton;
+        });
+        deleteButtons.forEach(button => {
+            if (button) button.textContent = t.deleteButton;
+        });
+        
+        // 영양소 카테고리 제목들 업데이트
+        const categoryTitles = document.querySelectorAll('.category-title');
+        categoryTitles.forEach((title, index) => {
+            const categories = [t.basicNutrients, t.minerals, t.vitamins, t.otherNutrients];
+            if (categories[index]) {
+                title.textContent = categories[index];
+            }
+        });
+        
+        // 권장량 라벨 업데이트
+        const recommendedLabels = document.querySelectorAll('.recommended-label');
+        recommendedLabels.forEach(label => {
+            const currentText = label.textContent;
+            const newText = currentText.replace('권장:', t.recommended + ':');
+            label.textContent = newText;
+        });
+        
+        // 작은 라벨들 업데이트
+        const proteinTexts = document.querySelectorAll('#proteinText');
+        const proteinLabels = document.querySelectorAll('#proteinLabelSmall');
+        const carbsLabels = document.querySelectorAll('#carbsLabelSmall');
+        const fatLabels = document.querySelectorAll('#fatLabelSmall');
+        const fiberLabels = document.querySelectorAll('#fiberLabelSmall');
+        
+        proteinTexts.forEach(el => el.textContent = t.proteinText);
+        proteinLabels.forEach(el => el.textContent = t.proteinLabel);
+        carbsLabels.forEach(el => el.textContent = t.carbsLabel);
+        fatLabels.forEach(el => el.textContent = t.fatLabel);
+        fiberLabels.forEach(el => el.textContent = t.fiberLabel);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        updatePageLanguage();
+        
+        // base.html의 네비게이션 및 푸터 다국어 업데이트
+        if (typeof window.updateNavigationLanguage === 'function') {
+            window.updateNavigationLanguage();
+        }
+    });
+
+    // 인라인 수정 기능
+    window.editQuantity = function(logId) {
+        // 수정 모드로 전환
+        document.getElementById(`quantity-display-${logId}`).classList.add('hidden');
+        document.getElementById(`quantity-edit-${logId}`).classList.remove('hidden');
+        document.getElementById(`action-buttons-${logId}`).classList.add('hidden');
+        
+        // 입력 필드에 포커스
+        const input = document.getElementById(`quantity-input-${logId}`);
+        input.focus();
+        input.select();
+    };
+
+    window.cancelEdit = function(logId) {
+        // 수정 모드 해제
+        document.getElementById(`quantity-display-${logId}`).classList.remove('hidden');
+        document.getElementById(`quantity-edit-${logId}`).classList.add('hidden');
+        document.getElementById(`action-buttons-${logId}`).classList.remove('hidden');
+        
+        // 원래 값으로 복원
+        const originalValue = document.getElementById(`quantity-value-${logId}`).textContent;
+        document.getElementById(`quantity-input-${logId}`).value = originalValue;
+    };
+</script>
+{% endblock %}

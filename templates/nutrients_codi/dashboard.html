@@ -1,0 +1,649 @@
+{% extends "nutrients_codi/base.html" %}
+{% load i18n %}
+
+{% block title %}
+    <script>
+        // 브라우저 언어 감지
+        const browserLanguage = navigator.language || navigator.userLanguage;
+        const isKorean = browserLanguage.startsWith('ko');
+        
+        if (isKorean) {
+            document.title = '뉴트리언트코디 - AI 영양사';
+        } else {
+            document.title = 'Nutrients-Codi - AI Nutritionist';
+        }
+    </script>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+            <!-- Header -->
+            <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-white mb-4" id="mainTitle">뉴트리언트코디</h1>
+        <p class="text-xl text-gray-300 mb-2" id="subTitle">AI가 분석하는 맞춤형 영양 관리</p>
+        <p class="text-sm text-gray-500 max-w-2xl mx-auto" id="dataSource">
+            * 식품의약품안전처 식품영양성분 데이터베이스를 기초로 분석합니다
+                </p>
+            </div>
+
+    <!-- Food Input Section -->
+    <div class="bg-gray-medium/30 backdrop-blur-xl border border-gray-600 rounded-2xl p-8 mb-12">
+        <form id="foodAnalysisForm" method="post">
+                        {% csrf_token %}
+            <div class="mb-6">
+                <label for="id_food_text" class="block text-lg font-semibold text-white mb-3" id="foodInputLabel">
+                                오늘 무엇을 드셨나요?
+                            </label>
+                            <textarea 
+                    id="id_food_text" 
+                                name="food_text" 
+                                rows="4" 
+                    class="w-full px-4 py-3 bg-gray-dark border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent resize-none"
+                    placeholder="예: 아침에 김치찌개와 밥, 점심에 제육덮밥, 저녁에 삼겹살 2인분과 소주 한 병"
+                    id="foodInputPlaceholder"
+                                required
+                            ></textarea>
+                        </div>
+                            <button 
+                                type="submit" 
+                                id="analyzeBtn"
+                class="w-full bg-gradient-to-r from-accent to-accent-dark hover:from-accent-dark hover:to-accent text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-gray-dark"
+            >
+                <span id="analyzeBtnText">AI 분석하기</span>
+                <div id="analyzeBtnSpinner" class="hidden inline-block ml-2">
+                    <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                </div>
+            </button>
+        </form>
+            </div>
+
+            <!-- Nutrition Summary -->
+            <div class="grid md:grid-cols-4 gap-6 mb-12">
+                <!-- Calories -->
+                <div class="bg-gray-medium/30 backdrop-blur-xl border border-gray-600 rounded-xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-white" id="caloriesLabel">칼로리</h3>
+                    </div>
+            <div class="text-3xl font-bold text-accent mb-2">{{ today_nutrition.calories|floatformat:0 }}kcal</div>
+                    <div class="text-xs text-gray-500 mt-1" id="recommendedCalories">권장: {{ profile.daily_calories|floatformat:0 }} kcal</div>
+            <div class="mt-4 bg-gray-dark rounded-full h-2 relative overflow-hidden">
+                {% widthratio today_nutrition.calories profile.daily_calories 100 as calorie_percentage %}
+                <div class="bg-gradient-to-r from-accent to-accent-dark h-2 rounded-full transition-all duration-300" 
+                     style="width: {% if calorie_percentage > 100 %}100{% else %}{{ calorie_percentage }}{% endif %}%"></div>
+                {% if calorie_percentage > 100 %}
+                <div class="absolute inset-0 bg-gradient-to-r from-red-400 to-red-500 h-2 rounded-full opacity-60"></div>
+                <div class="absolute -top-6 right-0 text-xs text-red-400 font-medium">{{ calorie_percentage|floatformat:0 }}%</div>
+                {% endif %}
+                    </div>
+                </div>
+
+                <!-- Protein -->
+                <div class="bg-gray-medium/30 backdrop-blur-xl border border-gray-600 rounded-xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-white" id="proteinLabel">단백질</h3>
+                    </div>
+            <div class="text-3xl font-bold text-blue-400 mb-2">{{ today_nutrition.protein|floatformat:1 }}g</div>
+                    <div class="text-xs text-gray-500 mt-1" id="recommendedProtein">권장: {{ profile.daily_protein|floatformat:1 }}g</div>
+            <div class="mt-4 bg-gray-dark rounded-full h-2 relative overflow-hidden">
+                {% widthratio today_nutrition.protein profile.daily_protein 100 as protein_percentage %}
+                <div class="bg-gradient-to-r from-blue-400 to-blue-500 h-2 rounded-full transition-all duration-300" 
+                     style="width: {% if protein_percentage > 100 %}100{% else %}{{ protein_percentage }}{% endif %}%"></div>
+                {% if protein_percentage > 100 %}
+                <div class="absolute inset-0 bg-gradient-to-r from-red-400 to-red-500 h-2 rounded-full opacity-60"></div>
+                <div class="absolute -top-6 right-0 text-xs text-red-400 font-medium">{{ protein_percentage|floatformat:0 }}%</div>
+                {% endif %}
+                    </div>
+                </div>
+
+                <!-- Carbs -->
+                <div class="bg-gray-medium/30 backdrop-blur-xl border border-gray-600 rounded-xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-white" id="carbsLabel">탄수화물</h3>
+                    </div>
+            <div class="text-3xl font-bold text-green-400 mb-2">{{ today_nutrition.carbs|floatformat:1 }}g</div>
+                    <div class="text-xs text-gray-500 mt-1" id="recommendedCarbs">권장: {{ profile.daily_carbs|floatformat:1 }}g</div>
+            <div class="mt-4 bg-gray-dark rounded-full h-2 relative overflow-hidden">
+                {% widthratio today_nutrition.carbs profile.daily_carbs 100 as carbs_percentage %}
+                <div class="bg-gradient-to-r from-green-400 to-green-500 h-2 rounded-full transition-all duration-300" 
+                     style="width: {% if carbs_percentage > 100 %}100{% else %}{{ carbs_percentage }}{% endif %}%"></div>
+                {% if carbs_percentage > 100 %}
+                <div class="absolute inset-0 bg-gradient-to-r from-red-400 to-red-500 h-2 rounded-full opacity-60"></div>
+                <div class="absolute -top-6 right-0 text-xs text-red-400 font-medium">{{ carbs_percentage|floatformat:0 }}%</div>
+                {% endif %}
+                    </div>
+                </div>
+
+                <!-- Fat -->
+                <div class="bg-gray-medium/30 backdrop-blur-xl border border-gray-600 rounded-xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-white" id="fatLabel">지방</h3>
+            </div>
+            <div class="text-3xl font-bold text-yellow-400 mb-2">{{ today_nutrition.fat|floatformat:1 }}g</div>
+            <div class="text-xs text-gray-500 mt-1" id="recommendedFat">권장: {{ profile.daily_fat|floatformat:1 }}g</div>
+            <div class="mt-4 bg-gray-dark rounded-full h-2 relative overflow-hidden">
+                {% widthratio today_nutrition.fat profile.daily_fat 100 as fat_percentage %}
+                <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 h-2 rounded-full transition-all duration-300" 
+                     style="width: {% if fat_percentage > 100 %}100{% else %}{{ fat_percentage }}{% endif %}%"></div>
+                {% if fat_percentage > 100 %}
+                <div class="absolute inset-0 bg-gradient-to-r from-red-400 to-red-500 h-2 rounded-full opacity-60"></div>
+                <div class="absolute -top-6 right-0 text-xs text-red-400 font-medium">{{ fat_percentage|floatformat:0 }}%</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- More Nutrients Toggle -->
+    <div class="text-center mb-8">
+        <button id="additionalNutrientsToggle" class="bg-gray-medium/30 backdrop-blur-xl border border-gray-600 rounded-lg px-6 py-3 text-white hover:bg-gray-medium/50 transition-all duration-200 flex items-center space-x-2 mx-auto">
+            <span id="toggleButtonText">더 많은 영양소 보기</span>
+            <svg class="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Additional Nutrients Grid (Hidden by default) -->
+    <div id="additionalNutrients" class="hidden mb-12">
+        {% for category_key, category_data in nutrient_categories.items %}
+        <div class="mb-8">
+            <h3 class="text-lg font-semibold text-white mb-4 mt-8 flex items-center category-title">
+                {{ category_data.title }}
+            </h3>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {% for nutrient in category_data.nutrients %}
+                <div class="bg-gray-medium/20 border border-gray-600 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="text-sm font-medium text-gray-300">{{ nutrient.name }}</h4>
+                    </div>
+                    <div class="text-lg font-semibold text-white">
+                        {% if nutrient.unit == 'μg' %}
+                            {{ nutrient.current|floatformat:0 }}{{ nutrient.unit }}
+                        {% else %}
+                            {{ nutrient.current|floatformat:1 }}{{ nutrient.unit }}
+                        {% endif %}
+                    </div>
+                    <div class="text-xs text-gray-500 mt-1 recommended-label">권장: {{ nutrient.recommended }}</div>
+                    <div class="mt-3 bg-gray-dark rounded-full h-1.5 relative overflow-hidden">
+                        <div class="bg-gradient-to-r {{ nutrient.color }} h-1.5 rounded-full transition-all duration-300" 
+                             style="width: {% if nutrient.percentage > 100 %}100{% else %}{{ nutrient.percentage }}{% endif %}%"></div>
+                        {% if nutrient.percentage > 100 %}
+                        <div class="absolute inset-0 bg-gradient-to-r from-red-400 to-red-500 h-1.5 rounded-full opacity-60"></div>
+                        <div class="absolute -top-6 right-0 text-xs text-red-400 font-medium">{{ nutrient.percentage|floatformat:0 }}%</div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+            </div>
+
+            <!-- Recent Records -->
+            <div class="bg-gray-medium/30 backdrop-blur-xl border border-gray-600 rounded-2xl p-8">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-white" id="recentRecordsTitle">최근 기록</h2>
+                </div>
+                
+                <div class="space-y-4">
+            {% if recent_daily_summaries %}
+                {% for summary in recent_daily_summaries %}
+                <a href="{% url 'nutrients_codi:daily_detail' year=summary.date.year month=summary.date.month day=summary.date.day %}" 
+                   class="bg-gray-dark/50 rounded-xl p-4 sm:p-6 border border-gray-700 hover:border-accent/50 transition-all duration-200 hover:transform hover:scale-[1.01] cursor-pointer group block">
+                    
+                    <!-- 모바일: 세로 배치 -->
+                    <div class="block lg:hidden">
+                        <!-- 날짜 헤더 -->
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="text-lg font-semibold text-white group-hover:text-accent transition-colors">
+                                    {% if summary.date == today %}
+                                        오늘
+                                    {% elif summary.date == today|add:"-1" %}
+                                        어제
+                                    {% else %}
+                                        {{ summary.date|date:"m월 d일" }}
+                                    {% endif %}
+                                </h3>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs text-gray-400">{{ summary.food_count }}개 음식</div>
+                            </div>
+                        </div>
+                        
+                        <!-- 영양소 2x2 그리드 -->
+                        <div class="grid grid-cols-2 gap-3 mb-4">
+                            <!-- 칼로리 -->
+                            <div class="bg-gray-dark/30 rounded-lg p-3">
+                                <div class="text-xs text-gray-400 mb-1 text-center" id="caloriesLabelSmall">칼로리</div>
+                                <div class="text-sm font-bold text-accent text-center">{{ summary.nutrition.calories|floatformat:0 }} kcal</div>
+                                <div class="mt-2 bg-gray-dark rounded-full h-1.5 relative overflow-hidden">
+                                    <div class="bg-gradient-to-r from-accent to-accent-dark h-1.5 rounded-full transition-all duration-300" 
+                                         style="width: {% if profile.daily_calories > 0 %}{% widthratio summary.nutrition.calories profile.daily_calories 100 %}{% else %}0{% endif %}%"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- 단백질 -->
+                            <div class="bg-gray-dark/30 rounded-lg p-3">
+                                <div class="text-xs text-gray-400 mb-1 text-center" id="proteinLabelSmall">단백질</div>
+                                <div class="text-sm font-bold text-blue-400 text-center">{{ summary.nutrition.protein|floatformat:1 }}g</div>
+                                <div class="mt-2 bg-gray-dark rounded-full h-1.5 relative overflow-hidden">
+                                    <div class="bg-gradient-to-r from-blue-400 to-blue-500 h-1.5 rounded-full transition-all duration-300" 
+                                         style="width: {% if profile.daily_protein > 0 %}{% widthratio summary.nutrition.protein profile.daily_protein 100 %}{% else %}0{% endif %}%"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- 탄수화물 -->
+                            <div class="bg-gray-dark/30 rounded-lg p-3">
+                                <div class="text-xs text-gray-400 mb-1 text-center" id="carbsLabelSmall">탄수화물</div>
+                                <div class="text-sm font-bold text-green-400 text-center">{{ summary.nutrition.carbs|floatformat:1 }}g</div>
+                                <div class="mt-2 bg-gray-dark rounded-full h-1.5 relative overflow-hidden">
+                                    <div class="bg-gradient-to-r from-green-400 to-green-500 h-1.5 rounded-full transition-all duration-300" 
+                                         style="width: {% if profile.daily_carbs > 0 %}{% widthratio summary.nutrition.carbs profile.daily_carbs 100 %}{% else %}0{% endif %}%"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- 지방 -->
+                            <div class="bg-gray-dark/30 rounded-lg p-3">
+                                <div class="text-xs text-gray-400 mb-1 text-center" id="fatLabelSmall">지방</div>
+                                <div class="text-sm font-bold text-yellow-400 text-center">{{ summary.nutrition.fat|floatformat:1 }}g</div>
+                                <div class="mt-2 bg-gray-dark rounded-full h-1.5 relative overflow-hidden">
+                                    <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 h-1.5 rounded-full transition-all duration-300" 
+                                         style="width: {% if profile.daily_fat > 0 %}{% widthratio summary.nutrition.fat profile.daily_fat 100 %}{% else %}0{% endif %}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 클릭 힌트 -->
+                        <div class="text-center">
+                            <span class="text-xs text-gray-500 group-hover:text-accent transition-colors">클릭하여 상세 보기</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 데스크톱: 가로 배치 -->
+                    <div class="hidden lg:flex items-center justify-between">
+                        <!-- 날짜 정보 -->
+                        <div>
+                            <h3 class="text-xl font-semibold text-white group-hover:text-accent transition-colors">
+                                {% if summary.date == today %}
+                                    오늘
+                                {% elif summary.date == today|add:"-1" %}
+                                    어제
+                                {% else %}
+                                    {{ summary.date|date:"m월 d일" }}
+                                {% endif %}
+                            </h3>
+                            <p class="text-xs text-gray-400 mt-1">{{ summary.food_count }}개 음식</p>
+                        </div>
+                        
+                        <!-- 주요 영양소 그래프 (4개 한줄) -->
+                        <div class="flex items-center space-x-3">
+                            <!-- 칼로리 -->
+                            <div class="bg-gray-dark/30 rounded-lg p-3 min-w-[100px]">
+                                <div class="text-xs text-gray-400 mb-1 text-center" id="caloriesLabelSmall">칼로리</div>
+                                <div class="text-sm font-bold text-accent text-center">{{ summary.nutrition.calories|floatformat:0 }} kcal</div>
+                                <div class="mt-2 bg-gray-dark rounded-full h-1.5 relative overflow-hidden">
+                                    <div class="bg-gradient-to-r from-accent to-accent-dark h-1.5 rounded-full transition-all duration-300" 
+                                         style="width: {% if profile.daily_calories > 0 %}{% widthratio summary.nutrition.calories profile.daily_calories 100 %}{% else %}0{% endif %}%"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- 단백질 -->
+                            <div class="bg-gray-dark/30 rounded-lg p-3 min-w-[100px]">
+                                <div class="text-xs text-gray-400 mb-1 text-center" id="proteinLabelSmall">단백질</div>
+                                <div class="text-sm font-bold text-blue-400 text-center">{{ summary.nutrition.protein|floatformat:1 }}g</div>
+                                <div class="mt-2 bg-gray-dark rounded-full h-1.5 relative overflow-hidden">
+                                    <div class="bg-gradient-to-r from-blue-400 to-blue-500 h-1.5 rounded-full transition-all duration-300" 
+                                         style="width: {% if profile.daily_protein > 0 %}{% widthratio summary.nutrition.protein profile.daily_protein 100 %}{% else %}0{% endif %}%"></div>
+                </div>
+            </div>
+                            
+                            <!-- 탄수화물 -->
+                            <div class="bg-gray-dark/30 rounded-lg p-3 min-w-[100px]">
+                                <div class="text-xs text-gray-400 mb-1 text-center" id="carbsLabelSmall">탄수화물</div>
+                                <div class="text-sm font-bold text-green-400 text-center">{{ summary.nutrition.carbs|floatformat:1 }}g</div>
+                                <div class="mt-2 bg-gray-dark rounded-full h-1.5 relative overflow-hidden">
+                                    <div class="bg-gradient-to-r from-green-400 to-green-500 h-1.5 rounded-full transition-all duration-300" 
+                                         style="width: {% if profile.daily_carbs > 0 %}{% widthratio summary.nutrition.carbs profile.daily_carbs 100 %}{% else %}0{% endif %}%"></div>
+        </div>
+    </div>
+
+                            <!-- 지방 -->
+                            <div class="bg-gray-dark/30 rounded-lg p-3 min-w-[100px]">
+                                <div class="text-xs text-gray-400 mb-1 text-center" id="fatLabelSmall">지방</div>
+                                <div class="text-sm font-bold text-yellow-400 text-center">{{ summary.nutrition.fat|floatformat:1 }}g</div>
+                                <div class="mt-2 bg-gray-dark rounded-full h-1.5 relative overflow-hidden">
+                                    <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 h-1.5 rounded-full transition-all duration-300" 
+                                         style="width: {% if profile.daily_fat > 0 %}{% widthratio summary.nutrition.fat profile.daily_fat 100 %}{% else %}0{% endif %}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 클릭 힌트 -->
+            <div class="text-center">
+                            <span class="text-xs text-gray-500 group-hover:text-accent transition-colors">클릭하여 상세 보기</span>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            {% else %}
+                <div class="text-center py-8">
+                    <p class="text-gray-400" id="noRecordsMessage">최근 기록이 없습니다.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Loading Modal -->
+<div id="loadingModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-gray-dark rounded-lg p-8 text-center">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-accent mx-auto mb-4"></div>
+        <h3 class="text-xl font-semibold text-white mb-2" id="loadingTitle">AI가 분석 중입니다</h3>
+        <p class="text-gray-400" id="loadingMessage">잠시만 기다려주세요...</p>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+    <script>
+    // 다국어 지원 (base.html에서 이미 선언된 변수들 사용)
+    // window.isKorean이 없으면 기본값으로 설정
+    if (typeof window.isKorean === 'undefined') {
+        window.isKorean = window.browserLanguage ? window.browserLanguage.startsWith('ko') : (navigator.language || navigator.userLanguage).startsWith('ko');
+    }
+    
+    // base.html의 translations 객체를 확장
+    const dashboardTranslations = {
+        ko: {
+            mainTitle: '뉴트리언트코디',
+            subTitle: 'AI가 분석하는 맞춤형 영양 관리',
+            dataSource: '* 식품의약품안전처 식품영양성분 데이터베이스를 기초로 분석합니다',
+            foodInputLabel: '오늘 무엇을 드셨나요?',
+            foodInputPlaceholder: '예: 아침에 김치찌개와 밥, 점심에 제육덮밥, 저녁에 삼겹살 2인분과 소주 한 병',
+            analyzeBtn: 'AI 분석하기',
+            analyzingBtn: '분석 중...',
+            viewMoreNutrients: '더 많은 영양소 보기',
+            hideNutrients: '영양소 숨기기',
+            basicNutrients: '기초 영양소',
+            minerals: '미네랄',
+            vitamins: '비타민',
+            otherNutrients: '기타 영양소',
+                   recommended: '권장',
+                   recommendedCalories: '권장: {{ profile.daily_calories|floatformat:0 }} kcal',
+                   recommendedProtein: '권장: {{ profile.daily_protein|floatformat:1 }}g',
+                   recommendedCarbs: '권장: {{ profile.daily_carbs|floatformat:1 }}g',
+                   recommendedFat: '권장: {{ profile.daily_fat|floatformat:1 }}g',
+                   calories: '칼로리',
+                   protein: '단백질',
+                   carbs: '탄수화물',
+                   fat: '지방',
+                   recentRecords: '최근 기록',
+                   noRecords: '오늘의 식단 기록이 없습니다.',
+                   analyzing: 'AI가 분석 중입니다',
+                   pleaseWait: '잠시만 기다려주세요...',
+                   fiber: '식이섬유'
+        },
+        en: {
+            mainTitle: 'Nutrients-Codi',
+            subTitle: 'AI-powered Personalized Nutrition Management',
+            dataSource: '* Analysis based on Korea Food & Drug Administration Food Nutrition Database',
+            foodInputLabel: 'What did you eat today?',
+            foodInputPlaceholder: 'e.g., Kimchi stew and rice for breakfast, pork bulgogi for lunch, samgyeopsal and soju for dinner',
+            analyzeBtn: 'Analyze with AI',
+            analyzingBtn: 'Analyzing...',
+            viewMoreNutrients: 'View More Nutrients',
+            hideNutrients: 'Hide Nutrients',
+            basicNutrients: 'Basic Nutrients',
+            minerals: 'Minerals',
+            vitamins: 'Vitamins',
+            otherNutrients: 'Other Nutrients',
+                   recommended: 'Recommended',
+                   recommendedCalories: 'Recommended: {{ profile.daily_calories|floatformat:0 }} kcal',
+                   recommendedProtein: 'Recommended: {{ profile.daily_protein|floatformat:1 }}g',
+                   recommendedCarbs: 'Recommended: {{ profile.daily_carbs|floatformat:1 }}g',
+                   recommendedFat: 'Recommended: {{ profile.daily_fat|floatformat:1 }}g',
+                   calories: 'Calories',
+                   protein: 'Protein',
+                   carbs: 'Carbs',
+                   fat: 'Fat',
+                   recentRecords: 'Recent Records',
+                   noRecords: 'No food records for today.',
+                   analyzing: 'AI is analyzing',
+                   pleaseWait: 'Please wait...',
+                   fiber: 'Dietary Fiber'
+        }
+    };
+    
+    // base.html의 translations와 dashboard의 translations를 병합
+    const mergedTranslations = { ...window.translations, ...dashboardTranslations };
+    const dashboardT = mergedTranslations[window.isKorean ? 'ko' : 'en'];
+    
+    // 페이지 로드 시 텍스트 업데이트
+    function updatePageLanguage() {
+        document.getElementById('mainTitle').textContent = dashboardT.mainTitle;
+        document.getElementById('subTitle').textContent = dashboardT.subTitle;
+        document.getElementById('dataSource').textContent = dashboardT.dataSource;
+        document.getElementById('foodInputLabel').textContent = dashboardT.foodInputLabel;
+        document.getElementById('id_food_text').placeholder = dashboardT.foodInputPlaceholder;
+        document.getElementById('analyzeBtnText').textContent = dashboardT.analyzeBtn;
+        
+        // 주요 영양소 라벨 업데이트
+        document.getElementById('caloriesLabel').textContent = dashboardT.calories;
+        document.getElementById('proteinLabel').textContent = dashboardT.protein;
+        document.getElementById('carbsLabel').textContent = dashboardT.carbs;
+        document.getElementById('fatLabel').textContent = dashboardT.fat;
+        
+        // 토글 버튼 텍스트 업데이트
+        document.getElementById('toggleButtonText').textContent = dashboardT.viewMoreNutrients;
+        
+        // 영양소 섹션 제목들 업데이트
+        const categoryTitles = document.querySelectorAll('.category-title');
+        categoryTitles.forEach((title, index) => {
+            const categories = [dashboardT.basicNutrients, dashboardT.minerals, dashboardT.vitamins, dashboardT.otherNutrients];
+            if (categories[index]) {
+                title.textContent = categories[index];
+            }
+        });
+        
+        // 권장량 라벨 업데이트
+        const recommendedLabels = document.querySelectorAll('.recommended-label');
+        recommendedLabels.forEach(label => {
+            const currentText = label.textContent;
+            const newText = currentText.replace('권장:', dashboardT.recommended + ':');
+            label.textContent = newText;
+        });
+        
+        // 개별 권장량 텍스트 업데이트
+        const recommendedCalories = document.getElementById('recommendedCalories');
+        const recommendedProtein = document.getElementById('recommendedProtein');
+        const recommendedCarbs = document.getElementById('recommendedCarbs');
+        const recommendedFat = document.getElementById('recommendedFat');
+        
+        if (recommendedCalories) recommendedCalories.textContent = dashboardT.recommendedCalories;
+        if (recommendedProtein) recommendedProtein.textContent = dashboardT.recommendedProtein;
+        if (recommendedCarbs) recommendedCarbs.textContent = dashboardT.recommendedCarbs;
+        if (recommendedFat) recommendedFat.textContent = dashboardT.recommendedFat;
+        
+        // 최근 기록 섹션 업데이트
+        const recentRecordsTitle = document.getElementById('recentRecordsTitle');
+        const noRecordsMessage = document.getElementById('noRecordsMessage');
+        const loadingTitle = document.getElementById('loadingTitle');
+        const loadingMessage = document.getElementById('loadingMessage');
+        
+        if (recentRecordsTitle) recentRecordsTitle.textContent = dashboardT.recentRecords;
+        if (noRecordsMessage) noRecordsMessage.textContent = dashboardT.noRecords;
+        if (loadingTitle) loadingTitle.textContent = dashboardT.analyzing;
+        if (loadingMessage) loadingMessage.textContent = dashboardT.pleaseWait;
+        
+        // 영양소 라벨 업데이트 (최근 기록에서)
+        const proteinLabels = document.querySelectorAll('.protein-label');
+        const nutrientProteins = document.querySelectorAll('.nutrient-protein');
+        const nutrientCarbs = document.querySelectorAll('.nutrient-carbs');
+        const nutrientFats = document.querySelectorAll('.nutrient-fat');
+        const nutrientFibers = document.querySelectorAll('.nutrient-fiber');
+        
+        // 새로 추가된 작은 카드 라벨들
+        const caloriesLabelsSmall = document.querySelectorAll('#caloriesLabelSmall');
+        const proteinLabelsSmall = document.querySelectorAll('#proteinLabelSmall');
+        const carbsLabelsSmall = document.querySelectorAll('#carbsLabelSmall');
+        const fatLabelsSmall = document.querySelectorAll('#fatLabelSmall');
+        
+        proteinLabels.forEach(label => {
+            const currentText = label.textContent;
+            const newText = currentText.replace('단백질', dashboardT.protein);
+            label.textContent = newText;
+        });
+        
+        nutrientProteins.forEach(label => {
+            label.textContent = dashboardT.protein;
+        });
+        
+        nutrientCarbs.forEach(label => {
+            label.textContent = dashboardT.carbs;
+        });
+        
+        nutrientFats.forEach(label => {
+            label.textContent = dashboardT.fat;
+        });
+        
+        nutrientFibers.forEach(label => {
+            label.textContent = dashboardT.fiber;
+        });
+        
+        // 작은 카드 라벨들 업데이트
+        caloriesLabelsSmall.forEach(label => {
+            label.textContent = dashboardT.calories;
+        });
+        
+        proteinLabelsSmall.forEach(label => {
+            label.textContent = dashboardT.protein;
+        });
+        
+        carbsLabelsSmall.forEach(label => {
+            label.textContent = dashboardT.carbs;
+        });
+        
+        fatLabelsSmall.forEach(label => {
+            label.textContent = dashboardT.fat;
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // 페이지 로드 시 언어 설정 적용
+        updatePageLanguage();
+        
+        // base.html의 네비게이션 및 푸터 다국어 업데이트
+        if (typeof window.updateNavigationLanguage === 'function') {
+            window.updateNavigationLanguage();
+        }
+        const form = document.getElementById('foodAnalysisForm');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const analyzeBtnText = document.getElementById('analyzeBtnText');
+        const analyzeBtnSpinner = document.getElementById('analyzeBtnSpinner');
+        const loadingModal = document.getElementById('loadingModal');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const foodText = document.getElementById('id_food_text').value.trim();
+            if (!foodText) {
+                showToast('음식 정보를 입력해주세요.', 'error');
+                return;
+            }
+
+            // 버튼 상태 변경
+            analyzeBtn.disabled = true;
+            analyzeBtnText.textContent = t.analyzingBtn;
+            analyzeBtnSpinner.classList.remove('hidden');
+            loadingModal.classList.remove('hidden');
+
+            // AJAX 요청
+            fetch('{% url "nutrients_codi:analyze_food" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: `food_text=${encodeURIComponent(foodText)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('음식 분석이 완료되었습니다!', 'success');
+                    // 폼 초기화
+                    document.getElementById('id_food_text').value = '';
+                    // 페이지 새로고침
+            setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    showToast(data.message || '음식 분석 중 오류가 발생했습니다.', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('음식 분석 중 오류가 발생했습니다.', 'error');
+            })
+            .finally(() => {
+                // 버튼 상태 복원
+                analyzeBtn.disabled = false;
+                analyzeBtnText.textContent = dashboardT.analyzeBtn;
+                analyzeBtnSpinner.classList.add('hidden');
+                loadingModal.classList.add('hidden');
+            });
+        });
+
+        // 토스트 알림 함수
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg text-white font-medium transition-all duration-300 transform translate-x-full`;
+            
+            if (type === 'success') {
+                toast.classList.add('bg-green-500');
+            } else if (type === 'error') {
+                toast.classList.add('bg-red-500');
+            } else {
+                toast.classList.add('bg-blue-500');
+            }
+            
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            // 애니메이션
+            setTimeout(() => {
+                toast.classList.remove('translate-x-full');
+            }, 100);
+            
+            // 자동 제거
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+
+        // 더보기 토글 기능
+        const additionalNutrientsToggle = document.getElementById('additionalNutrientsToggle');
+        const additionalNutrients = document.getElementById('additionalNutrients');
+
+        if (additionalNutrientsToggle && additionalNutrients) {
+            additionalNutrientsToggle.addEventListener('click', function() {
+                       if (additionalNutrients.classList.contains('hidden')) {
+                           additionalNutrients.classList.remove('hidden');
+                           additionalNutrientsToggle.querySelector('svg').style.transform = 'rotate(180deg)';
+                           additionalNutrientsToggle.querySelector('span').textContent = t.hideNutrients;
+                       } else {
+                           additionalNutrients.classList.add('hidden');
+                           additionalNutrientsToggle.querySelector('svg').style.transform = 'rotate(0deg)';
+                           additionalNutrientsToggle.querySelector('span').textContent = t.viewMoreNutrients;
+                }
+            });
+        }
+    });
+    </script>
+{% endblock %}

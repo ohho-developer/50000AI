@@ -1,0 +1,95 @@
+{% extends "nutrients_codi/base.html" %}
+
+{% block title %}음식 분석 - 뉴트리언트코디{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Header -->
+    <div class="text-center mb-12">
+        <div class="inline-flex items-center px-4 py-2 rounded-full bg-gray-medium/50 border border-gray-600 mb-6">
+            <span class="text-accent font-mono text-sm">FOOD ANALYSIS</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold mb-6">
+            <span class="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                음식 분석
+            </span>
+        </h1>
+        <p class="text-xl text-gray-400 max-w-2xl mx-auto">
+            자연어로 입력한 음식을 AI가 분석하여 영양 정보를 제공합니다
+        </p>
+    </div>
+
+    <!-- Analysis Form -->
+    <div class="bg-gray-medium/30 backdrop-blur-xl border border-gray-600 rounded-2xl p-8">
+        <form method="POST" class="space-y-8">
+            {% csrf_token %}
+            
+            <div>
+                <label for="{{ form.food_text.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-2">
+                    {{ form.food_text.label }}
+                </label>
+                {{ form.food_text }}
+                {% if form.food_text.errors %}
+                    <p class="mt-2 text-sm text-red-400">{{ form.food_text.errors.0 }}</p>
+                {% endif %}
+                {% if form.food_text.help_text %}
+                    <p class="mt-1 text-sm text-gray-400">{{ form.food_text.help_text }}</p>
+                {% endif %}
+            </div>
+
+            <!-- 식사 유형은 AI가 자동으로 분석합니다 -->
+            <div class="bg-gray-dark/50 rounded-xl p-4 border border-gray-700">
+                <div class="flex items-center space-x-2">
+                    <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="text-sm text-gray-300">AI가 자동으로 식사 유형을 분석합니다</span>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="flex space-x-4 pt-6">
+                <a 
+                    href="{% url 'nutrients_codi:dashboard' %}" 
+                    class="flex-1 bg-gray-medium/50 border border-gray-600 text-white py-3 rounded-xl font-medium hover:bg-gray-medium transition-all duration-200 text-center"
+                >
+                    취소
+                </a>
+                <button 
+                    type="submit" 
+                    class="flex-1 bg-gradient-to-r from-accent to-accent-dark text-dark py-3 rounded-xl font-semibold hover:shadow-lg hover:shadow-accent/25 transition-all duration-300"
+                >
+                    <span class="flex items-center justify-center space-x-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                        <span>AI 분석하기</span>
+                    </span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Example Section -->
+    <div class="mt-12 bg-gray-dark/50 rounded-xl p-6 border border-gray-700">
+        <h3 class="text-lg font-semibold text-white mb-4">입력 예시</h3>
+        <div class="space-y-3">
+            <div class="bg-gray-medium/30 rounded-lg p-4">
+                <p class="text-gray-300 text-sm leading-relaxed">
+                    "아침은 굶었고 점심에 제육덮밥, 저녁엔 삼겹살 2인분에 소주 한 병 마셨어요"
+                </p>
+            </div>
+            <div class="bg-gray-medium/30 rounded-lg p-4">
+                <p class="text-gray-300 text-sm leading-relaxed">
+                    "김치찌개랑 계란말이 먹었고, 간식으로 사과 하나 먹었어"
+                </p>
+            </div>
+            <div class="bg-gray-medium/30 rounded-lg p-4">
+                <p class="text-gray-300 text-sm leading-relaxed">
+                    "피자 한 조각과 콜라 한 캔, 그리고 샐러드도 조금 먹었어"
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,115 @@
+{% extends "account/base.html" %}
+{% load account %}
+
+{% block head_title %}회원가입{% endblock %}
+
+{% block badge_text %}SIGN UP{% endblock %}
+
+{% block page_title %}회원가입{% endblock %}
+
+{% block page_description %}50000AI와 함께 AI의 세계로 떠나보세요{% endblock %}
+
+{% block content %}
+<form class="space-y-6" method="POST" action="{% url 'account_signup' %}">
+    {% csrf_token %}
+    
+    {% if redirect_field_value %}
+        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+    {% endif %}
+
+    <!-- Email Field -->
+    <div>
+        <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-2">
+            이메일 <span class="text-red-400">*</span>
+        </label>
+        <input 
+            type="email" 
+            name="{{ form.email.name }}"
+            id="{{ form.email.id_for_label }}"
+            class="w-full bg-gray-dark/50 border border-gray-600 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:border-accent focus:ring-2 focus:ring-accent/20 focus:outline-none transition-all duration-200"
+            placeholder="your@email.com"
+            required
+            autocomplete="email"
+        >
+        {% if form.email.errors %}
+            <p class="mt-2 text-sm text-red-400">{{ form.email.errors.0 }}</p>
+        {% endif %}
+    </div>
+
+    <!-- Password Field -->
+    <div>
+        <label for="{{ form.password1.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-2">
+            비밀번호 <span class="text-red-400">*</span>
+        </label>
+        <input 
+            type="password" 
+            name="{{ form.password1.name }}"
+            id="{{ form.password1.id_for_label }}"
+            class="w-full bg-gray-dark/50 border border-gray-600 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:border-accent focus:ring-2 focus:ring-accent/20 focus:outline-none transition-all duration-200"
+            placeholder="비밀번호를 입력하세요"
+            required
+            autocomplete="new-password"
+        >
+        {% if form.password1.errors %}
+            <p class="mt-2 text-sm text-red-400">{{ form.password1.errors.0 }}</p>
+        {% endif %}
+    </div>
+
+    <!-- Password Confirmation Field -->
+    <div>
+        <label for="{{ form.password2.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-2">
+            비밀번호 확인 <span class="text-red-400">*</span>
+        </label>
+        <input 
+            type="password" 
+            name="{{ form.password2.name }}"
+            id="{{ form.password2.id_for_label }}"
+            class="w-full bg-gray-dark/50 border border-gray-600 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:border-accent focus:ring-2 focus:ring-accent/20 focus:outline-none transition-all duration-200"
+            placeholder="비밀번호를 다시 입력하세요"
+            required
+            autocomplete="new-password"
+        >
+        {% if form.password2.errors %}
+            <p class="mt-2 text-sm text-red-400">{{ form.password2.errors.0 }}</p>
+        {% endif %}
+    </div>
+
+    <!-- Terms Agreement -->
+    <div class="bg-gray-dark/30 rounded-xl p-4 border border-gray-700">
+        <label class="flex items-start space-x-3">
+            <input 
+                type="checkbox" 
+                required
+                class="w-4 h-4 text-accent bg-gray-dark border-gray-600 rounded focus:ring-accent focus:ring-2 mt-1"
+            >
+            <span class="text-sm text-gray-300">
+                <span class="text-red-400">*</span> 
+                <a href="#" class="text-accent hover:text-accent-dark transition-colors duration-200">이용약관</a> 및 
+                <a href="#" class="text-accent hover:text-accent-dark transition-colors duration-200">개인정보처리방침</a>에 동의합니다.
+            </span>
+        </label>
+    </div>
+
+    <!-- Submit Button -->
+    <button 
+        type="submit" 
+        class="w-full bg-gradient-to-r from-accent to-accent-dark text-dark py-3 rounded-xl font-semibold hover:shadow-lg hover:shadow-accent/25 transition-all duration-300 transform hover:-translate-y-0.5"
+    >
+        <span class="flex items-center justify-center space-x-2">
+            <span>계정 생성하기</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+            </svg>
+        </span>
+    </button>
+</form>
+{% endblock %}
+
+{% block footer_links %}
+<p class="text-gray-400">
+    이미 계정이 있으신가요? 
+    <a href="{% url 'account_login' %}" class="text-accent hover:text-accent-dark font-medium transition-colors duration-200">
+        로그인
+    </a>
+</p>
+{% endblock %}

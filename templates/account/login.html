@@ -1,0 +1,91 @@
+{% extends "account/base.html" %}
+{% load account %}
+
+{% block head_title %}로그인{% endblock %}
+
+{% block badge_text %}SIGN IN{% endblock %}
+
+{% block page_title %}로그인{% endblock %}
+
+{% block page_description %}50000AI에 오신 것을 환영합니다{% endblock %}
+
+{% block content %}
+<form class="space-y-6" method="POST" action="{% url 'account_login' %}">
+    {% csrf_token %}
+    
+    {% if redirect_field_value %}
+        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+    {% endif %}
+
+    <!-- Email Field -->
+    <div>
+        <label for="{{ form.login.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-2">
+            이메일
+        </label>
+        <input 
+            type="email" 
+            name="{{ form.login.name }}"
+            id="{{ form.login.id_for_label }}"
+            class="w-full bg-gray-dark/50 border border-gray-600 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:border-accent focus:ring-2 focus:ring-accent/20 focus:outline-none transition-all duration-200"
+            placeholder="your@email.com"
+            required
+            autocomplete="email"
+        >
+        {% if form.login.errors %}
+            <p class="mt-2 text-sm text-red-400">{{ form.login.errors.0 }}</p>
+        {% endif %}
+    </div>
+
+    <!-- Password Field -->
+    <div>
+        <label for="{{ form.password.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-2">
+            비밀번호
+        </label>
+        <input 
+            type="password" 
+            name="{{ form.password.name }}"
+            id="{{ form.password.id_for_label }}"
+            class="w-full bg-gray-dark/50 border border-gray-600 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:border-accent focus:ring-2 focus:ring-accent/20 focus:outline-none transition-all duration-200"
+            placeholder="비밀번호를 입력하세요"
+            required
+            autocomplete="current-password"
+        >
+        {% if form.password.errors %}
+            <p class="mt-2 text-sm text-red-400">{{ form.password.errors.0 }}</p>
+        {% endif %}
+    </div>
+
+    <!-- Remember Me -->
+    <div class="flex items-center justify-between">
+        <label class="flex items-center">
+            <input 
+                type="checkbox" 
+                name="{{ form.remember.name }}"
+                class="w-4 h-4 text-accent bg-gray-dark border-gray-600 rounded focus:ring-accent focus:ring-2"
+            >
+            <span class="ml-2 text-sm text-gray-300">로그인 상태 유지</span>
+        </label>
+        
+        <a href="{% url 'account_reset_password' %}" class="text-sm text-accent hover:text-accent-dark transition-colors duration-200">
+            비밀번호를 잊으셨나요?
+        </a>
+    </div>
+
+    <!-- Submit Button -->
+    <button 
+        type="submit" 
+        class="w-full bg-gradient-to-r from-accent to-accent-dark text-dark py-3 rounded-xl font-semibold hover:shadow-lg hover:shadow-accent/25 transition-all duration-300 transform hover:-translate-y-0.5"
+    >
+        로그인
+    </button>
+</form>
+{% endblock %}
+
+{% block footer_links %}
+<p class="text-gray-400">
+    아직 계정이 없으신가요? 
+    <a href="{% url 'account_signup' %}" class="text-accent hover:text-accent-dark font-medium transition-colors duration-200">
+        회원가입
+    </a>
+</p>
+{% endblock %}

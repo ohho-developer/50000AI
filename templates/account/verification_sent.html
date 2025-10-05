@@ -1,0 +1,66 @@
+{% extends "account/base.html" %}
+
+{% block head_title %}인증 이메일 전송{% endblock %}
+
+{% block badge_text %}VERIFICATION SENT{% endblock %}
+
+{% block page_title %}인증 이메일을 확인해주세요{% endblock %}
+
+{% block page_description %}이메일 주소 인증을 위해 링크를 보내드렸습니다{% endblock %}
+
+{% block content %}
+<div class="text-center space-y-6">
+    <div class="w-20 h-20 bg-accent/20 rounded-full flex items-center justify-center mx-auto">
+        <svg class="w-10 h-10 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+        </svg>
+    </div>
+
+    <div class="bg-gray-dark/30 rounded-xl p-6 border border-gray-700">
+        <h3 class="text-lg font-semibold text-white mb-3">이메일을 확인해주세요</h3>
+        <p class="text-gray-300 text-sm leading-relaxed">
+            계정 인증을 위해 이메일로 인증 링크를 보내드렸습니다.<br>
+            받은 편지함을 확인하고 링크를 클릭하여 계정을 활성화해주세요.
+        </p>
+    </div>
+
+    <div class="bg-gray-dark/20 rounded-xl p-4 border border-gray-700">
+        <div class="flex items-start space-x-3">
+            <svg class="w-5 h-5 text-accent mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <div class="text-left">
+                <p class="text-xs text-gray-400 font-medium mb-1">💡 팁</p>
+                <p class="text-xs text-gray-400">
+                    이메일이 오지 않았다면 스팸 폴더를 확인해보세요.<br>
+                    몇 분 후에도 이메일이 오지 않으면 다시 요청해주세요.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex space-x-4">
+        <a 
+            href="{% url 'account_login' %}" 
+            class="flex-1 bg-gray-medium/50 border border-gray-600 text-white py-3 rounded-xl font-medium hover:bg-gray-medium transition-all duration-200 text-center"
+        >
+            로그인 페이지로
+        </a>
+        <a 
+            href="{% url 'accounts:home' %}" 
+            class="flex-1 bg-gradient-to-r from-accent to-accent-dark text-dark py-3 rounded-xl font-semibold hover:shadow-lg hover:shadow-accent/25 transition-all duration-300 text-center"
+        >
+            홈으로
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer_links %}
+<p class="text-gray-400">
+    문제가 계속되면 
+    <a href="#" class="text-accent hover:text-accent-dark transition-colors duration-200">
+        고객지원
+    </a>에 문의해주세요.
+</p>
+{% endblock %}

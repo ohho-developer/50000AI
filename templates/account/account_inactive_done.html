@@ -1,0 +1,79 @@
+{% extends "account/base.html" %}
+
+{% block head_title %}계정 비활성화 완료{% endblock %}
+
+{% block badge_text %}ACCOUNT DEACTIVATED{% endblock %}
+
+{% block page_title %}계정이 비활성화되었습니다{% endblock %}
+
+{% block page_description %}계정 비활성화가 완료되었습니다{% endblock %}
+
+{% block content %}
+<div class="text-center space-y-6">
+    <div class="w-20 h-20 bg-gray-500/20 rounded-full flex items-center justify-center mx-auto">
+        <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+        </svg>
+    </div>
+
+    <div class="bg-gray-500/20 border border-gray-500/50 rounded-xl p-6">
+        <h3 class="text-lg font-semibold text-gray-300 mb-3">계정 비활성화 완료</h3>
+        <p class="text-gray-400 text-sm leading-relaxed">
+            계정이 성공적으로 비활성화되었습니다.<br>
+            언제든지 다시 활성화할 수 있습니다.
+        </p>
+    </div>
+
+    <div class="bg-gray-dark/30 rounded-xl p-6 border border-gray-700">
+        <h4 class="text-white font-medium mb-4">비활성화된 계정의 특징</h4>
+        <div class="space-y-3 text-left text-sm">
+            <div class="flex items-start space-x-3">
+                <div class="w-2 h-2 bg-gray-400 rounded-full mt-2"></div>
+                <span class="text-gray-300">모든 개인정보가 안전하게 보호됩니다</span>
+            </div>
+            <div class="flex items-start space-x-3">
+                <div class="w-2 h-2 bg-gray-400 rounded-full mt-2"></div>
+                <span class="text-gray-300">서비스 이용이 일시적으로 중단됩니다</span>
+            </div>
+            <div class="flex items-start space-x-3">
+                <div class="w-2 h-2 bg-gray-400 rounded-full mt-2"></div>
+                <span class="text-gray-300">언제든지 동일한 이메일로 재활성화 가능</span>
+            </div>
+            <div class="flex items-start space-x-3">
+                <div class="w-2 h-2 bg-gray-400 rounded-full mt-2"></div>
+                <span class="text-gray-300">기존 데이터는 30일간 보관됩니다</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-gray-dark/20 rounded-xl p-4 border border-gray-700">
+        <p class="text-xs text-gray-400">
+            <span class="text-accent">💡</span> 
+            계정을 다시 활성화하려면 로그인을 시도하거나 고객지원팀에 문의해주세요.
+        </p>
+    </div>
+
+    <div class="flex space-x-4">
+        <a 
+            href="{% url 'accounts:home' %}" 
+            class="flex-1 bg-gray-medium/50 border border-gray-600 text-white py-3 rounded-xl font-medium hover:bg-gray-medium transition-all duration-200 text-center"
+        >
+            홈으로
+        </a>
+        <a 
+            href="{% url 'account_login' %}" 
+            class="flex-1 bg-gradient-to-r from-accent to-accent-dark text-dark py-3 rounded-xl font-semibold hover:shadow-lg hover:shadow-accent/25 transition-all duration-300 text-center"
+        >
+            다시 로그인
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer_links %}
+<p class="text-gray-400">
+    <a href="#" class="text-accent hover:text-accent-dark transition-colors duration-200">
+        계정 재활성화 문의
+    </a>
+</p>
+{% endblock %}

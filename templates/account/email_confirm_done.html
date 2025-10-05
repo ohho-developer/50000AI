@@ -1,0 +1,74 @@
+{% extends "account/base.html" %}
+
+{% block head_title %}이메일 인증 완료{% endblock %}
+
+{% block badge_text %}EMAIL CONFIRMED{% endblock %}
+
+{% block page_title %}이메일 인증 완료{% endblock %}
+
+{% block page_description %}축하합니다! 이메일 인증이 완료되었습니다{% endblock %}
+
+{% block content %}
+<div class="text-center space-y-6">
+    <div class="w-20 h-20 bg-accent/20 rounded-full flex items-center justify-center mx-auto">
+        <svg class="w-10 h-10 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+    </div>
+
+    <div class="bg-accent/20 border border-accent/50 rounded-xl p-6">
+        <h3 class="text-lg font-semibold text-accent mb-3">인증 완료!</h3>
+        <p class="text-gray-300 text-sm leading-relaxed">
+            이메일 인증이 성공적으로 완료되었습니다.<br>
+            이제 50000AI의 모든 기능을 이용하실 수 있습니다.
+        </p>
+    </div>
+
+    <div class="bg-gray-dark/30 rounded-xl p-6 border border-gray-700">
+        <h4 class="text-white font-medium mb-3">다음 단계</h4>
+        <div class="space-y-3 text-left">
+            <div class="flex items-center space-x-3">
+                <div class="w-6 h-6 bg-accent/20 rounded-full flex items-center justify-center">
+                    <span class="text-accent text-xs font-bold">1</span>
+                </div>
+                <span class="text-gray-300 text-sm">프로필 정보를 완성해주세요</span>
+            </div>
+            <div class="flex items-center space-x-3">
+                <div class="w-6 h-6 bg-accent/20 rounded-full flex items-center justify-center">
+                    <span class="text-accent text-xs font-bold">2</span>
+                </div>
+                <span class="text-gray-300 text-sm">뉴트리언트코디로 AI 영양사와 만나보세요</span>
+            </div>
+            <div class="flex items-center space-x-3">
+                <div class="w-6 h-6 bg-accent/20 rounded-full flex items-center justify-center">
+                    <span class="text-accent text-xs font-bold">3</span>
+                </div>
+                <span class="text-gray-300 text-sm">개인 맞춤형 AI 서비스를 경험해보세요</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex space-x-4">
+        <a 
+            href="{% url 'accounts:profile' %}" 
+            class="flex-1 bg-gray-medium/50 border border-gray-600 text-white py-3 rounded-xl font-medium hover:bg-gray-medium transition-all duration-200 text-center"
+        >
+            프로필 설정
+        </a>
+        <a 
+            href="{% url 'nutrients_codi:dashboard' %}" 
+            class="flex-1 bg-gradient-to-r from-accent to-accent-dark text-dark py-3 rounded-xl font-semibold hover:shadow-lg hover:shadow-accent/25 transition-all duration-300 text-center"
+        >
+            뉴트리언트코디 시작
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer_links %}
+<p class="text-gray-400">
+    <a href="{% url 'accounts:home' %}" class="text-accent hover:text-accent-dark transition-colors duration-200">
+        홈으로 돌아가기
+    </a>
+</p>
+{% endblock %}

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}뉴트리언트코디 - AI 영양사{% endblock %}</title>
+    <script>
+        // 브라우저 언어 감지
+        const browserLanguage = navigator.language || navigator.userLanguage;
+        const isKorean = browserLanguage.startsWith('ko');
+        
+        if (!isKorean) {
+            document.title = 'Nutrients-Codi - AI Nutritionist';
+        }
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'dark': '#0a0a0a',
+                        'gray-dark': '#1a1a1a',
+                        'gray-medium': '#2a2a2a',
+                        'accent': '#00ff88',
+                        'accent-dark': '#00cc6a',
+                    }
+                }
+            }
+        }
+    </script>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-dark text-white min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-gray-dark/50 backdrop-blur-xl border-b border-gray-700 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between h-16">
+                <!-- Mobile Header (Logo + Menu Button) -->
+                <div class="flex md:hidden items-center justify-between w-full h-16">
+                    <!-- Logo -->
+                    <div class="flex items-center">
+                        <a href="{% url 'accounts:home' %}" class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-gradient-to-r from-accent to-accent-dark rounded-lg flex items-center justify-center">
+                                <span class="text-dark font-bold text-sm">5K</span>
+                            </div>
+                            <h1 class="text-2xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">50000AI</h1>
+                        </a>
+                    </div>
+                    
+                    <!-- Mobile Menu Button -->
+                    <button id="mobileMenuButton" class="p-2 rounded-lg text-gray-300 hover:text-white hover:bg-gray-700 transition-colors duration-200">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Desktop Layout -->
+                <div class="hidden md:flex items-center justify-between w-full h-16">
+                    <!-- Logo -->
+                    <div class="flex items-center">
+                        <a href="{% url 'accounts:home' %}" class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-gradient-to-r from-accent to-accent-dark rounded-lg flex items-center justify-center">
+                                <span class="text-dark font-bold text-sm">5K</span>
+                            </div>
+                            <h1 class="text-2xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">50000AI</h1>
+                        </a>
+                    </div>
+                    
+                    <!-- Desktop Navigation -->
+                    <div class="flex items-center space-x-8">
+                        <a href="{% url 'nutrients_codi:dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}text-accent font-medium{% else %}text-gray-300 hover:text-white{% endif %} transition-colors duration-200" id="navNutrientsCodi">
+                            뉴트리언트코디
+                        </a>
+                        <a href="{% url 'nutrients_codi:profile_setup' %}" class="{% if request.resolver_match.url_name == 'profile_setup' %}text-accent font-medium{% else %}text-gray-300 hover:text-white{% endif %} transition-colors duration-200" id="navProfile">
+                            프로필 설정
+                        </a>
+                    </div>
+                    
+                    <!-- Desktop Actions -->
+                    <div class="flex items-center">
+                        <a href="{% url 'account_logout' %}" class="bg-gray-medium text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition-all duration-200 border border-gray-600" id="navLogout">로그아웃</a>
+                    </div>
+                </div>
+                
+                <!-- Mobile Navigation Menu -->
+                <div id="mobileMenu" class="md:hidden hidden pb-4 border-t border-gray-700">
+                    <div class="pt-4 space-y-4">
+                        <a href="{% url 'nutrients_codi:dashboard' %}" class="block px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition-colors duration-200 {% if request.resolver_match.url_name == 'dashboard' %}text-accent font-medium{% endif %}" id="mobileNavNutrientsCodi">
+                            뉴트리언트코디
+                        </a>
+                        <a href="{% url 'nutrients_codi:profile_setup' %}" class="block px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition-colors duration-200 {% if request.resolver_match.url_name == 'profile_setup' %}text-accent font-medium{% endif %}" id="mobileNavProfile">
+                            프로필 설정
+                        </a>
+                        <a href="{% url 'account_logout' %}" class="block px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition-colors duration-200" id="mobileNavLogout">
+                            로그아웃
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="min-h-screen">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-dark/30 border-t border-gray-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="grid md:grid-cols-4 gap-8">
+                <!-- Brand -->
+                <div class="col-span-1">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-8 h-8 bg-gradient-to-r from-accent to-accent-dark rounded-lg flex items-center justify-center">
+                            <span class="text-dark font-bold text-sm">5K</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white">50000AI</h3>
+                    </div>
+                    <p class="text-gray-400 text-sm leading-relaxed" id="footerDescription">
+                        AI 기술로 복잡한 문제를 단순하고 효율적으로 해결합니다
+                    </p>
+                </div>
+                
+                <!-- Services -->
+                <div>
+                    <h4 class="text-white font-semibold mb-4" id="footerServices">서비스</h4>
+                    <ul class="space-y-3">
+                        <li><a href="{% url 'nutrients_codi:dashboard' %}" class="text-gray-400 hover:text-accent transition-colors duration-200" id="footerNutrientsCodi">뉴트리언트코디</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-accent transition-colors duration-200" id="footerAITutor">AI 학습 도우미</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-accent transition-colors duration-200" id="footerAICounselor">AI 상담사</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Support -->
+                <div>
+                    <h4 class="text-white font-semibold mb-4" id="footerSupport">지원</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-400 hover:text-accent transition-colors duration-200" id="footerHelp">도움말</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-accent transition-colors duration-200" id="footerContact">문의하기</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-accent transition-colors duration-200" id="footerPrivacy">개인정보처리방침</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Contact -->
+                <div>
+                    <h4 class="text-white font-semibold mb-4" id="footerContactHeader">연락처</h4>
+                    <ul class="space-y-3">
+                        <li class="text-gray-400 text-sm" id="footerEmail">이메일: support@50000ai.com</li>
+                        <li class="text-gray-400 text-sm" id="footerPhone">전화: 02-1234-5678</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Copyright -->
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+                <p class="text-gray-400 text-sm">
+                    © 2025 50000AI. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    {% block extra_scripts %}{% endblock %}
+    
+    <script>
+        // 다국어 지원
+        window.browserLanguage = navigator.language || navigator.userLanguage;
+        window.isKorean = window.browserLanguage.startsWith('ko');
+        
+        const translations = {
+            ko: {
+                navNutrientsCodi: '뉴트리언트코디',
+                navProfile: '프로필 설정',
+                navAccount: '계정',
+                navLogout: '로그아웃',
+                footerDescription: 'AI 기술로 복잡한 문제를 단순하고 효율적으로 해결합니다',
+                footerServices: '서비스',
+                footerNutrientsCodi: '뉴트리언트코디',
+                footerAITutor: 'AI 학습 도우미',
+                footerAICounselor: 'AI 상담사',
+                footerSupport: '지원',
+                footerHelp: '도움말',
+                footerContact: '문의하기',
+                footerPrivacy: '개인정보처리방침',
+                footerContactHeader: '연락처',
+                footerEmail: '이메일: support@50000ai.com',
+                footerPhone: '전화: 02-1234-5678'
+            },
+            en: {
+                navNutrientsCodi: 'Nutrients-Codi',
+                navProfile: 'Profile Settings',
+                navAccount: 'Account',
+                navLogout: 'Logout',
+                footerDescription: 'AI technology solves complex problems simply and efficiently',
+                footerServices: 'Services',
+                footerNutrientsCodi: 'Nutrients-Codi',
+                footerAITutor: 'AI Learning Assistant',
+                footerAICounselor: 'AI Counselor',
+                footerSupport: 'Support',
+                footerHelp: 'Help',
+                footerContact: 'Contact Us',
+                footerPrivacy: 'Privacy Policy',
+                footerContactHeader: 'Contact',
+                footerEmail: 'Email: support@50000ai.com',
+                footerPhone: 'Phone: 02-1234-5678'
+            }
+        };
+        
+        window.translations = translations;
+        const t = translations[window.isKorean ? 'ko' : 'en'];
+        
+        // 페이지 로드 시 네비게이션 및 푸터 텍스트 업데이트
+        window.updateNavigationLanguage = function() {
+            // 네비게이션 메뉴 (데스크톱)
+            const navNutrientsCodi = document.getElementById('navNutrientsCodi');
+            const navProfile = document.getElementById('navProfile');
+            const navAccount = document.getElementById('navAccount');
+            const navLogout = document.getElementById('navLogout');
+            
+            if (navNutrientsCodi) navNutrientsCodi.textContent = t.navNutrientsCodi;
+            if (navProfile) navProfile.textContent = t.navProfile;
+            if (navAccount) navAccount.textContent = t.navAccount;
+            if (navLogout) navLogout.textContent = t.navLogout;
+            
+            // 네비게이션 메뉴 (모바일)
+            const mobileNavNutrientsCodi = document.getElementById('mobileNavNutrientsCodi');
+            const mobileNavProfile = document.getElementById('mobileNavProfile');
+            const mobileNavLogout = document.getElementById('mobileNavLogout');
+            
+            if (mobileNavNutrientsCodi) mobileNavNutrientsCodi.textContent = t.navNutrientsCodi;
+            if (mobileNavProfile) mobileNavProfile.textContent = t.navProfile;
+            if (mobileNavLogout) mobileNavLogout.textContent = t.navLogout;
+            
+            // 푸터
+            const footerDescription = document.getElementById('footerDescription');
+            const footerServices = document.getElementById('footerServices');
+            const footerNutrientsCodi = document.getElementById('footerNutrientsCodi');
+            const footerAITutor = document.getElementById('footerAITutor');
+            const footerAICounselor = document.getElementById('footerAICounselor');
+            const footerSupport = document.getElementById('footerSupport');
+            const footerHelp = document.getElementById('footerHelp');
+            const footerContact = document.getElementById('footerContact');
+            const footerPrivacy = document.getElementById('footerPrivacy');
+            const footerContactHeader = document.getElementById('footerContactHeader');
+            const footerEmail = document.getElementById('footerEmail');
+            const footerPhone = document.getElementById('footerPhone');
+            
+            if (footerDescription) footerDescription.textContent = t.footerDescription;
+            if (footerServices) footerServices.textContent = t.footerServices;
+            if (footerNutrientsCodi) footerNutrientsCodi.textContent = t.footerNutrientsCodi;
+            if (footerAITutor) footerAITutor.textContent = t.footerAITutor;
+            if (footerAICounselor) footerAICounselor.textContent = t.footerAICounselor;
+            if (footerSupport) footerSupport.textContent = t.footerSupport;
+            if (footerHelp) footerHelp.textContent = t.footerHelp;
+            if (footerContact) footerContact.textContent = t.footerContact;
+            if (footerPrivacy) footerPrivacy.textContent = t.footerPrivacy;
+            if (footerContactHeader) footerContactHeader.textContent = t.footerContactHeader;
+            if (footerEmail) footerEmail.textContent = t.footerEmail;
+            if (footerPhone) footerPhone.textContent = t.footerPhone;
+        };
+        
+        // 페이지 로드 시 언어 설정 적용
+        document.addEventListener('DOMContentLoaded', function() {
+            window.updateNavigationLanguage();
+            
+            // 모바일 메뉴 토글 기능
+            const mobileMenuButton = document.getElementById('mobileMenuButton');
+            const mobileMenu = document.getElementById('mobileMenu');
+            
+            if (mobileMenuButton && mobileMenu) {
+                mobileMenuButton.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('hidden');
+                    
+                    // 햄버거 아이콘을 X 아이콘으로 변경
+                    const icon = mobileMenuButton.querySelector('svg');
+                    if (mobileMenu.classList.contains('hidden')) {
+                        // 햄버거 아이콘
+                        icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>';
+                    } else {
+                        // X 아이콘
+                        icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>';
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

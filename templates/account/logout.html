@@ -1,0 +1,56 @@
+{% extends "account/base.html" %}
+{% load account %}
+
+{% block head_title %}로그아웃{% endblock %}
+
+{% block badge_text %}SIGN OUT{% endblock %}
+
+{% block page_title %}로그아웃{% endblock %}
+
+{% block page_description %}정말 로그아웃하시겠습니까?{% endblock %}
+
+{% block content %}
+<form class="space-y-6" method="POST" action="{% url 'account_logout' %}">
+    {% csrf_token %}
+    
+    {% if redirect_field_value %}
+        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+    {% endif %}
+
+    <div class="text-center">
+        <div class="w-16 h-16 bg-gray-dark/50 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+            </svg>
+        </div>
+        
+        <p class="text-gray-300 mb-8">
+            <span class="font-semibold text-white">{{ user.email }}</span>으로 로그인되어 있습니다.<br>
+            로그아웃하시겠습니까?
+        </p>
+    </div>
+
+    <div class="flex space-x-4">
+        <a 
+            href="{% url 'nutrients_codi:dashboard' %}" 
+            class="flex-1 bg-gray-medium/50 border border-gray-600 text-white py-3 rounded-xl font-medium hover:bg-gray-medium transition-all duration-200 text-center"
+        >
+            취소
+        </a>
+        <button 
+            type="submit" 
+            class="flex-1 bg-gradient-to-r from-red-500 to-red-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg hover:shadow-red-500/25 transition-all duration-300"
+        >
+            로그아웃
+        </button>
+    </div>
+</form>
+{% endblock %}
+
+{% block footer_links %}
+<p class="text-gray-400">
+    <a href="{% url 'accounts:home' %}" class="text-accent hover:text-accent-dark transition-colors duration-200">
+        ← 홈으로 돌아가기
+    </a>
+</p>
+{% endblock %}
