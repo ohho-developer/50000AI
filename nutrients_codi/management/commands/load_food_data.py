@@ -34,6 +34,13 @@ class Command(BaseCommand):
         file_path = options.get('file')
         limit = options.get('limit', 1000)
         
+        # 중복 방지를 위한 기존 데이터 확인
+        existing_count = Food.objects.count()
+        if existing_count > 0:
+            self.stdout.write(
+                self.style.WARNING(f'기존 데이터 {existing_count}개가 있습니다. 중복 방지를 위해 기존 데이터를 확인합니다.')
+            )
+        
         if not file_path:
             # 기본 파일들 중 존재하는 것 찾기
             for filename in default_files:
@@ -50,58 +57,165 @@ class Command(BaseCommand):
         self.stdout.write(f'파일 로딩 중: {file_path}')
         
         try:
-            # 파일 확장자에 따라 적절한 엔진 선택
-            if file_path.endswith('.csv'):
-                df = pd.read_csv(file_path, encoding='utf-8')
-            else:
-                df = pd.read_excel(file_path)
-            
-            self.stdout.write(f'총 {len(df)}개의 데이터 발견')
-            self.stdout.write(f'컬럼: {list(df.columns)}')
-            
             # 초대용량 배치 처리로 최적화
             created_count = 0
             error_count = 0
-            batch_size = 5000  # 대용량 배치 크기
+            skipped_count = 0
+            batch_size = 1000  # 메모리 절약을 위해 배치 크기 줄임
             food_objects = []
             
-            for index, row in df.head(limit).iterrows():
-                try:
-                    # 컬럼명 매핑 (파일에 따라 조정 필요)
-                    food_data = self.map_columns(row, df.columns)
+            # 기존 데이터의 food_code와 name을 미리 가져와서 중복 확인 최적화
+            existing_food_codes = set(Food.objects.values_list('food_code', flat=True).filter(food_code__isnull=False))
+            existing_food_names = set(Food.objects.values_list('name', flat=True).filter(name__isnull=False))
+            
+            # 파일 확장자에 따라 적절한 엔진 선택
+            if file_path.endswith('.csv'):
+                # 대용량 CSV 파일을 청크 단위로 처리
+                chunk_size = 10000  # 한 번에 처리할 행 수
+                
+                # 먼저 파일의 총 행 수 확인
+                total_rows = sum(1 for line in open(file_path, 'r', encoding='utf-8')) - 1  # 헤더 제외
+                self.stdout.write(f'총 {total_rows}개의 데이터 발견')
+                
+                # 청크 단위로 파일 읽기
+                chunk_count = 0
+                for chunk in pd.read_csv(
+                    file_path, 
+                    encoding='utf-8',
+                    low_memory=False,
+                    dtype=str,
+                    chunksize=chunk_size
+                ):
+                    chunk_count += 1
+                    self.stdout.write(f'청크 {chunk_count} 처리 중... ({len(chunk)}행)')
                     
-                    if not food_data:
-                        error_count += 1
-                        continue
+                    # 청크 내에서 limit에 도달했는지 확인
+                    remaining_limit = limit - created_count
+                    if remaining_limit <= 0:
+                        break
                     
-                    # Food 객체 생성
-                    food = Food(**food_data)
-                    food_objects.append(food)
+                    # 청크에서 처리할 행 수 제한
+                    chunk_limit = min(len(chunk), remaining_limit)
                     
-                    # 배치 크기에 도달하면 일괄 저장
-                    if len(food_objects) >= batch_size:
+                    for index, row in chunk.head(chunk_limit).iterrows():
+                        try:
+                            # 컬럼명 매핑 (파일에 따라 조정 필요)
+                            food_data = self.map_columns(row, chunk.columns)
+                            
+                            if not food_data:
+                                error_count += 1
+                                continue
+                            
+                            # 중복 확인 후 Food 객체 생성
+                            food_code = food_data.get('food_code')
+                            food_name = food_data.get('name')
+                            
+                            # 미리 로드한 데이터로 중복 확인 (성능 최적화)
+                            if food_code and food_code in existing_food_codes:
+                                skipped_count += 1
+                                continue
+                            elif food_name and food_name in existing_food_names:
+                                skipped_count += 1
+                                continue
+                            
+                            # Food 객체 생성
+                            food = Food(**food_data)
+                            food_objects.append(food)
+                            
+                            # 새로 추가된 항목을 중복 확인용 set에 추가
+                            if food_code:
+                                existing_food_codes.add(food_code)
+                            if food_name:
+                                existing_food_names.add(food_name)
+                            
+                            # 배치 크기에 도달하면 일괄 저장
+                            if len(food_objects) >= batch_size:
+                                with transaction.atomic():
+                                    Food.objects.bulk_create(food_objects, ignore_conflicts=True)
+                                created_count += len(food_objects)
+                                food_objects = []
+                                self.stdout.write(f'처리 완료: {created_count}개 생성, {skipped_count}개 건너뜀')
+                                
+                        except Exception as e:
+                            self.stdout.write(
+                                self.style.WARNING(f'행 {index} 처리 중 오류: {str(e)}')
+                            )
+                            error_count += 1
+                            continue
+                    
+                    # 청크 처리 완료 후 남은 데이터 저장
+                    if food_objects:
                         with transaction.atomic():
                             Food.objects.bulk_create(food_objects, ignore_conflicts=True)
                         created_count += len(food_objects)
                         food_objects = []
-                        self.stdout.write(f'처리 완료: {created_count}개')
+                        self.stdout.write(f'청크 {chunk_count} 완료: 총 {created_count}개 처리')
+                    
+                    # limit에 도달했으면 중단
+                    if created_count >= limit:
+                        break
                         
-                except Exception as e:
-                    self.stdout.write(
-                        self.style.WARNING(f'행 {index} 처리 중 오류: {str(e)}')
-                    )
-                    error_count += 1
-                    continue
+            else:
+                # Excel 파일 처리 (기존 방식)
+                df = pd.read_excel(file_path)
+                self.stdout.write(f'총 {len(df)}개의 데이터 발견')
+                self.stdout.write(f'컬럼: {list(df.columns)}')
+                
+                for index, row in df.head(limit).iterrows():
+                    try:
+                        # 컬럼명 매핑 (파일에 따라 조정 필요)
+                        food_data = self.map_columns(row, df.columns)
+                        
+                        if not food_data:
+                            error_count += 1
+                            continue
+                        
+                        # 중복 확인 후 Food 객체 생성
+                        food_code = food_data.get('food_code')
+                        food_name = food_data.get('name')
+                        
+                        # 미리 로드한 데이터로 중복 확인 (성능 최적화)
+                        if food_code and food_code in existing_food_codes:
+                            skipped_count += 1
+                            continue
+                        elif food_name and food_name in existing_food_names:
+                            skipped_count += 1
+                            continue
+                        
+                        # Food 객체 생성
+                        food = Food(**food_data)
+                        food_objects.append(food)
+                        
+                        # 새로 추가된 항목을 중복 확인용 set에 추가
+                        if food_code:
+                            existing_food_codes.add(food_code)
+                        if food_name:
+                            existing_food_names.add(food_name)
+                        
+                        # 배치 크기에 도달하면 일괄 저장
+                        if len(food_objects) >= batch_size:
+                            with transaction.atomic():
+                                Food.objects.bulk_create(food_objects, ignore_conflicts=True)
+                            created_count += len(food_objects)
+                            food_objects = []
+                            self.stdout.write(f'처리 완료: {created_count}개 생성, {skipped_count}개 건너뜀')
+                            
+                    except Exception as e:
+                        self.stdout.write(
+                            self.style.WARNING(f'행 {index} 처리 중 오류: {str(e)}')
+                        )
+                        error_count += 1
+                        continue
             
-            # 남은 데이터 처리
-            if food_objects:
+            # Excel 파일의 남은 데이터 처리
+            if not file_path.endswith('.csv') and food_objects:
                 with transaction.atomic():
                     Food.objects.bulk_create(food_objects, ignore_conflicts=True)
                 created_count += len(food_objects)
             
             self.stdout.write(
                 self.style.SUCCESS(
-                    f'완료: {created_count}개 생성, {error_count}개 오류'
+                    f'완료: {created_count}개 생성, {skipped_count}개 중복 건너뜀, {error_count}개 오류'
                 )
             )
             
