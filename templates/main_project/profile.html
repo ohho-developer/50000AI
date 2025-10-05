@@ -1,0 +1,52 @@
+{% extends "account/base.html" %}
+
+{% block head_title %}프로필{% endblock %}
+
+{% block badge_text %}PROFILE{% endblock %}
+
+{% block page_title %}프로필{% endblock %}
+
+{% block page_description %}사용자 정보를 확인하고 관리하세요{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- 사용자 정보 카드 -->
+    <div class="bg-gray-dark/50 border border-gray-600 rounded-2xl p-6">
+        <h3 class="text-xl font-semibold text-white mb-4">기본 정보</h3>
+        <div class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-1">이메일</label>
+                <p class="text-white">{{ user.email }}</p>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-1">이름</label>
+                <p class="text-white">{{ user.first_name }} {{ user.last_name }}</p>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-1">가입일</label>
+                <p class="text-white">{{ user.date_joined|date:"Y년 m월 d일" }}</p>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-1">마지막 로그인</label>
+                <p class="text-white">{{ user.last_login|date:"Y년 m월 d일 H:i" }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 계정 관리 카드 -->
+    <div class="bg-gray-dark/50 border border-gray-600 rounded-2xl p-6">
+        <h3 class="text-xl font-semibold text-white mb-4">계정 관리</h3>
+        <div class="space-y-4">
+            <a href="{% url 'account_change_password' %}" class="block w-full bg-accent hover:bg-accent-dark text-dark py-3 px-4 rounded-xl text-center font-semibold transition-colors duration-200">
+                비밀번호 변경
+            </a>
+            <a href="{% url 'account_email' %}" class="block w-full bg-gray-600 hover:bg-gray-500 text-white py-3 px-4 rounded-xl text-center font-semibold transition-colors duration-200">
+                이메일 관리
+            </a>
+            <a href="{% url 'account_logout' %}" class="block w-full bg-red-500 hover:bg-red-600 text-white py-3 px-4 rounded-xl text-center font-semibold transition-colors duration-200">
+                로그아웃
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
