@@ -49,11 +49,11 @@ LOGGING['loggers']['django']['level'] = 'WARNING'
 LOGGING['loggers']['nutrients_codi']['level'] = 'INFO'
 LOGGING['root']['level'] = 'WARNING'
 
-# Cache configuration (using database cache for simplicity)
+# Cache configuration (using local memory cache)
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-        'LOCATION': 'django_cache_table',
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
     }
 }
 
