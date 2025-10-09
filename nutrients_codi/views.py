@@ -1109,12 +1109,11 @@ def delete_food_log(request, log_id):
         food_log.delete()
         messages.success(request, '음식 기록이 삭제되었습니다.')
         
-        # 일별 상세정보 페이지에서 온 경우 해당 날짜로 리다이렉트
-        if 'daily_detail' in request.META.get('HTTP_REFERER', ''):
-            return redirect('nutrients_codi:daily_detail', 
-                          year=consumed_date.year, 
-                          month=consumed_date.month, 
-                          day=consumed_date.day)
+        # 삭제 후 항상 해당 날짜 상세 페이지로 리다이렉트
+        return redirect('nutrients_codi:daily_detail', 
+                      year=consumed_date.year, 
+                      month=consumed_date.month, 
+                      day=consumed_date.day)
     
     return redirect('nutrients_codi:dashboard')
 

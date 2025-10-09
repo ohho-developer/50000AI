@@ -1,19 +1,6 @@
 {% extends "nutrients_codi/base.html" %}
 {% load i18n %}
 
-{% block title %}
-    <script>
-        // 브라우저 언어 감지
-        const browserLanguage = navigator.language || navigator.userLanguage;
-        const isKorean = browserLanguage.startsWith('ko');
-        
-        if (isKorean) {
-            document.title = '뉴트리언트코디 - AI 영양사';
-        } else {
-            document.title = 'Nutrients-Codi - AI Nutritionist';
-        }
-    </script>
-{% endblock %}
 
 {% block content %}
 <div class="container mx-auto px-4 py-8">
