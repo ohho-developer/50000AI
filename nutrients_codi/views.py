@@ -983,7 +983,7 @@ def analyze_food(request):
                     if not food:
                         try:
                             logger.info(f"🔍 [임베딩 검색] 시도: '{food_name}'")
-                            similar_match = ai_service.find_similar_food_by_embedding(food_name, threshold=0.7)
+                            similar_match = ai_service.find_similar_food_by_embedding(food_name, threshold=0.9)
                             if similar_match:
                                 food = similar_match['food']
                                 search_method = "임베딩 기반 유사 검색"

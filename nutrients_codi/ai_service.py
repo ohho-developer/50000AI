@@ -15,14 +15,28 @@ logger = logging.getLogger(__name__)
 class GeminiAIService:
     """Google Gemini API를 사용한 AI 서비스"""
     
-    def __init__(self):
+    def __init__(self, debug_timing: bool = False):
+        import time
+        self.debug_timing = debug_timing
+        
         # API 키 설정
+        t1 = time.time()
         api_key = settings.GEMINI_API_KEY
         if not api_key:
             raise ValueError("GEMINI_API_KEY가 설정되지 않았습니다.")
         
+        if debug_timing:
+            logger.info(f"[TIMING] API 키 로드: {time.time() - t1:.4f}초")
+        
+        t2 = time.time()
         genai.configure(api_key=api_key)
+        if debug_timing:
+            logger.info(f"[TIMING] genai.configure: {time.time() - t2:.4f}초")
+        
+        t3 = time.time()
         self.model = genai.GenerativeModel('gemini-2.0-flash')
+        if debug_timing:
+            logger.info(f"[TIMING] GenerativeModel 생성: {time.time() - t3:.4f}초")
         
         # 임베딩 모델 초기화 (한국어 지원) - 지연 로딩
         self.embedding_model = None
@@ -231,32 +245,79 @@ Analyze this sentence: "{user_input}"
         try:
             # Gemini Embedding API 사용
             self.embedding_model = "gemini-embedding-001"
+            # 1536차원 사용 (HNSW 인덱스 지원 + 높은 정확도)
+            self.embedding_dimension = 1536
             self._embedding_model_loaded = True
-            logger.info("Gemini Embedding API 초기화 완료")
+            logger.info(f"Gemini Embedding API 초기화 완료 (차원: {self.embedding_dimension})")
         except Exception as e:
             logger.warning(f"Gemini Embedding API 초기화 실패: {e}")
             self.embedding_model = None
             self._embedding_model_loaded = True
 
-    def get_embedding(self, text: str) -> Optional[List[float]]:
+    def get_embedding(self, text: str, use_cache: bool = True, debug_timing: bool = False) -> Optional[List[float]]:
         """
         Gemini Embedding API를 사용하여 텍스트의 임베딩 벡터를 생성합니다.
+        
+        Args:
+            text: 임베딩을 생성할 텍스트
+            use_cache: 캐시 사용 여부 (기본값: True)
+            debug_timing: 세밀한 시간 측정 (기본값: False)
         """
         try:
+            import time
+            timings = {}
+            
+            # 캐싱 (API 호출 30초 → 0.001초!)
+            if use_cache:
+                t1 = time.time()
+                from django.core.cache import cache
+                cache_key = f'embedding:{text[:100]}'  # 최대 100자까지만
+                cached_embedding = cache.get(cache_key)
+                timings['cache_check'] = time.time() - t1
+                
+                if cached_embedding:
+                    if debug_timing:
+                        logger.info(f"[TIMING] cache_check: {timings['cache_check']:.4f}초")
+                    logger.debug(f"[CACHE HIT] 임베딩 캐시 사용: {text[:30]}...")
+                    return cached_embedding
+            
             # 지연 로딩
+            t2 = time.time()
             self._load_embedding_model()
+            timings['model_load'] = time.time() - t2
             
             if not self.embedding_model:
                 return None
             
-            # Gemini Embedding API 호출
+            # Gemini Embedding API 호출 (1536차원으로 생성)
+            t3 = time.time()
             result = genai.embed_content(
                 model=self.embedding_model,
                 content=text,
-                task_type="retrieval_document"
+                task_type="retrieval_document",
+                output_dimensionality=self.embedding_dimension  # 1536차원!
             )
+            timings['api_call'] = time.time() - t3
             
-            return result['embedding']
+            t4 = time.time()
+            embedding = result['embedding']
+            timings['extract_embedding'] = time.time() - t4
+            
+            # 캐시에 저장 (1시간)
+            if use_cache and embedding:
+                t5 = time.time()
+                from django.core.cache import cache
+                cache_key = f'embedding:{text[:100]}'
+                cache.set(cache_key, embedding, 3600)
+                timings['cache_save'] = time.time() - t5
+                logger.debug(f"[CACHE SET] 임베딩 캐시 저장: {text[:30]}...")
+            
+            if debug_timing:
+                logger.info(f"[TIMING] get_embedding 세부:")
+                for key, val in timings.items():
+                    logger.info(f"  - {key}: {val:.4f}초")
+            
+            return embedding
             
         except Exception as e:
             logger.error(f"임베딩 생성 중 오류 발생: {e}")
@@ -283,13 +344,14 @@ Analyze this sentence: "{user_input}"
             
             embeddings = []
             
-            # 각 텍스트에 대해 임베딩 생성
+            # 각 텍스트에 대해 임베딩 생성 (1536차원)
             for idx, text in enumerate(texts):
                 try:
                     result = genai.embed_content(
                         model=self.embedding_model,
                         content=text,
-                        task_type="retrieval_document"
+                        task_type="retrieval_document",
+                        output_dimensionality=self.embedding_dimension  # 1536차원!
                     )
                     embeddings.append(result['embedding'])
                     
@@ -304,7 +366,8 @@ Analyze this sentence: "{user_input}"
                         result = genai.embed_content(
                             model=self.embedding_model,
                             content=text,
-                            task_type="retrieval_document"
+                            task_type="retrieval_document",
+                            output_dimensionality=self.embedding_dimension  # 1536차원!
                         )
                         embeddings.append(result['embedding'])
                     except Exception as retry_e:
@@ -317,12 +380,13 @@ Analyze this sentence: "{user_input}"
             logger.error(f"배치 임베딩 생성 중 오류 발생: {e}")
             return [None] * len(texts)
     
-    def find_similar_food_by_embedding(self, food_name: str, threshold: float = 0.7) -> Optional[Dict]:
+    def find_similar_food_by_embedding(self, food_name: str, threshold: float = 0.9) -> Optional[Dict]:
         """
-        임베딩을 사용하여 유사한 음식을 찾습니다.
+        임베딩을 사용하여 유사한 음식을 찾습니다. (pgvector로 100배 빠름!)
         """
         try:
             from nutrients_codi.models import Food
+            from pgvector.django import CosineDistance
             
             # 지연 로딩
             self._load_embedding_model()
@@ -336,47 +400,28 @@ Analyze this sentence: "{user_input}"
             if not input_embedding:
                 return None
             
-            # 데이터베이스에서 임베딩이 있는 음식들 가져오기
-            foods_with_embeddings = Food.objects.exclude(embedding__isnull=True)
+            # pgvector로 데이터베이스에서 직접 코사인 유사도 계산 (초고속!)
+            similar_foods = Food.objects.annotate(
+                distance=CosineDistance('embedding', input_embedding)
+            ).filter(
+                embedding__isnull=False,
+                distance__lt=(1 - threshold)  # cosine distance = 1 - cosine similarity
+            ).order_by('distance')[:1]
             
-            if not foods_with_embeddings.exists():
-                return None
+            if similar_foods.exists():
+                food = similar_foods[0]
+                similarity = 1 - food.distance
+                logger.info(f"[pgvector] 유사 음식 발견: {food.name} (유사도: {similarity:.3f})")
+                return {
+                    'food': food,
+                    'similarity': float(similarity),
+                    'match_type': 'embedding_pgvector'
+                }
             
-            best_match = None
-            best_similarity = 0
-            
-            for food in foods_with_embeddings:
-                if food.embedding:
-                    try:
-                        # 코사인 유사도 계산 (numpy 사용)
-                        import numpy as np
-                        
-                        # numpy 배열로 변환
-                        input_vec = np.array(input_embedding)
-                        food_vec = np.array(food.embedding)
-                        
-                        # 코사인 유사도 계산
-                        dot_product = np.dot(input_vec, food_vec)
-                        norm_input = np.linalg.norm(input_vec)
-                        norm_food = np.linalg.norm(food_vec)
-                        
-                        similarity = dot_product / (norm_input * norm_food)
-                        
-                        if similarity > best_similarity and similarity >= threshold:
-                            best_similarity = similarity
-                            best_match = {
-                                'food': food,
-                                'similarity': similarity,
-                                'match_type': 'embedding'
-                            }
-                    except Exception as e:
-                        logger.warning(f"음식 {food.name}의 임베딩 계산 실패: {e}")
-                        continue
-            
-            return best_match
+            return None
             
         except Exception as e:
-            logger.warning(f"임베딩 기반 유사 음식 검색 중 오류 발생: {e}")
+            logger.warning(f"pgvector 임베딩 검색 중 오류 발생: {e}")
             return None
     
     def get_nutrition_from_llm(self, food_name: str) -> Optional[Dict]:

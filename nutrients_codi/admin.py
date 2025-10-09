@@ -105,17 +105,19 @@ class FoodAdmin(admin.ModelAdmin):
     )
     
     def has_embedding(self, obj):
-        if obj.embedding:
+        # VectorField는 None 체크만 가능 (배열 truth value 에러 방지)
+        if obj.embedding is not None:
             return format_html('<span style="color: green;">✓</span>')
         return format_html('<span style="color: red;">✗</span>')
     has_embedding.short_description = "임베딩"
     
     def embedding_preview(self, obj):
-        if obj.embedding:
+        # VectorField는 None 체크만 가능
+        if obj.embedding is not None:
             try:
-                import json
-                embedding_data = json.loads(obj.embedding)
-                if isinstance(embedding_data, list) and len(embedding_data) > 0:
+                # VectorField는 이미 리스트/배열로 반환됨 (JSON 파싱 불필요)
+                embedding_data = list(obj.embedding)
+                if len(embedding_data) > 0:
                     preview = embedding_data[:5]  # 처음 5개 값만 표시
                     return format_html(
                         '<div style="font-family: monospace; background: #f5f5f5; padding: 5px; border-radius: 3px;">'

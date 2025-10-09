@@ -78,9 +78,9 @@ DATABASES = {
         'PASSWORD': config('DB_PASSWORD', default=''),
         'HOST': config('DB_HOST', default=''),
         'PORT': config('DB_PORT', default=''),
-        'OPTIONS': {
-            'options': "-c search_path=schema_a"
-        }
+    'OPTIONS': {
+        'options': "-c search_path=schema_a,public"
+    }
     }
 }
 

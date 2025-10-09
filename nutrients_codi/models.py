@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
+from pgvector.django import VectorField
 
 
 class Profile(models.Model):
@@ -174,8 +175,8 @@ class Food(models.Model):
     food_code = models.CharField(max_length=50, blank=True, help_text="식약처 음식 코드")
     source = models.CharField(max_length=100, default='식품의약품안전처', help_text="데이터 출처")
     
-    # Gemini 임베딩 벡터 (JSON 형태로 저장)
-    embedding = models.JSONField(null=True, blank=True, help_text="Gemini 임베딩 벡터")
+    # Gemini 임베딩 벡터 (pgvector로 최적화, 1536차원으로 HNSW 인덱스 사용)
+    embedding = VectorField(dimensions=1536, null=True, blank=True)
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
