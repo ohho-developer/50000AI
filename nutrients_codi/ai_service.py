@@ -262,6 +262,61 @@ Analyze this sentence: "{user_input}"
             logger.error(f"임베딩 생성 중 오류 발생: {e}")
             return None
     
+    def get_embeddings_batch(self, texts: List[str]) -> List[Optional[List[float]]]:
+        """
+        여러 텍스트의 임베딩을 배치로 생성합니다.
+        
+        Args:
+            texts: 임베딩을 생성할 텍스트 리스트
+            
+        Returns:
+            임베딩 벡터 리스트 (실패한 경우 None)
+        """
+        try:
+            import time
+            
+            # 지연 로딩
+            self._load_embedding_model()
+            
+            if not self.embedding_model:
+                return [None] * len(texts)
+            
+            embeddings = []
+            
+            # 각 텍스트에 대해 임베딩 생성
+            for idx, text in enumerate(texts):
+                try:
+                    result = genai.embed_content(
+                        model=self.embedding_model,
+                        content=text,
+                        task_type="retrieval_document"
+                    )
+                    embeddings.append(result['embedding'])
+                    
+                    # API rate limit 방지 - 10개마다 짧은 대기
+                    if (idx + 1) % 10 == 0:
+                        time.sleep(0.05)
+                        
+                except Exception as e:
+                    # 에러 발생 시 재시도 (1회)
+                    try:
+                        time.sleep(1)  # 1초 대기 후 재시도
+                        result = genai.embed_content(
+                            model=self.embedding_model,
+                            content=text,
+                            task_type="retrieval_document"
+                        )
+                        embeddings.append(result['embedding'])
+                    except Exception as retry_e:
+                        logger.error(f"임베딩 생성 실패 (재시도 포함) - {text[:30]}...: {retry_e}")
+                        embeddings.append(None)
+            
+            return embeddings
+            
+        except Exception as e:
+            logger.error(f"배치 임베딩 생성 중 오류 발생: {e}")
+            return [None] * len(texts)
+    
     def find_similar_food_by_embedding(self, food_name: str, threshold: float = 0.7) -> Optional[Dict]:
         """
         임베딩을 사용하여 유사한 음식을 찾습니다.

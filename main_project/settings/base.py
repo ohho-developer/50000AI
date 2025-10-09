@@ -79,7 +79,7 @@ DATABASES = {
         'HOST': config('DB_HOST', default=''),
         'PORT': config('DB_PORT', default=''),
         'OPTIONS': {
-            'options': "-c search_path=schema_d"
+            'options': "-c search_path=schema_a"
         }
     }
 }
