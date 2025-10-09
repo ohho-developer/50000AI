@@ -22,7 +22,7 @@ class RecipeAIService:
             raise ValueError("GEMINI_API_KEY가 설정되지 않았습니다.")
         
         genai.configure(api_key=api_key)
-        self.model = genai.GenerativeModel('gemini-2.0-flash')
+        self.model = genai.GenerativeModel('gemini-2.0-flash-lite')
         self.max_retries = max_retries
         self.retry_delay = retry_delay
     

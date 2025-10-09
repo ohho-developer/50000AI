@@ -257,3 +257,15 @@ LOGGING = {
         },
     },
 }
+
+# Cache Configuration
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'api_cache_table',
+        'TIMEOUT': 604800,  # 24시간 (초 단위)
+        'OPTIONS': {
+            'MAX_ENTRIES': 1000  # 최대 1000개 캐시 항목
+        }
+    }
+}

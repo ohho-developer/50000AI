@@ -8,7 +8,7 @@ import json
 
 from .ai_service import RecipeAIService
 from .youtube_service import YouTubeService
-from .models import RecipeSearchHistory
+from .models import RecipeSearchHistory, FavoriteRecipe
 
 logger = logging.getLogger(__name__)
 
@@ -56,6 +56,14 @@ def recommend_menus(request):
         
         logger.info(f"썸네일 검색 결과: {thumbnail_results}")
         
+        # 할당량 초과 확인
+        quota_exceeded = False
+        for menu_name, thumbnail_result in thumbnail_results.items():
+            if thumbnail_result.get('status') == 'quota_exceeded':
+                quota_exceeded = True
+                messages.warning(request, '일일 검색 한도를 초과했습니다. 내일 다시 시도해주세요. 즐겨찾기한 레시피를 확인해보세요!')
+                break
+        
         menus_with_thumbnails = []
         for menu_name in result['foods']:
             thumbnail_result = thumbnail_results.get(menu_name, {})
@@ -72,7 +80,8 @@ def recommend_menus(request):
         
         context = {
             'query': user_input,
-            'menus': menus_with_thumbnails
+            'menus': menus_with_thumbnails,
+            'quota_exceeded': quota_exceeded
         }
         
         return render(request, 'recipe_ai/menu_recommend.html', context)
@@ -118,6 +127,14 @@ def recommend_more_menus(request):
         # YouTube 썸네일 가져오기 (기존 영상 제외)
         youtube_service = YouTubeService()
         thumbnail_results = youtube_service.search_menu_thumbnails_batch(result['foods'])
+        
+        # 할당량 초과 확인
+        for menu_name, thumbnail_result in thumbnail_results.items():
+            if thumbnail_result.get('status') == 'quota_exceeded':
+                return JsonResponse({
+                    'status': 'quota_exceeded',
+                    'message': '일일 검색 한도를 초과했습니다. 내일 다시 시도해주세요. 즐겨찾기한 레시피를 확인해보세요!'
+                })
         
         new_menus = []
         for menu_name in result['foods']:
@@ -182,10 +199,17 @@ def get_recipe_videos(request):
         youtube_service = YouTubeService()
         result = youtube_service.search_recipe_videos(menu_name, max_results=20)
         
+        # 할당량 초과 확인
+        if result['status'] == 'quota_exceeded':
+            return JsonResponse({
+                'status': 'quota_exceeded',
+                'message': result.get('message', '일일 검색 한도를 초과했습니다. 내일 다시 시도해주세요.')
+            })
+        
         if result['status'] != 'success' or not result['videos']:
             return JsonResponse({
                 'status': 'error',
-                'message': '레시피를 찾을 수 없습니다.'
+                'message': result.get('message', '레시피를 찾을 수 없습니다.')
             })
         
         # 영상 ID와 기본 정보만 반환 (조회수, 댓글 수 포함)
@@ -355,5 +379,182 @@ def recipe_detail(request, video_id):
         return redirect('recipe_ai:index')
     except Exception as e:
         logger.error(f"레시피 상세 조회 오류: {e}")
+        messages.error(request, '오류가 발생했습니다. 다시 시도해주세요.')
+        return redirect('recipe_ai:index')
+
+
+@login_required
+@require_http_methods(["POST"])
+def add_favorite(request):
+    """레시피를 즐겨찾기에 추가합니다 (AI 분석 데이터 포함)"""
+    try:
+        data = json.loads(request.body)
+        video_id = data.get('video_id', '')
+        
+        if not video_id:
+            return JsonResponse({
+                'status': 'error',
+                'message': '비디오 ID가 없습니다.'
+            })
+        
+        # 이미 즐겨찾기에 있는지 확인
+        if FavoriteRecipe.objects.filter(user=request.user, video_id=video_id).exists():
+            return JsonResponse({
+                'status': 'error',
+                'message': '이미 즐겨찾기에 추가된 레시피입니다.'
+            })
+        
+        # YouTube 정보 가져오기
+        youtube_service = YouTubeService()
+        video_info = youtube_service.get_video_info(video_id)
+        
+        if video_info['status'] != 'success':
+            return JsonResponse({
+                'status': 'error',
+                'message': '영상 정보를 가져올 수 없습니다.'
+            })
+        
+        # AI 댓글 분석
+        ai_service = RecipeAIService()
+        comments_result = youtube_service.get_video_comments(video_id, max_comments=20)
+        
+        comment_summary = ''
+        sentiment_rating = 0
+        difficulty_rating = 0
+        positive_keywords = []
+        negative_keywords = []
+        
+        if comments_result['status'] == 'success' and comments_result['comments']:
+            analysis = ai_service.analyze_video_comments(
+                video_info['title'],
+                comments_result['comments']
+            )
+            
+            if analysis['status'] == 'success':
+                comment_summary = analysis.get('comment_summary', '')
+                sentiment_rating = analysis.get('rating', 0)
+                difficulty_rating = analysis.get('difficulty', 0)
+                positive_keywords = analysis.get('positive_keywords', [])
+                negative_keywords = analysis.get('negative_keywords', [])
+        
+        # 즐겨찾기 생성
+        favorite = FavoriteRecipe.objects.create(
+            user=request.user,
+            video_id=video_id,
+            title=video_info['title'],
+            channel_name=video_info['channel'],
+            thumbnail_url=video_info['thumbnail'],
+            description=video_info.get('description', ''),
+            view_count=video_info.get('view_count', 0),
+            comment_count=video_info.get('comment_count', 0),
+            comment_summary=comment_summary,
+            sentiment_rating=sentiment_rating,
+            difficulty_rating=difficulty_rating,
+            positive_keywords=positive_keywords,
+            negative_keywords=negative_keywords
+        )
+        
+        logger.info(f"즐겨찾기 추가 성공: {request.user.username} - {video_id}")
+        
+        return JsonResponse({
+            'status': 'success',
+            'message': '즐겨찾기에 추가되었습니다.',
+            'favorite_id': favorite.id
+        })
+        
+    except Exception as e:
+        logger.error(f"즐겨찾기 추가 오류: {e}")
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e)
+        })
+
+
+@login_required
+@require_http_methods(["POST"])
+def remove_favorite(request):
+    """즐겨찾기에서 레시피를 삭제합니다"""
+    try:
+        data = json.loads(request.body)
+        video_id = data.get('video_id', '')
+        
+        if not video_id:
+            return JsonResponse({
+                'status': 'error',
+                'message': '비디오 ID가 없습니다.'
+            })
+        
+        # 즐겨찾기 삭제
+        deleted_count, _ = FavoriteRecipe.objects.filter(
+            user=request.user,
+            video_id=video_id
+        ).delete()
+        
+        if deleted_count > 0:
+            logger.info(f"즐겨찾기 삭제 성공: {request.user.username} - {video_id}")
+            return JsonResponse({
+                'status': 'success',
+                'message': '즐겨찾기에서 삭제되었습니다.'
+            })
+        else:
+            return JsonResponse({
+                'status': 'error',
+                'message': '즐겨찾기에 없는 레시피입니다.'
+            })
+        
+    except Exception as e:
+        logger.error(f"즐겨찾기 삭제 오류: {e}")
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e)
+        })
+
+
+@login_required
+@require_http_methods(["POST"])
+def check_favorite(request):
+    """레시피가 즐겨찾기에 있는지 확인합니다"""
+    try:
+        data = json.loads(request.body)
+        video_id = data.get('video_id', '')
+        
+        if not video_id:
+            return JsonResponse({
+                'status': 'error',
+                'message': '비디오 ID가 없습니다.'
+            })
+        
+        is_favorite = FavoriteRecipe.objects.filter(
+            user=request.user,
+            video_id=video_id
+        ).exists()
+        
+        return JsonResponse({
+            'status': 'success',
+            'is_favorite': is_favorite
+        })
+        
+    except Exception as e:
+        logger.error(f"즐겨찾기 확인 오류: {e}")
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e)
+        })
+
+
+@login_required
+def favorite_list(request):
+    """즐겨찾기 목록을 보여줍니다"""
+    try:
+        favorites = FavoriteRecipe.objects.filter(user=request.user)
+        
+        context = {
+            'favorites': favorites
+        }
+        
+        return render(request, 'recipe_ai/favorite_list.html', context)
+        
+    except Exception as e:
+        logger.error(f"즐겨찾기 목록 조회 오류: {e}")
         messages.error(request, '오류가 발생했습니다. 다시 시도해주세요.')
         return redirect('recipe_ai:index')

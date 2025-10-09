@@ -4,12 +4,18 @@ from youtube_transcript_api import YouTubeTranscriptApi, NoTranscriptFound, Tran
 import logging
 import time
 from django.conf import settings
+from django.core.cache import cache
+import hashlib
+import json
 
 logger = logging.getLogger(__name__)
 
 
 class YouTubeService:
     """YouTube Data API를 사용한 영상 검색 및 자막 추출 서비스"""
+    
+    # 캐시 만료 시간 (초)
+    CACHE_TIMEOUT = 604800  # 7일 (사용자 적을 때 API 절약)
     
     def __init__(self, max_retries: int = 3, retry_delay: float = 1.0):
         """YouTube API 초기화
@@ -25,6 +31,49 @@ class YouTubeService:
         self.youtube = build('youtube', 'v3', developerKey=api_key)
         self.max_retries = max_retries
         self.retry_delay = retry_delay
+    
+    def _get_cache_key(self, prefix: str, *args, **kwargs) -> str:
+        """캐시 키 생성
+        
+        Args:
+            prefix: 캐시 키 접두사
+            *args, **kwargs: 해시에 포함할 파라미터들
+        
+        Returns:
+            str: 생성된 캐시 키
+        """
+        # 파라미터들을 문자열로 변환하여 해시 생성
+        key_data = f"{prefix}:{str(args)}:{str(sorted(kwargs.items()))}"
+        key_hash = hashlib.md5(key_data.encode()).hexdigest()
+        return f"youtube:{prefix}:{key_hash}"
+    
+    def _get_cached_or_fetch(self, cache_key: str, fetch_func, *args, **kwargs):
+        """캐시에서 데이터를 가져오거나, 없으면 fetch 후 캐싱
+        
+        Args:
+            cache_key: 캐시 키
+            fetch_func: 데이터를 가져올 함수
+            *args, **kwargs: fetch_func에 전달할 인자
+        
+        Returns:
+            캐시된 데이터 또는 새로 가져온 데이터
+        """
+        # 캐시 확인
+        cached_data = cache.get(cache_key)
+        if cached_data is not None:
+            logger.info(f"캐시 히트: {cache_key}")
+            return cached_data
+        
+        # 캐시 미스 - API 호출
+        logger.info(f"캐시 미스: {cache_key}, API 호출")
+        data = fetch_func(*args, **kwargs)
+        
+        # 성공한 경우에만 캐싱
+        if data and data.get('status') == 'success':
+            cache.set(cache_key, data, timeout=self.CACHE_TIMEOUT)
+            logger.info(f"캐시 저장: {cache_key}")
+        
+        return data
     
     def _retry_on_error(self, func, *args, **kwargs):
         """API 호출 실패 시 재시도하는 래퍼 함수
@@ -83,13 +132,13 @@ class YouTubeService:
         
         for menu_name in menu_names:
             try:
-                # 각 메뉴당 여러 결과를 가져와서 중복을 피함
+                # 각 메뉴당 최소한의 결과만 가져옴 (쿼터 절약)
                 def search_func():
                     return self.youtube.search().list(
                         q=menu_name,
                         part='snippet',
                         type='video',
-                        maxResults=5,  # 중복 방지를 위해 여러 개 가져오기
+                        maxResults=3,  # 쿼터 절약을 위해 최소화 (중복 방지용)
                         regionCode='KR',
                         relevanceLanguage='ko',
                         fields='items(id/videoId,snippet/title,snippet/thumbnails/high/url)'
@@ -132,13 +181,23 @@ class YouTubeService:
                 }
                 
             except HttpError as e:
-                logger.error(f"YouTube API 오류 ({menu_name}): {e}")
-                results[menu_name] = {
-                    "thumbnail_url": "",
-                    "video_id": "",
-                    "status": "error",
-                    "message": f"YouTube API 오류: {e}"
-                }
+                # YouTube API 할당량 초과 처리
+                if e.resp.status == 403 and 'quota' in str(e).lower():
+                    logger.error(f"YouTube API 할당량 초과 ({menu_name})")
+                    results[menu_name] = {
+                        "thumbnail_url": "",
+                        "video_id": "",
+                        "status": "quota_exceeded",
+                        "message": "일일 검색 한도를 초과했습니다."
+                    }
+                else:
+                    logger.error(f"YouTube API 오류 ({menu_name}): {e}")
+                    results[menu_name] = {
+                        "thumbnail_url": "",
+                        "video_id": "",
+                        "status": "error",
+                        "message": f"YouTube API 오류: {e}"
+                    }
             except Exception as e:
                 logger.error(f"썸네일 검색 오류 ({menu_name}): {e}")
                 results[menu_name] = {
@@ -152,7 +211,7 @@ class YouTubeService:
     
     def search_menu_thumbnail(self, menu_name: str) -> dict:
         """
-        메뉴명으로 검색하여 대표 썸네일 URL을 가져옵니다.
+        메뉴명으로 검색하여 대표 썸네일 URL을 가져옵니다. (캐싱 적용)
         
         Args:
             menu_name: 음식 메뉴 이름
@@ -160,64 +219,81 @@ class YouTubeService:
         Returns:
             dict: {"thumbnail_url": "URL", "video_id": "ID", "status": "success"}
         """
-        try:
-            def search_func():
-                return self.youtube.search().list(
-                    q=menu_name,
-                    part='snippet',
-                    type='video',
-                    maxResults=1,
-                    regionCode='KR',
-                    relevanceLanguage='ko',
-                    fields='items(id/videoId,snippet/title,snippet/thumbnails/high/url)'
-                ).execute()
-            
-            search_response = self._retry_on_error(search_func)
-            
-            if not search_response.get('items'):
-                logger.warning(f"'{menu_name}' 검색 결과 없음")
+        # 캐시 키 생성
+        cache_key = self._get_cache_key('menu_thumb', menu_name)
+        
+        # 캐시에서 가져오거나 API 호출
+        def fetch_thumbnail():
+            try:
+                def search_func():
+                    return self.youtube.search().list(
+                        q=menu_name,
+                        part='snippet',
+                        type='video',
+                        maxResults=1,
+                        regionCode='KR',
+                        relevanceLanguage='ko',
+                        fields='items(id/videoId,snippet/title,snippet/thumbnails/high/url)'
+                    ).execute()
+                
+                search_response = self._retry_on_error(search_func)
+                
+                if not search_response.get('items'):
+                    logger.warning(f"'{menu_name}' 검색 결과 없음")
+                    return {
+                        "thumbnail_url": "",
+                        "video_id": "",
+                        "status": "error",
+                        "message": "검색 결과가 없습니다."
+                    }
+                
+                item = search_response['items'][0]
+                thumbnail_url = item['snippet']['thumbnails']['high']['url']
+                video_id = item['id']['videoId']
+                
+                logger.info(f"'{menu_name}' 썸네일 검색 성공: {video_id}")
+                return {
+                    "thumbnail_url": thumbnail_url,
+                    "video_id": video_id,
+                    "status": "success"
+                }
+                
+            except HttpError as e:
+                # YouTube API 할당량 초과 처리
+                if e.resp.status == 403 and 'quota' in str(e).lower():
+                    logger.error(f"YouTube API 할당량 초과 ({menu_name})")
+                    return {
+                        "thumbnail_url": "",
+                        "video_id": "",
+                        "status": "quota_exceeded",
+                        "message": "일일 검색 한도를 초과했습니다."
+                    }
+                else:
+                    logger.error(f"YouTube API 오류 ({menu_name}): {e}")
+                    return {
+                        "thumbnail_url": "",
+                        "video_id": "",
+                        "status": "error",
+                        "message": f"YouTube API 오류: {e}"
+                    }
+            except Exception as e:
+                logger.error(f"썸네일 검색 오류 ({menu_name}): {e}")
                 return {
                     "thumbnail_url": "",
                     "video_id": "",
                     "status": "error",
-                    "message": "검색 결과가 없습니다."
+                    "message": str(e)
                 }
-            
-            item = search_response['items'][0]
-            thumbnail_url = item['snippet']['thumbnails']['high']['url']
-            video_id = item['id']['videoId']
-            
-            logger.info(f"'{menu_name}' 썸네일 검색 성공: {video_id}")
-            return {
-                "thumbnail_url": thumbnail_url,
-                "video_id": video_id,
-                "status": "success"
-            }
-            
-        except HttpError as e:
-            logger.error(f"YouTube API 오류 ({menu_name}): {e}")
-            return {
-                "thumbnail_url": "",
-                "video_id": "",
-                "status": "error",
-                "message": f"YouTube API 오류: {e}"
-            }
-        except Exception as e:
-            logger.error(f"썸네일 검색 오류 ({menu_name}): {e}")
-            return {
-                "thumbnail_url": "",
-                "video_id": "",
-                "status": "error",
-                "message": str(e)
-            }
+        
+        return self._get_cached_or_fetch(cache_key, fetch_thumbnail)
     
-    def search_recipe_videos(self, menu_name: str, max_results: int = 6) -> dict:
+    def search_recipe_videos(self, menu_name: str, max_results: int = 20) -> dict:
         """
-        메뉴명으로 레시피 영상을 검색합니다.
+        메뉴명으로 레시피 영상을 검색합니다. (캐싱 적용)
         
         Args:
             menu_name: 음식 메뉴 이름
-            max_results: 검색할 영상 개수 (기본 6개)
+            max_results: 검색할 영상 개수 (기본 20개, 순차 로딩용)
         
         Returns:
             dict: {
@@ -236,6 +312,17 @@ class YouTubeService:
                 "status": "success"
             }
         """
+        # 캐시 키 생성
+        cache_key = self._get_cache_key('recipe_videos', menu_name, max_results=max_results)
+        
+        # 캐시에서 가져오거나 API 호출
+        def fetch_videos():
+            return self._fetch_recipe_videos_from_api(menu_name, max_results)
+        
+        return self._get_cached_or_fetch(cache_key, fetch_videos)
+    
+    def _fetch_recipe_videos_from_api(self, menu_name: str, max_results: int) -> dict:
+        """API에서 레시피 영상을 실제로 가져오는 내부 메서드"""
         try:
             search_query = f"{menu_name} 레시피"
             
@@ -252,19 +339,45 @@ class YouTubeService:
                 ).execute()
             
             search_response = self._retry_on_error(search_func)
-            
-            if not search_response.get('items'):
-                logger.warning(f"'{search_query}' 검색 결과 없음")
+        
+        except HttpError as e:
+            # YouTube API 할당량 초과 처리
+            if e.resp.status == 403 and 'quota' in str(e).lower():
+                logger.error(f"YouTube API 할당량 초과: {menu_name}")
                 return {
                     "videos": [],
-                    "status": "error",
-                    "message": "레시피 영상을 찾을 수 없습니다."
+                    "status": "quota_exceeded",
+                    "message": "일일 검색 한도를 초과했습니다. 내일 다시 시도해주세요. 즐겨찾기한 레시피를 확인해보세요!"
                 }
-            
-            # 비디오 ID 목록 수집
-            video_ids = [item['id']['videoId'] for item in search_response['items']]
-            
-            # 통계 정보를 한 번에 가져오기
+            # 기타 HTTP 오류
+            logger.error(f"YouTube API 오류 ({menu_name}): {e}")
+            return {
+                "videos": [],
+                "status": "error",
+                "message": f"YouTube API 오류가 발생했습니다. 잠시 후 다시 시도해주세요."
+            }
+        except Exception as e:
+            logger.error(f"레시피 검색 오류 ({menu_name}): {e}")
+            return {
+                "videos": [],
+                "status": "error",
+                "message": "레시피를 가져오는 중 오류가 발생했습니다."
+            }
+        
+        # 검색 결과 확인
+        if not search_response.get('items'):
+            logger.warning(f"'{search_query}' 검색 결과 없음")
+            return {
+                "videos": [],
+                "status": "error",
+                "message": "레시피 영상을 찾을 수 없습니다."
+            }
+        
+        # 비디오 ID 목록 수집
+        video_ids = [item['id']['videoId'] for item in search_response['items']]
+        
+        # 통계 정보를 한 번에 가져오기
+        try:
             def stats_func():
                 return self.youtube.videos().list(
                     part='statistics',
@@ -273,54 +386,42 @@ class YouTubeService:
                 ).execute()
             
             stats_response = self._retry_on_error(stats_func)
-            
-            # 통계 정보를 딕셔너리로 매핑
-            stats_map = {}
-            if stats_response.get('items'):
-                for item in stats_response['items']:
-                    video_id = item['id']
-                    statistics = item.get('statistics', {})
-                    stats_map[video_id] = {
-                        'view_count': int(statistics.get('viewCount', 0)),
-                        'comment_count': int(statistics.get('commentCount', 0))
-                    }
-            
-            videos = []
-            for item in search_response['items']:
-                video_id = item['id']['videoId']
-                stats = stats_map.get(video_id, {'view_count': 0, 'comment_count': 0})
-                
-                video_data = {
-                    "video_id": video_id,
-                    "title": item['snippet']['title'],
-                    "channel": item['snippet']['channelTitle'],
-                    "thumbnail": item['snippet']['thumbnails']['high']['url'],
-                    "description": item['snippet']['description'],
-                    "view_count": stats['view_count'],
-                    "comment_count": stats['comment_count']
-                }
-                videos.append(video_data)
-            
-            logger.info(f"'{search_query}' 레시피 검색 성공: {len(videos)}개 영상")
-            return {
-                "videos": videos,
-                "status": "success"
-            }
-            
-        except HttpError as e:
-            logger.error(f"YouTube API 오류 ({menu_name}): {e}")
-            return {
-                "videos": [],
-                "status": "error",
-                "message": f"YouTube API 오류: {e}"
-            }
         except Exception as e:
-            logger.error(f"레시피 검색 오류 ({menu_name}): {e}")
-            return {
-                "videos": [],
-                "status": "error",
-                "message": str(e)
+            logger.warning(f"통계 정보 조회 실패: {e}, 기본값 사용")
+            stats_response = {'items': []}
+        
+        # 통계 정보를 딕셔너리로 매핑
+        stats_map = {}
+        if stats_response.get('items'):
+            for item in stats_response['items']:
+                video_id = item['id']
+                statistics = item.get('statistics', {})
+                stats_map[video_id] = {
+                    'view_count': int(statistics.get('viewCount', 0)),
+                    'comment_count': int(statistics.get('commentCount', 0))
+                }
+        
+        videos = []
+        for item in search_response['items']:
+            video_id = item['id']['videoId']
+            stats = stats_map.get(video_id, {'view_count': 0, 'comment_count': 0})
+            
+            video_data = {
+                "video_id": video_id,
+                "title": item['snippet']['title'],
+                "channel": item['snippet']['channelTitle'],
+                "thumbnail": item['snippet']['thumbnails']['high']['url'],
+                "description": item['snippet']['description'],
+                "view_count": stats['view_count'],
+                "comment_count": stats['comment_count']
             }
+            videos.append(video_data)
+        
+        logger.info(f"'{search_query}' 레시피 검색 성공: {len(videos)}개 영상")
+        return {
+            "videos": videos,
+            "status": "success"
+        }
     
     def get_video_info(self, video_id: str) -> dict:
         """

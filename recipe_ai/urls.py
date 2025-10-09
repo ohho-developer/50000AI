@@ -11,5 +11,11 @@ urlpatterns = [
     path('api/recipe-videos/', views.get_recipe_videos, name='get_recipe_videos'),  # 레시피 영상 ID 목록 (AJAX)
     path('api/recipe-detail/', views.get_recipe_detail, name='get_recipe_detail'),  # 개별 레시피 상세 (AJAX)
     path('recipe/<str:video_id>/', views.recipe_detail, name='recipe_detail'),  # 레시피 상세
+    
+    # 즐겨찾기
+    path('favorites/', views.favorite_list, name='favorite_list'),  # 즐겨찾기 목록
+    path('api/favorite/add/', views.add_favorite, name='add_favorite'),  # 즐겨찾기 추가 (AJAX)
+    path('api/favorite/remove/', views.remove_favorite, name='remove_favorite'),  # 즐겨찾기 삭제 (AJAX)
+    path('api/favorite/check/', views.check_favorite, name='check_favorite'),  # 즐겨찾기 확인 (AJAX)
 ]
 

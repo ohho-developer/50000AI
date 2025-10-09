@@ -33,11 +33,6 @@
         <div id="menuGrid" class="grid grid-cols-2 md:grid-cols-2 gap-4 md:gap-6">
             {% for menu in menus %}
             <a href="{% url 'recipe_ai:recipe_list' menu.name %}" class="menu-card group bg-gray-medium/30 backdrop-blur-xl border border-gray-600 rounded-2xl overflow-hidden hover:border-orange-400 hover:shadow-2xl hover:shadow-orange-400/10 transition-all duration-300 transform hover:-translate-y-1">
-                <!-- Debug Info -->
-                <script>
-                    console.log('메뉴:', '{{ menu.name }}', '썸네일:', '{{ menu.thumbnail }}', 'has_thumbnail:', {{ menu.has_thumbnail|yesno:"true,false" }});
-                </script>
-                
                 <!-- Thumbnail -->
                 <div class="aspect-video bg-gray-dark overflow-hidden">
                     {% if menu.has_thumbnail %}
@@ -45,7 +40,6 @@
                             src="{{ menu.thumbnail }}" 
                             alt="{{ menu.name }}"
                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                            onerror="console.error('이미지 로드 실패:', this.src)"
                         >
                     {% else %}
                         <div class="w-full h-full flex items-center justify-center">
@@ -224,7 +218,6 @@
                 // CSRF 토큰 가져오기 (폼에서 직접)
                 const loadMoreForm = document.getElementById('loadMoreForm');
                 const csrftoken = loadMoreForm ? loadMoreForm.querySelector('[name=csrfmiddlewaretoken]').value : getCookie('csrftoken');
-                console.log('CSRF Token:', csrftoken ? 'OK' : 'Missing');
                 
                 // AJAX 요청
                 fetch('{% url "recipe_ai:recommend_more" %}', {
@@ -236,6 +229,13 @@
                 })
                 .then(response => response.json())
                 .then(data => {
+                    // 할당량 초과 확인
+                    if (data.status === 'quota_exceeded') {
+                        alert('일일 검색 한도를 초과했습니다. 내일 다시 시도해주세요. 즐겨찾기한 레시피를 확인해보세요!');
+                        loadMoreBtn.style.display = 'none';
+                        return;
+                    }
+                    
                     if (data.status === 'success') {
                         // 새 메뉴 카드 추가
                         data.menus.forEach(menu => {
@@ -258,7 +258,7 @@
                     }
                 })
                 .catch(error => {
-                    console.error('Error:', error);
+                    console.error('메뉴 추가 로드 오류:', error);
                     alert('오류가 발생했습니다.');
                     loadMoreBtn.disabled = false;
                     loadMoreBtn.classList.remove('opacity-50', 'cursor-not-allowed');
