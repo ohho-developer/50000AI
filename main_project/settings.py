@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     # Local apps
     'accounts',
     'nutrients_codi',
+    'recipe_ai',
 ]
 
 MIDDLEWARE = [
@@ -213,6 +214,9 @@ ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
 
 # Google Gemini API
 GEMINI_API_KEY = config('GEMINI_API_KEY', default='')
+
+# YouTube Data API
+YOUTUBE_API_KEY = config('YOUTUBE_API_KEY', default='')
 
 # Security settings for production
 SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=False, cast=bool)

@@ -169,22 +169,38 @@
                     </div>
                 </div>
 
-                <!-- 추가 AI 서비스들 -->
-                <div class="group bg-gray-medium/20 backdrop-blur-xl border border-gray-700 rounded-2xl p-8 opacity-60">
-                    <div class="w-16 h-16 bg-gradient-to-r from-purple-500/20 to-purple-600/20 rounded-xl flex items-center justify-center mb-8">
-                        <svg class="w-8 h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                <!-- AI 요리 추천 -->
+                <div class="group bg-gray-medium/30 backdrop-blur-xl border border-gray-600 rounded-2xl p-8 hover:border-accent/50 transition-all duration-300 hover:shadow-2xl hover:shadow-accent/10">
+                    <div class="w-16 h-16 bg-gradient-to-r from-orange-500/20 to-orange-600/20 rounded-xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-8 h-8 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                         </svg>
                     </div>
-                    <h3 class="text-2xl font-bold text-white mb-4">AI 학습 도우미</h3>
-                    <p class="text-gray-500 mb-8 leading-relaxed">
-                        개인 맞춤형 학습 계획과 AI 튜터링 서비스
+                    <h3 class="text-2xl font-bold text-white mb-4">AI 요리 추천</h3>
+                    <p class="text-gray-400 mb-8 leading-relaxed">
+                        상황과 재료에 맞는 요리를 추천하고, AI가 레시피를 요약해주는 스마트 요리 도우미
                     </p>
                     <div class="flex items-center justify-between">
-                        <button class="bg-gray-600 text-gray-400 px-6 py-3 rounded-xl cursor-not-allowed" disabled>
-                            준비중
-                        </button>
-                        <span class="text-xs text-gray-600 font-mono">COMING SOON</span>
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'recipe_ai:index' %}" class="group/btn bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg hover:shadow-orange-500/25 transition-all duration-300">
+                                <span class="flex items-center space-x-2">
+                                    <span>시작하기</span>
+                                    <svg class="w-4 h-4 group-hover/btn:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                    </svg>
+                                </span>
+                            </a>
+                        {% else %}
+                            <a href="{% url 'account_signup' %}" class="group/btn bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg hover:shadow-orange-500/25 transition-all duration-300">
+                                <span class="flex items-center space-x-2">
+                                    <span>시작하기</span>
+                                    <svg class="w-4 h-4 group-hover/btn:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                    </svg>
+                                </span>
+                            </a>
+                        {% endif %}
+                        <span class="text-xs text-orange-500 font-mono">LIVE</span>
                     </div>
                 </div>
 
@@ -248,7 +264,7 @@
                     <h4 class="text-white font-semibold mb-4">서비스</h4>
                     <ul class="space-y-3">
                         <li><a href="{% url 'nutrients_codi:dashboard' %}" class="text-gray-400 hover:text-accent transition-colors duration-200">뉴트리언트코디</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-accent transition-colors duration-200">AI 학습 도우미</a></li>
+                        <li><a href="{% url 'recipe_ai:index' %}" class="text-gray-400 hover:text-accent transition-colors duration-200">AI 요리 추천</a></li>
                         <li><a href="#" class="text-gray-400 hover:text-accent transition-colors duration-200">AI 상담사</a></li>
                     </ul>
                 </div>

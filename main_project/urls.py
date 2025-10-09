@@ -26,6 +26,7 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('accounts/', include('accounts.urls')),
     path('nutrients-codi/', include('nutrients_codi.urls')),
+    path('recipe-ai/', include('recipe_ai.urls')),
 ]
 
 # Media and static files serving in development

@@ -7,6 +7,8 @@ python-decouple==3.8
 
 # AI and Machine Learning (Gemini API only)
 google-generativeai==0.8.5
+google-api-python-client==2.138.0
+youtube-transcript-api==0.6.2
 
 # Database
 psycopg2-binary==2.9.9

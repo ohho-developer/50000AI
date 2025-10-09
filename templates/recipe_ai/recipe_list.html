@@ -1,0 +1,569 @@
+{% extends 'recipe_ai/base.html' %}
+
+{% block title %}{{ menu_name }} 레시피 - AI 요리 추천{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-dark">
+    <div class="max-w-4xl mx-auto px-4 py-12">
+        <!-- Header -->
+        <div class="mb-8">
+            <a href="javascript:history.back()" class="inline-flex items-center text-gray-400 hover:text-white transition-colors duration-200 mb-6">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                메뉴 추천으로 돌아가기
+            </a>
+
+            <h1 class="text-3xl md:text-4xl font-bold mb-4">
+                <span class="bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent">
+                    {{ menu_name }}
+                </span>
+                <span class="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                    레시피
+                </span>
+            </h1>
+            <p class="text-gray-400 text-lg">
+                마음에 드는 레시피를 선택하면 AI가 요약해드립니다
+            </p>
+        </div>
+
+        <!-- Hidden CSRF Form -->
+        <form id="csrfForm" style="display: none;">
+            {% csrf_token %}
+        </form>
+        
+        <!-- Video List Container -->
+        <div id="videoList" class="space-y-4">
+            <!-- 여기에 동적으로 카드가 추가됩니다 -->
+        </div>
+
+        <!-- Loading Indicator for Initial Load -->
+        <div id="initialLoading" class="space-y-4">
+            {% for i in "1234" %}
+            <div class="bg-gray-medium/30 backdrop-blur-xl border border-gray-600 rounded-xl overflow-hidden animate-pulse">
+                <div class="flex flex-col sm:flex-row">
+                    <div class="w-full sm:w-48 h-48 sm:h-auto bg-gray-dark"></div>
+                    <div class="flex-1 p-6 space-y-3">
+                        <div class="h-6 bg-gray-dark rounded w-3/4"></div>
+                        <div class="h-4 bg-gray-dark rounded w-1/2"></div>
+                        <div class="h-4 bg-gray-dark rounded w-full"></div>
+                        <div class="flex gap-2">
+                            <div class="h-6 bg-gray-dark rounded w-20"></div>
+                            <div class="h-6 bg-gray-dark rounded w-20"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- More Button -->
+        <div id="loadMoreContainer" class="mt-8 text-center" style="display: none;">
+            <button 
+                id="showMoreBtn"
+                class="inline-flex items-center bg-gray-medium border border-gray-600 text-white px-8 py-4 rounded-xl text-lg font-medium hover:border-orange-400 hover:bg-gray-medium/80 transition-all duration-300"
+            >
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+                <span>더 많은 레시피 보기 (2개)</span>
+            </button>
+        </div>
+
+        <!-- New Search Button -->
+        <div class="mt-12 text-center">
+            <a href="{% url 'recipe_ai:index' %}" class="inline-flex items-center bg-gray-medium border border-gray-600 text-white px-8 py-4 rounded-xl text-lg font-medium hover:border-orange-400 transition-all duration-300">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                <span>다른 요리 찾기</span>
+            </a>
+        </div>
+
+        <!-- Loading Modal -->
+        <div id="loadingModal" class="hidden fixed inset-0 z-50 overflow-y-auto">
+            <div class="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity"></div>
+            <div class="flex min-h-full items-center justify-center p-4">
+                <div class="relative bg-gray-dark border border-gray-600 rounded-2xl p-8 max-w-md w-full shadow-2xl">
+                    <div class="flex justify-center mb-6">
+                        <div class="relative w-20 h-20">
+                            <div class="absolute inset-0 border-4 border-gray-600 rounded-full"></div>
+                            <div class="absolute inset-0 border-4 border-transparent border-t-orange-400 border-r-orange-500 rounded-full animate-spin"></div>
+                            <div class="absolute inset-3 bg-orange-500/20 rounded-full animate-pulse"></div>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <svg class="w-8 h-8 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center space-y-3">
+                        <h3 class="text-2xl font-bold text-white">
+                            AI가 레시피를 분석 중이에요
+                        </h3>
+                        <p class="text-gray-400">
+                            영상 자막을 추출하고 요약하고 있습니다...<br>
+                            <span class="text-sm text-gray-500">조금만 기다려주세요</span>
+                        </p>
+                    </div>
+                    <div class="flex justify-center mt-6 space-x-2">
+                        <div class="w-2 h-2 bg-orange-400 rounded-full animate-bounce" style="animation-delay: 0ms;"></div>
+                        <div class="w-2 h-2 bg-orange-400 rounded-full animate-bounce" style="animation-delay: 150ms;"></div>
+                        <div class="w-2 h-2 bg-orange-400 rounded-full animate-bounce" style="animation-delay: 300ms;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 전역 변수
+    let allVideos = [];
+    let currentIndex = 0;
+    const BATCH_SIZE = 4;
+    const MORE_SIZE = 2;
+    
+    // CSRF 토큰 가져오기
+    function getCSRFToken() {
+        const csrfForm = document.getElementById('csrfForm');
+        if (csrfForm) {
+            const tokenInput = csrfForm.querySelector('[name=csrfmiddlewaretoken]');
+            if (tokenInput) {
+                return tokenInput.value;
+            }
+        }
+        
+        // 폴백: 쿠키에서 가져오기
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, 11) === 'csrftoken=') {
+                    cookieValue = decodeURIComponent(cookie.substring(11));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    
+    // 숫자 포맷팅 함수
+    function formatNumber(num) {
+        if (num >= 1000000) {
+            return (num / 1000000).toFixed(1) + 'M';
+        } else if (num >= 1000) {
+            return (num / 1000).toFixed(1) + 'K';
+        }
+        return num.toString();
+    }
+
+    // 레시피 카드 HTML 생성
+    function createRecipeCard(video, analysis) {
+        console.log('createRecipeCard - analysis:', analysis);
+        const hasAnalysis = analysis && analysis.has_analysis;
+        console.log('createRecipeCard - hasAnalysis:', hasAnalysis);
+        
+        const ratingBadge = hasAnalysis ? `
+            <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium
+                ${analysis.rating === '매우긍정적' ? 'bg-green-600/20 text-green-300 border border-green-500/50' : 
+                  analysis.rating === '긍정적' ? 'bg-green-500/10 text-green-400 border border-green-500/30' : 
+                  analysis.rating === '보통' ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/30' :
+                  analysis.rating === '부정적' ? 'bg-red-500/10 text-red-400 border border-red-500/30' :
+                  analysis.rating === '매우부정적' ? 'bg-red-600/20 text-red-300 border border-red-500/50' :
+                  'bg-gray-500/10 text-gray-400 border border-gray-500/30'}">
+                ${analysis.rating === '매우긍정적' ? '🤩 매우긍정적' : 
+                  analysis.rating === '긍정적' ? '😊 긍정적' : 
+                  analysis.rating === '보통' ? '😐 보통' :
+                  analysis.rating === '부정적' ? '😕 부정적' :
+                  analysis.rating === '매우부정적' ? '😡 매우부정적' : '😐 보통'}
+            </span>
+        ` : '';
+        console.log('createRecipeCard - ratingBadge:', ratingBadge);
+        
+        const difficultyBadge = hasAnalysis ? `
+            <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium
+                ${analysis.difficulty === '매우쉬움' ? 'bg-green-600/20 text-green-300 border border-green-500/50' : 
+                  analysis.difficulty === '쉬움' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/30' : 
+                  analysis.difficulty === '보통' ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/30' :
+                  analysis.difficulty === '어려움' ? 'bg-purple-500/10 text-purple-400 border border-purple-500/30' :
+                  analysis.difficulty === '매우어려움' ? 'bg-red-600/20 text-red-300 border border-red-500/50' :
+                  'bg-gray-500/10 text-gray-400 border border-gray-500/30'}">
+                ${analysis.difficulty === '매우쉬움' ? '⭐ 매우쉬움' : 
+                  analysis.difficulty === '쉬움' ? '⭐⭐ 쉬움' : 
+                  analysis.difficulty === '보통' ? '⭐⭐⭐ 보통' :
+                  analysis.difficulty === '어려움' ? '⭐⭐⭐⭐ 어려움' :
+                  analysis.difficulty === '매우어려움' ? '⭐⭐⭐⭐⭐ 매우어려움' : '⭐⭐⭐ 보통'}
+            </span>
+        ` : '';
+        
+        // AI 분석 뱃지 제거
+        
+        const summary = hasAnalysis ? analysis.comment_summary : '';
+        
+        return `
+            <a href="/recipe-ai/recipe/${video.video_id}/" 
+               class="recipe-link group block bg-gray-medium/30 backdrop-blur-xl border border-gray-600 rounded-xl overflow-hidden hover:border-orange-400 hover:shadow-lg hover:shadow-orange-400/10 transition-all duration-300"
+               style="opacity: 0; transform: translateY(20px);">
+                <div class="flex flex-col sm:flex-row">
+                    <div class="w-full sm:w-48 h-48 sm:h-auto bg-gray-dark flex-shrink-0 overflow-hidden">
+                        <img 
+                            src="${video.thumbnail}" 
+                            alt="${video.title}"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        >
+                    </div>
+                    <div class="flex-1 p-6">
+                        <h3 class="text-lg font-bold text-white group-hover:text-orange-400 transition-colors duration-200 mb-2 line-clamp-2">
+                            ${video.title}
+                        </h3>
+                        <p class="text-gray-400 text-sm mb-3">
+                            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                            ${video.channel}
+                        </p>
+                        <div class="flex gap-4 text-gray-400 text-sm mb-3">
+                            <span class="flex items-center">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                </svg>
+                                조회수 ${formatNumber(video.view_count || 0)}
+                            </span>
+                            <span class="flex items-center">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                                </svg>
+                                댓글 ${formatNumber(video.comment_count || 0)}
+                            </span>
+                        </div>
+                        ${summary ? `
+                        <div class="mb-3 space-y-2">
+                            <p class="text-gray-300 text-sm line-clamp-2">${summary}</p>
+                            <div class="flex items-center gap-2">
+                                ${ratingBadge}
+                                ${difficultyBadge}
+                            </div>
+                        </div>
+                        ` : `
+                        <div class="mb-3">
+                            <div class="h-4 bg-gray-dark/50 rounded w-full mb-2 animate-pulse"></div>
+                            <div class="flex gap-2">
+                                <div class="h-6 bg-gray-dark/50 rounded w-20 animate-pulse"></div>
+                                <div class="h-6 bg-gray-dark/50 rounded w-20 animate-pulse"></div>
+                            </div>
+                        </div>
+                        `}
+                        <div class="mt-4 flex items-center text-orange-400 text-sm font-medium">
+                            <span>레시피 상세보기</span>
+                            <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        `;
+    }
+    
+    // 레시피 상세 정보 로드
+    async function loadRecipeDetail(video) {
+        try {
+            console.log('loadRecipeDetail - 요청:', { video_id: video.video_id, title: video.title });
+            
+            const response = await fetch('{% url "recipe_ai:get_recipe_detail" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken()
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify({
+                    video_id: video.video_id,
+                    title: video.title
+                })
+            });
+            
+            const result = await response.json();
+            console.log('loadRecipeDetail - 응답:', result);
+            
+            if (result.status === 'success') {
+                console.log('loadRecipeDetail - 성공, 데이터:', result.data);
+                return result.data;
+            }
+            console.log('loadRecipeDetail - 실패, 상태:', result.status);
+            return null;
+        } catch (error) {
+            console.error('Error loading recipe detail:', error);
+            return null;
+        }
+    }
+    
+    // 플레이스홀더 카드 생성
+    function createPlaceholderCard(video) {
+        return `
+            <div class="placeholder-card bg-gray-medium/30 backdrop-blur-xl border border-gray-600 rounded-xl overflow-hidden" style="opacity: 0; transform: translateY(20px);">
+                <div class="flex flex-col sm:flex-row">
+                    <div class="w-full sm:w-48 h-48 sm:h-auto bg-gray-dark flex-shrink-0 overflow-hidden">
+                        <img 
+                            src="${video.thumbnail}" 
+                            alt="${video.title}"
+                            class="w-full h-full object-cover"
+                        >
+                    </div>
+                    <div class="flex-1 p-6">
+                        <h3 class="text-lg font-bold text-white mb-2 line-clamp-2">
+                            ${video.title}
+                        </h3>
+                        <p class="text-gray-400 text-sm mb-3">
+                            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                            ${video.channel}
+                        </p>
+                        <div class="flex gap-4 text-gray-400 text-sm mb-3">
+                            <span class="flex items-center">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                </svg>
+                                조회수 ${formatNumber(video.view_count || 0)}
+                            </span>
+                            <span class="flex items-center">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                                </svg>
+                                댓글 ${formatNumber(video.comment_count || 0)}
+                            </span>
+                        </div>
+                        
+                        <div class="mb-3 space-y-2">
+                            <!-- 로딩 애니메이션 -->
+                            <div class="flex items-center text-orange-400 text-sm">
+                                <svg class="w-4 h-4 mr-2 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                </svg>
+                                <span class="animate-pulse">AI가 댓글을 분석하는 중...</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <div class="h-6 bg-gray-dark/50 rounded w-20 animate-pulse"></div>
+                                <div class="h-6 bg-gray-dark/50 rounded w-20 animate-pulse"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    // 레시피 카드를 순차적으로 표시 (완성된 상태로)
+    async function displayRecipes(videos, startIndex, count) {
+        const videoList = document.getElementById('videoList');
+        const endIndex = Math.min(startIndex + count, videos.length);
+        
+        for (let i = startIndex; i < endIndex; i++) {
+            const video = videos[i];
+            
+            // 1. 플레이스홀더 카드 먼저 표시
+            const placeholderHtml = createPlaceholderCard(video);
+            videoList.insertAdjacentHTML('beforeend', placeholderHtml);
+            
+            const placeholders = videoList.querySelectorAll('.placeholder-card');
+            const placeholderCard = placeholders[placeholders.length - 1];
+            
+            // 플레이스홀더 페이드인
+            setTimeout(() => {
+                placeholderCard.style.transition = 'all 0.3s ease-out';
+                placeholderCard.style.opacity = '1';
+                placeholderCard.style.transform = 'translateY(0)';
+            }, 50);
+            
+            // 2. 댓글 분석까지 모두 완료 (백그라운드)
+            console.log(`레시피 ${i + 1} 분석 중: ${video.title}`);
+            const analysis = await loadRecipeDetail(video);
+            
+            // 3. 완성된 카드로 교체
+            const cardHtml = createRecipeCard(video, analysis);
+            placeholderCard.outerHTML = cardHtml;
+            
+            // 4. 새로 추가된 실제 카드 가져오기
+            const cards = videoList.querySelectorAll('.recipe-link');
+            const newCard = cards[cards.length - 1];
+            
+            // 5. 페이드인 애니메이션
+            setTimeout(() => {
+                newCard.style.transition = 'all 0.3s ease-out';
+                newCard.style.opacity = '1';
+                newCard.style.transform = 'translateY(0)';
+            }, 50);
+            
+            // 6. 레시피 링크 이벤트 추가
+            attachRecipeLinkEvent(newCard);
+            
+            // 7. 순차적 표시를 위한 딜레이
+            // 다음 카드가 로딩 시작하기 전 잠깐 대기
+            if (i < endIndex - 1) {
+                await new Promise(resolve => setTimeout(resolve, 300));
+            }
+        }
+        
+        return endIndex;
+    }
+    
+    // 레시피 링크에 이벤트 추가
+    function attachRecipeLinkEvent(link) {
+        const loadingModal = document.getElementById('loadingModal');
+        
+        if (link && !link.dataset.eventAttached) {
+            link.addEventListener('click', function(e) {
+                if (loadingModal) {
+                    loadingModal.classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+                }
+            });
+            link.dataset.eventAttached = 'true';
+        }
+    }
+    
+    // 페이지 상태 초기화
+    function resetPageState() {
+        const loadingModal = document.getElementById('loadingModal');
+        if (loadingModal) {
+            loadingModal.classList.add('hidden');
+        }
+        document.body.style.overflow = '';
+    }
+    
+    // 페이지 로드 시 실행
+    document.addEventListener('DOMContentLoaded', async function() {
+        resetPageState();
+        
+        const menuName = '{{ menu_name }}';
+        const videoList = document.getElementById('videoList');
+        const initialLoading = document.getElementById('initialLoading');
+        const loadMoreContainer = document.getElementById('loadMoreContainer');
+        const showMoreBtn = document.getElementById('showMoreBtn');
+        const remainingCount = document.getElementById('remainingCount');
+        
+        try {
+            // 1. 영상 목록 가져오기
+            console.log('영상 목록 로드 중...');
+            const csrfToken = getCSRFToken();
+            console.log('CSRF Token:', csrfToken ? 'OK' : 'Missing');
+            
+            const response = await fetch('{% url "recipe_ai:get_recipe_videos" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify({ menu_name: menuName })
+            });
+            
+            console.log('Response status:', response.status);
+            
+            // HTML 에러 페이지 체크
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                const text = await response.text();
+                console.error('Received HTML instead of JSON:', text.substring(0, 200));
+                throw new Error('서버에서 올바른 응답을 받지 못했습니다.');
+            }
+            
+            const result = await response.json();
+            
+            if (result.status !== 'success') {
+                throw new Error(result.message || '레시피를 찾을 수 없습니다.');
+            }
+            
+            allVideos = result.videos;
+            console.log(`${allVideos.length}개 영상 로드됨`);
+            
+            // 초기 로딩 제거
+            initialLoading.style.display = 'none';
+            
+            // 2. 처음 4개 순차적으로 표시
+            currentIndex = await displayRecipes(allVideos, 0, BATCH_SIZE);
+            console.log(`현재 인덱스: ${currentIndex}, 전체: ${allVideos.length}`);
+            
+            // 3. 더보기 버튼 표시 (남은 영상이 있으면)
+            if (currentIndex < allVideos.length) {
+                const remaining = allVideos.length - currentIndex;
+                console.log(`남은 레시피: ${remaining}개`);
+                
+                if (remainingCount) {
+                    remainingCount.textContent = remaining;
+                }
+                
+                if (loadMoreContainer) {
+                    loadMoreContainer.style.display = 'block';
+                    console.log('더보기 버튼 표시됨');
+                } else {
+                    console.error('loadMoreContainer를 찾을 수 없습니다');
+                }
+            } else {
+                console.log('모든 레시피를 표시했습니다. 더보기 버튼 숨김');
+            }
+            
+        } catch (error) {
+            console.error('Error:', error);
+            initialLoading.innerHTML = `
+                <div class="bg-red-500/10 border border-red-500/50 text-red-400 px-6 py-4 rounded-xl">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span>${error.message}</span>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // 더보기 버튼 이벤트
+        if (showMoreBtn) {
+            showMoreBtn.addEventListener('click', async function() {
+                if (currentIndex >= allVideos.length) {
+                    loadMoreContainer.style.display = 'none';
+                    return;
+                }
+                
+                // 버튼 비활성화
+                showMoreBtn.disabled = true;
+                showMoreBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                const btnText = showMoreBtn.querySelector('span');
+                const originalText = btnText.innerHTML;
+                btnText.innerHTML = '로딩 중...';
+                
+                // 다음 2개 표시
+                const oldIndex = currentIndex;
+                currentIndex = await displayRecipes(allVideos, currentIndex, MORE_SIZE);
+                
+                // 버튼 복원
+                showMoreBtn.disabled = false;
+                showMoreBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                
+                // 남은 개수 업데이트
+                const remaining = allVideos.length - currentIndex;
+                if (remaining > 0) {
+                    remainingCount.textContent = remaining;
+                } else {
+                    loadMoreContainer.style.display = 'none';
+                }
+                
+                // 버튼 텍스트 항상 복원
+                btnText.innerHTML = originalText;
+            });
+        }
+    });
+    
+    // 브라우저 뒤로가기 대응
+    window.addEventListener('pageshow', function(event) {
+        if (event.persisted) {
+            resetPageState();
+        }
+    });
+</script>
+{% endblock %}
