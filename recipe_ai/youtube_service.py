@@ -91,7 +91,8 @@ class YouTubeService:
                         type='video',
                         maxResults=5,  # 중복 방지를 위해 여러 개 가져오기
                         regionCode='KR',
-                        relevanceLanguage='ko'
+                        relevanceLanguage='ko',
+                        fields='items(id/videoId,snippet/title,snippet/thumbnails/high/url)'
                     ).execute()
                 
                 search_response = self._retry_on_error(search_func)
@@ -167,7 +168,8 @@ class YouTubeService:
                     type='video',
                     maxResults=1,
                     regionCode='KR',
-                    relevanceLanguage='ko'
+                    relevanceLanguage='ko',
+                    fields='items(id/videoId,snippet/title,snippet/thumbnails/high/url)'
                 ).execute()
             
             search_response = self._retry_on_error(search_func)
@@ -245,7 +247,8 @@ class YouTubeService:
                     maxResults=max_results,
                     regionCode='KR',
                     relevanceLanguage='ko',
-                    order='relevance'
+                    order='relevance',
+                    fields='items(id/videoId,snippet/title,snippet/channelTitle,snippet/thumbnails/high/url,snippet/description)'
                 ).execute()
             
             search_response = self._retry_on_error(search_func)
@@ -265,7 +268,8 @@ class YouTubeService:
             def stats_func():
                 return self.youtube.videos().list(
                     part='statistics',
-                    id=','.join(video_ids)
+                    id=','.join(video_ids),
+                    fields='items(id,statistics/viewCount,statistics/commentCount)'
                 ).execute()
             
             stats_response = self._retry_on_error(stats_func)
@@ -332,7 +336,8 @@ class YouTubeService:
             def video_func():
                 return self.youtube.videos().list(
                     part='snippet,statistics',
-                    id=video_id
+                    id=video_id,
+                    fields='items(snippet/title,snippet/channelTitle,snippet/thumbnails/high/url,snippet/description,statistics/viewCount,statistics/commentCount)'
                 ).execute()
             
             video_response = self._retry_on_error(video_func)
@@ -389,7 +394,8 @@ class YouTubeService:
                     videoId=video_id,
                     maxResults=max_comments,
                     order='relevance',  # 관련성 높은 댓글 우선
-                    textFormat='plainText'
+                    textFormat='plainText',
+                    fields='items(snippet/topLevelComment/snippet/textDisplay)'
                 ).execute()
             
             comment_response = self._retry_on_error(comment_func)
