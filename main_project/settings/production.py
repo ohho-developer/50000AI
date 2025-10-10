@@ -20,28 +20,6 @@ SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=True, cast=bool)
 # CSRF security
 CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=True, cast=bool)
 
-# Production database (PostgreSQL)
-# DATABASES = {
-#     'default': {
-#         'ENGINE': config('DB_ENGINE', default='django.db.backends.sqlite3'),
-#         'NAME': config('DB_NAME', default=BASE_DIR / 'db.sqlite3'),
-#         'USER': config('DB_USER', default=''),
-#         'PASSWORD': config('DB_PASSWORD', default=''),
-#         'HOST': config('DB_HOST', default=''),
-#         'PORT': config('DB_PORT', default=''),
-#         'OPTIONS': {
-#             'options': config('DB_SCHEMA', default='')
-#         }
-#     }
-# }
-# Production email settings
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
-EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
-EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
-EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
-DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default=EMAIL_HOST_USER)
 
 # Production logging (less verbose, file only)
 LOGGING['handlers']['console']['level'] = 'WARNING'
@@ -49,13 +27,7 @@ LOGGING['loggers']['django']['level'] = 'WARNING'
 LOGGING['loggers']['nutrients_codi']['level'] = 'INFO'
 LOGGING['root']['level'] = 'WARNING'
 
-# Cache configuration (using local memory cache)
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'unique-snowflake',
-    }
-}
+
 
 # Session engine (using database for simplicity)
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'

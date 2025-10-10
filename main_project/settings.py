@@ -182,9 +182,10 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 # Allauth configuration (updated for django-allauth 65+)
-ACCOUNT_LOGIN_METHODS = {'email'}
-ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
+ACCOUNT_LOGIN_METHODS = {'email', 'username'}  # 이메일 또는 username으로 로그인 가능
+ACCOUNT_SIGNUP_FIELDS = ['username*', 'email*', 'password1*', 'password2*']
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'  # username 또는 email 둘 다 허용
 ACCOUNT_RATE_LIMITS = {
     'login_failed': '5/m',
     'confirm_email': '3/m'
@@ -196,12 +197,14 @@ LOGIN_REDIRECT_URL = '/nutrients-codi/'
 EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
 
 # SMTP settings
-EMAIL_HOST = config('EMAIL_HOST', default='')
-EMAIL_PORT = config('EMAIL_PORT', default='', cast=int)
-EMAIL_USE_TLS = config('EMAIL_USE_TLS', default='', cast=bool)
+EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
+EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
+EMAIL_USE_SSL = config('EMAIL_USE_SSL', default=False, cast=bool)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default=EMAIL_HOST_USER)
+EMAIL_TIMEOUT = 10  # 10초 타임아웃
 
 # Allauth email settings
 ACCOUNT_EMAIL_SUBJECT_PREFIX = '[50000AI] '
