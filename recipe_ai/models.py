@@ -58,3 +58,74 @@ class FavoriteRecipe(models.Model):
     
     def __str__(self):
         return f"{self.user.username} - {self.title}"
+
+
+class CommunityPost(models.Model):
+    """AI 레시피 추천 커뮤니티 게시글"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recipe_posts')
+    title = models.CharField(max_length=200, verbose_name='제목')
+    content = models.TextField(verbose_name='내용')
+    
+    # 카테고리
+    category = models.CharField(max_length=50, choices=[
+        ('recipe', '레시피 공유'),
+        ('question', '질문'),
+        ('review', '요리 후기'),
+        ('tip', '요리 팁'),
+        ('general', '자유게시판'),
+    ], default='general', verbose_name='카테고리')
+    
+    # 통계
+    views = models.IntegerField(default=0, verbose_name='조회수')
+    likes = models.ManyToManyField(User, related_name='recipe_liked_posts', blank=True, verbose_name='좋아요')
+    
+    # YouTube 영상 링크 (선택사항)
+    youtube_url = models.URLField(null=True, blank=True, verbose_name='YouTube 링크')
+    
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='작성일')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='수정일')
+    
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = '커뮤니티 게시글'
+        verbose_name_plural = '커뮤니티 게시글'
+        indexes = [
+            models.Index(fields=['user', '-created_at']),
+            models.Index(fields=['category', '-created_at']),
+            models.Index(fields=['-views']),
+            models.Index(fields=['-created_at']),
+        ]
+    
+    def __str__(self):
+        return f"{self.title} - {self.user.username}"
+    
+    def get_likes_count(self):
+        return self.likes.count()
+    
+    def get_comments_count(self):
+        return self.comments.count()
+
+
+class CommunityComment(models.Model):
+    """AI 레시피 추천 커뮤니티 댓글"""
+    post = models.ForeignKey(CommunityPost, on_delete=models.CASCADE, related_name='comments', verbose_name='게시글')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recipe_comments', verbose_name='작성자')
+    content = models.TextField(verbose_name='댓글 내용')
+    
+    # 대댓글 (선택사항)
+    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies', verbose_name='상위 댓글')
+    
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='작성일')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='수정일')
+    
+    class Meta:
+        ordering = ['created_at']
+        verbose_name = '커뮤니티 댓글'
+        verbose_name_plural = '커뮤니티 댓글'
+        indexes = [
+            models.Index(fields=['post', 'created_at']),
+            models.Index(fields=['user', '-created_at']),
+        ]
+    
+    def __str__(self):
+        return f"{self.user.username}의 댓글 - {self.post.title}"

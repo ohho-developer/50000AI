@@ -50,29 +50,13 @@ def recommend_menus(request):
             messages.error(request, result.get('message', '메뉴 추천에 실패했습니다.'))
             return redirect('recipe_ai:index')
         
-        # YouTube에서 각 메뉴의 썸네일 가져오기 (중복 방지 배치 처리)
-        youtube_service = YouTubeService()
-        thumbnail_results = youtube_service.search_menu_thumbnails_batch(result['foods'])
-        
-        logger.info(f"썸네일 검색 결과: {thumbnail_results}")
-        
-        # 할당량 초과 확인
-        quota_exceeded = False
-        for menu_name, thumbnail_result in thumbnail_results.items():
-            if thumbnail_result.get('status') == 'quota_exceeded':
-                quota_exceeded = True
-                messages.warning(request, '일일 검색 한도를 초과했습니다. 내일 다시 시도해주세요. 즐겨찾기한 레시피를 확인해보세요!')
-                break
-        
+        # 메뉴 리스트 생성 (썸네일 없이 텍스트만)
         menus_with_thumbnails = []
         for menu_name in result['foods']:
-            thumbnail_result = thumbnail_results.get(menu_name, {})
-            logger.info(f"메뉴 '{menu_name}' 썸네일 결과: {thumbnail_result}")
-            
             menus_with_thumbnails.append({
                 'name': menu_name,
-                'thumbnail': thumbnail_result.get('thumbnail_url', ''),
-                'has_thumbnail': thumbnail_result.get('status') == 'success'
+                'thumbnail': '',  # 썸네일 제거
+                'has_thumbnail': False  # 썸네일 없음
             })
         
         # 세션에 보여준 메뉴 저장
@@ -81,7 +65,7 @@ def recommend_menus(request):
         context = {
             'query': user_input,
             'menus': menus_with_thumbnails,
-            'quota_exceeded': quota_exceeded
+            'quota_exceeded': False  # 썸네일 제거로 할당량 문제 없음
         }
         
         return render(request, 'recipe_ai/menu_recommend.html', context)
@@ -124,25 +108,13 @@ def recommend_more_menus(request):
                 'message': result.get('message', '추가 메뉴 추천에 실패했습니다.')
             })
         
-        # YouTube 썸네일 가져오기 (기존 영상 제외)
-        youtube_service = YouTubeService()
-        thumbnail_results = youtube_service.search_menu_thumbnails_batch(result['foods'])
-        
-        # 할당량 초과 확인
-        for menu_name, thumbnail_result in thumbnail_results.items():
-            if thumbnail_result.get('status') == 'quota_exceeded':
-                return JsonResponse({
-                    'status': 'quota_exceeded',
-                    'message': '일일 검색 한도를 초과했습니다. 내일 다시 시도해주세요. 즐겨찾기한 레시피를 확인해보세요!'
-                })
-        
+        # 새로운 메뉴 리스트 생성 (썸네일 없이 텍스트만)
         new_menus = []
         for menu_name in result['foods']:
-            thumbnail_result = thumbnail_results.get(menu_name, {})
             new_menus.append({
                 'name': menu_name,
-                'thumbnail': thumbnail_result.get('thumbnail_url', ''),
-                'has_thumbnail': thumbnail_result.get('status') == 'success'
+                'thumbnail': '',  # 썸네일 제거
+                'has_thumbnail': False  # 썸네일 없음
             })
         
         # 세션에 새 메뉴 추가

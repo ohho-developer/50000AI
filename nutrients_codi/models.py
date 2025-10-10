@@ -449,3 +449,67 @@ class FoodLog(models.Model):
             
         super().save(*args, **kwargs)
 
+
+class CommunityPost(models.Model):
+    """뉴트리언트 코디 커뮤니티 게시글"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='nutrient_posts')
+    title = models.CharField(max_length=200, help_text="제목")
+    content = models.TextField(help_text="내용")
+    
+    # 카테고리
+    category = models.CharField(max_length=50, choices=[
+        ('tip', '식단 팁'),
+        ('question', '질문'),
+        ('review', '후기'),
+        ('recipe', '레시피'),
+        ('general', '자유게시판'),
+    ], default='general')
+    
+    # 통계
+    views = models.IntegerField(default=0, help_text="조회수")
+    likes = models.ManyToManyField(User, related_name='nutrient_liked_posts', blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['user', '-created_at']),
+            models.Index(fields=['category', '-created_at']),
+            models.Index(fields=['-views']),
+            models.Index(fields=['-created_at']),
+        ]
+    
+    def __str__(self):
+        return f"{self.title} - {self.user.username}"
+    
+    def get_likes_count(self):
+        return self.likes.count()
+    
+    def get_comments_count(self):
+        return self.comments.count()
+
+
+class CommunityComment(models.Model):
+    """뉴트리언트 코디 커뮤니티 댓글"""
+    post = models.ForeignKey(CommunityPost, on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='nutrient_comments')
+    content = models.TextField(help_text="댓글 내용")
+    
+    # 대댓글 (선택사항)
+    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies')
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['created_at']
+        indexes = [
+            models.Index(fields=['post', 'created_at']),
+            models.Index(fields=['user', '-created_at']),
+        ]
+    
+    def __str__(self):
+        return f"{self.user.username}의 댓글 - {self.post.title}"
+

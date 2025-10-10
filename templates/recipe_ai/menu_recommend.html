@@ -30,280 +30,138 @@
         </div>
 
         <!-- Menu Grid -->
-        <div id="menuGrid" class="grid grid-cols-2 md:grid-cols-2 gap-4 md:gap-6">
+        <div id="menuGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             {% for menu in menus %}
-            <a href="{% url 'recipe_ai:recipe_list' menu.name %}" class="menu-card group bg-gray-medium/30 backdrop-blur-xl border border-gray-600 rounded-2xl overflow-hidden hover:border-orange-400 hover:shadow-2xl hover:shadow-orange-400/10 transition-all duration-300 transform hover:-translate-y-1">
-                <!-- Thumbnail -->
-                <div class="aspect-video bg-gray-dark overflow-hidden">
-                    {% if menu.has_thumbnail %}
-                        <img 
-                            src="{{ menu.thumbnail }}" 
-                            alt="{{ menu.name }}"
-                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                        >
-                    {% else %}
-                        <div class="w-full h-full flex items-center justify-center">
-                            <svg class="w-16 h-16 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                            </svg>
-                            <div class="absolute bottom-2 left-2 text-xs text-gray-500">
-                                썸네일 없음
-                            </div>
-                        </div>
-                    {% endif %}
-                </div>
-
-                <!-- Menu Name -->
-                <div class="p-6">
-                    <h3 class="text-xl font-bold text-white group-hover:text-orange-400 transition-colors duration-200 mb-2">
-                        {{ menu.name }}
-                    </h3>
-                    <div class="flex items-center text-gray-400 text-sm">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            <a href="{% url 'recipe_ai:recipe_list' menu.name %}" class="menu-card group bg-gradient-to-br from-gray-800/50 to-gray-700/30 backdrop-blur-sm border border-gray-600/50 rounded-2xl p-8 hover:border-orange-400/50 hover:shadow-2xl hover:shadow-orange-400/20 transition-all duration-300 transform hover:-translate-y-2">
+                <!-- Menu Icon & Name -->
+                <div class="flex flex-col items-center justify-center text-center">
+                    <div class="w-20 h-20 bg-gradient-to-br from-orange-500/20 to-orange-600/20 rounded-full flex items-center justify-center mb-6 group-hover:from-orange-500/30 group-hover:to-orange-600/30 transition-all duration-300">
+                        <svg class="w-10 h-10 text-orange-400 group-hover:text-orange-300 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                         </svg>
-                        <span>레시피 보러가기</span>
+                    </div>
+                    
+                    <!-- Menu Name -->
+                    <div class="text-center">
+                        <h3 class="text-white font-bold text-xl group-hover:text-orange-300 transition-colors duration-300 mb-3">
+                            {{ menu.name }}
+                        </h3>
+                        <p class="text-gray-400 text-sm group-hover:text-gray-300 transition-colors duration-300">
+                            레시피 영상 보기
+                        </p>
+                    </div>
+                    
+                    <!-- Hover Arrow -->
+                    <div class="flex justify-center mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <svg class="w-6 h-6 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                        </svg>
                     </div>
                 </div>
             </a>
             {% endfor %}
         </div>
-        
-        <!-- More Button -->
-        <div class="mt-8 text-center">
-            <form id="loadMoreForm" method="post" style="display: none;">
-                {% csrf_token %}
-            </form>
+
+        <!-- Load More Button -->
+        <div class="text-center mt-12">
             <button 
-                id="loadMoreBtn"
-                class="inline-flex items-center bg-gray-medium border border-gray-600 text-white px-8 py-4 rounded-xl text-lg font-medium hover:border-orange-400 hover:bg-gray-medium/80 transition-all duration-300"
+                id="loadMoreBtn" 
+                class="bg-gradient-to-r from-orange-600 to-orange-500 text-white px-8 py-4 rounded-xl font-semibold hover:from-orange-700 hover:to-orange-600 transition-all duration-200 shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 transform hover:-translate-y-1"
             >
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                </svg>
-                <span>더 많은 메뉴 보기</span>
+                더 많은 메뉴 보기
             </button>
-        </div>
-
-        <!-- New Search Button -->
-        <div class="mt-12 text-center">
-            <a href="{% url 'recipe_ai:index' %}" class="inline-flex items-center bg-gray-medium border border-gray-600 text-white px-8 py-4 rounded-xl text-lg font-medium hover:border-orange-400 transition-all duration-300">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                </svg>
-                <span>다른 요리 찾기</span>
-            </a>
-        </div>
-
-        <!-- Loading Modal -->
-        <div id="loadingModal" class="hidden fixed inset-0 z-50 overflow-y-auto">
-            <!-- Backdrop -->
-            <div class="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity"></div>
-            
-            <!-- Modal Content -->
-            <div class="flex min-h-full items-center justify-center p-4">
-                <div class="relative bg-gray-dark border border-gray-600 rounded-2xl p-8 max-w-md w-full shadow-2xl">
-                    <!-- Spinner -->
-                    <div class="flex justify-center mb-6">
-                        <div class="relative w-20 h-20">
-                            <!-- Outer Ring -->
-                            <div class="absolute inset-0 border-4 border-gray-600 rounded-full"></div>
-                            <!-- Spinning Ring -->
-                            <div class="absolute inset-0 border-4 border-transparent border-t-orange-400 border-r-orange-500 rounded-full animate-spin"></div>
-                            <!-- Inner Pulse -->
-                            <div class="absolute inset-3 bg-orange-500/20 rounded-full animate-pulse"></div>
-                            <!-- Center Icon -->
-                            <div class="absolute inset-0 flex items-center justify-center">
-                                <svg class="w-8 h-8 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Text -->
-                    <div class="text-center space-y-3">
-                        <h3 class="text-2xl font-bold text-white">
-                            레시피 영상을 찾고 있어요
-                        </h3>
-                        <p class="text-gray-400">
-                            YouTube에서 레시피를 검색하고<br>
-                            <span class="text-orange-400">AI가 댓글을 분석</span>하고 있습니다...<br>
-                            <span class="text-sm text-gray-500">잠시만 기다려주세요 (약 10-20초)</span>
-                        </p>
-                    </div>
-                    
-                    <!-- Animated Dots -->
-                    <div class="flex justify-center mt-6 space-x-2">
-                        <div class="w-2 h-2 bg-orange-400 rounded-full animate-bounce" style="animation-delay: 0ms;"></div>
-                        <div class="w-2 h-2 bg-orange-400 rounded-full animate-bounce" style="animation-delay: 150ms;"></div>
-                        <div class="w-2 h-2 bg-orange-400 rounded-full animate-bounce" style="animation-delay: 300ms;"></div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </div>
 
+<!-- Hidden CSRF form for AJAX -->
+<form id="loadMoreForm" method="post" style="display: none;">
+    {% csrf_token %}
+</form>
+
 <script>
-    // 페이지 상태 초기화 함수
-    function resetPageState() {
-        const loadingModal = document.getElementById('loadingModal');
-        
-        if (loadingModal) {
-            loadingModal.classList.add('hidden');
-        }
-        
-        document.body.style.overflow = '';
-    }
+document.getElementById('loadMoreBtn').addEventListener('click', function() {
+    const btn = this;
+    const originalText = btn.innerHTML;
+    const menuGrid = document.getElementById('menuGrid');
     
-    // 메뉴 카드에 클릭 이벤트 추가
-    function attachMenuCardEvents() {
-        const menuCards = document.querySelectorAll('.menu-card');
-        const loadingModal = document.getElementById('loadingModal');
-        
-        menuCards.forEach(card => {
-            // 이미 이벤트가 있는지 확인
-            if (!card.dataset.eventAttached) {
-                card.addEventListener('click', function(e) {
-                    if (loadingModal) {
-                        loadingModal.classList.remove('hidden');
-                        document.body.style.overflow = 'hidden';
-                    }
-                });
-                card.dataset.eventAttached = 'true';
-            }
-        });
-    }
+    // 버튼 비활성화 및 로딩 표시
+    btn.disabled = true;
+    btn.innerHTML = '로딩 중...';
     
     // CSRF 토큰 가져오기
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     
-    document.addEventListener('DOMContentLoaded', function() {
-        // 초기 상태 복원
-        resetPageState();
-        
-        // 메뉴 카드 이벤트 추가
-        attachMenuCardEvents();
-        
-        // 더보기 버튼 이벤트
-        const loadMoreBtn = document.getElementById('loadMoreBtn');
-        const menuGrid = document.getElementById('menuGrid');
-        const loadingModal = document.getElementById('loadingModal');
-        
-        if (loadMoreBtn) {
-            loadMoreBtn.addEventListener('click', function() {
-                // 버튼 비활성화
-                loadMoreBtn.disabled = true;
-                loadMoreBtn.classList.add('opacity-50', 'cursor-not-allowed');
-                
-                // 버튼 텍스트 변경
-                const btnText = loadMoreBtn.querySelector('span');
-                const originalText = btnText.textContent;
-                btnText.textContent = '메뉴를 찾는 중...';
-                
-                // CSRF 토큰 가져오기 (폼에서 직접)
-                const loadMoreForm = document.getElementById('loadMoreForm');
-                const csrftoken = loadMoreForm ? loadMoreForm.querySelector('[name=csrfmiddlewaretoken]').value : getCookie('csrftoken');
-                
-                // AJAX 요청
-                fetch('{% url "recipe_ai:recommend_more" %}', {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': csrftoken
-                    },
-                    credentials: 'same-origin'
-                })
-                .then(response => response.json())
-                .then(data => {
-                    // 할당량 초과 확인
-                    if (data.status === 'quota_exceeded') {
-                        alert('일일 검색 한도를 초과했습니다. 내일 다시 시도해주세요. 즐겨찾기한 레시피를 확인해보세요!');
-                        loadMoreBtn.style.display = 'none';
-                        return;
-                    }
-                    
-                    if (data.status === 'success') {
-                        // 새 메뉴 카드 추가
-                        data.menus.forEach(menu => {
-                            const card = createMenuCard(menu);
-                            menuGrid.insertAdjacentHTML('beforeend', card);
-                        });
-                        
-                        // 새로 추가된 카드에 이벤트 추가
-                        attachMenuCardEvents();
-                        
-                        // 버튼 복원
-                        loadMoreBtn.disabled = false;
-                        loadMoreBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-                        btnText.textContent = originalText;
-                    } else {
-                        alert(data.message || '추가 메뉴를 불러올 수 없습니다.');
-                        loadMoreBtn.disabled = false;
-                        loadMoreBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-                        btnText.textContent = originalText;
-                    }
-                })
-                .catch(error => {
-                    console.error('메뉴 추가 로드 오류:', error);
-                    alert('오류가 발생했습니다.');
-                    loadMoreBtn.disabled = false;
-                    loadMoreBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-                    btnText.textContent = originalText;
-                });
+    fetch('{% url "recipe_ai:recommend_more" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify({})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // 새로운 메뉴 카드들을 생성하고 추가
+            data.menus.forEach(menu => {
+                const menuCard = createMenuCard(menu);
+                menuGrid.appendChild(menuCard);
             });
+            
+            // 더 이상 메뉴가 없으면 버튼 숨기기
+            if (data.menus.length === 0) {
+                btn.style.display = 'none';
+            }
+        } else if (data.status === 'quota_exceeded') {
+            alert(data.message);
+            btn.style.display = 'none';
+        } else {
+            alert('오류가 발생했습니다: ' + data.message);
         }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('오류가 발생했습니다.');
+    })
+    .finally(() => {
+        // 버튼 복원
+        btn.disabled = false;
+        btn.innerHTML = originalText;
     });
+});
+
+function createMenuCard(menu) {
+    const card = document.createElement('a');
+    card.href = `/recipe-ai/recipe-list/${encodeURIComponent(menu.name)}/`;
+    card.className = 'menu-card group bg-gradient-to-br from-gray-800/50 to-gray-700/30 backdrop-blur-sm border border-gray-600/50 rounded-2xl p-8 hover:border-orange-400/50 hover:shadow-2xl hover:shadow-orange-400/20 transition-all duration-300 transform hover:-translate-y-2';
     
-    // 메뉴 카드 HTML 생성 함수
-    function createMenuCard(menu) {
-        const thumbnailHtml = menu.has_thumbnail 
-            ? `<img src="${menu.thumbnail}" alt="${menu.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">`
-            : `<div class="w-full h-full flex items-center justify-center">
-                <svg class="w-16 h-16 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+    card.innerHTML = `
+        <div class="flex flex-col items-center justify-center text-center">
+            <div class="w-20 h-20 bg-gradient-to-br from-orange-500/20 to-orange-600/20 rounded-full flex items-center justify-center mb-6 group-hover:from-orange-500/30 group-hover:to-orange-600/30 transition-all duration-300">
+                <svg class="w-10 h-10 text-orange-400 group-hover:text-orange-300 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                 </svg>
-              </div>`;
-        
-        return `
-            <a href="/recipe-ai/recipes/${encodeURIComponent(menu.name)}/" class="menu-card group bg-gray-medium/30 backdrop-blur-xl border border-gray-600 rounded-2xl overflow-hidden hover:border-orange-400 hover:shadow-2xl hover:shadow-orange-400/10 transition-all duration-300 transform hover:-translate-y-1">
-                <div class="aspect-video bg-gray-dark overflow-hidden">
-                    ${thumbnailHtml}
-                </div>
-                <div class="p-6">
-                    <h3 class="text-xl font-bold text-white group-hover:text-orange-400 transition-colors duration-200 mb-2">
-                        ${menu.name}
-                    </h3>
-                    <div class="flex items-center text-gray-400 text-sm">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
-                        <span>레시피 보러가기</span>
-                    </div>
-                </div>
-            </a>
-        `;
-    }
+            </div>
+            
+            <div class="text-center">
+                <h3 class="text-white font-bold text-xl group-hover:text-orange-300 transition-colors duration-300 mb-3">
+                    ${menu.name}
+                </h3>
+                <p class="text-gray-400 text-sm group-hover:text-gray-300 transition-colors duration-300">
+                    레시피 영상 보기
+                </p>
+            </div>
+            
+            <div class="flex justify-center mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <svg class="w-6 h-6 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                </svg>
+            </div>
+        </div>
+    `;
     
-    // 브라우저 뒤로가기/앞으로가기 대응
-    window.addEventListener('pageshow', function(event) {
-        if (event.persisted) {
-            resetPageState();
-        }
-    });
+    return card;
+}
 </script>
 {% endblock %}
-

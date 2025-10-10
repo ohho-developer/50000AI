@@ -1,0 +1,284 @@
+{% extends "recipe_ai/base.html" %}
+
+{% block title %}{{ post.title }} - 커뮤니티{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-black">
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+    <!-- 뒤로가기 -->
+    <div class="mb-6">
+        <a href="{% url 'recipe_ai:community_list' %}" class="inline-flex items-center text-orange-500 hover:text-orange-400 transition-colors">
+            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+            목록으로
+        </a>
+    </div>
+
+    <!-- 게시글 -->
+    <article class="bg-gray-800/50 backdrop-blur-sm rounded-lg border border-gray-700/50 shadow-lg p-8 mb-6">
+        <!-- 헤더 -->
+        <header class="mb-6 pb-6 border-b border-gray-700/50">
+            <div class="flex items-center gap-2 mb-3">
+                <span class="px-3 py-1 text-sm font-medium rounded-full bg-orange-500/20 text-orange-400 border border-orange-500/30">
+                    {{ post.get_category_display }}
+                </span>
+            </div>
+            <h1 class="text-3xl font-bold text-white mb-4">
+                {{ post.title }}
+            </h1>
+            <div class="flex items-center justify-between text-sm text-gray-400">
+                <div class="flex items-center gap-4">
+                    <span class="font-medium">{{ post.user.username }}</span>
+                    <span>{{ post.created_at|date:"Y-m-d H:i" }}</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span class="flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                        {{ post.views }}회
+                    </span>
+                    <span class="flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                        </svg>
+                        {{ post.like_count }}개
+                    </span>
+                    <span class="flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                        </svg>
+                        {{ comments.count }}개
+                    </span>
+                </div>
+            </div>
+        </header>
+
+        <!-- 내용 -->
+        <div class="prose prose-lg prose-invert max-w-none mb-6 text-gray-300">
+            {{ post.content|linebreaks }}
+        </div>
+
+        <!-- 좋아요 버튼 -->
+        <div class="flex items-center gap-4 pt-6 border-t border-gray-700/50">
+            {% if user.is_authenticated %}
+            <form method="POST" action="{% url 'recipe_ai:community_like' post.id %}" id="likeForm">
+                {% csrf_token %}
+                <button 
+                    type="button" 
+                    id="likeBtn"
+                    class="flex items-center gap-2 px-6 py-3 rounded-lg transition-all {% if user_liked %}bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/30{% else %}bg-gray-700 text-gray-300 border border-gray-600 hover:bg-gray-600{% endif %}"
+                >
+                    <svg class="w-5 h-5 {% if user_liked %}fill-current{% endif %}" fill="{% if user_liked %}currentColor{% else %}none{% endif %}" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                    </svg>
+                    <span id="likeCount">{{ post.like_count }}</span>
+                </button>
+            </form>
+            {% else %}
+            <div class="flex items-center gap-2 px-6 py-3 rounded-lg bg-gray-700 text-gray-300 border border-gray-600">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                </svg>
+                <span>{{ post.like_count }}</span>
+            </div>
+            {% endif %}
+
+            <!-- 수정/삭제 버튼 (작성자만) -->
+            {% if user == post.user %}
+            <div class="ml-auto flex gap-2">
+                <a href="{% url 'recipe_ai:community_update' post.id %}" class="px-4 py-2 text-sm bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors shadow-lg shadow-orange-500/30">
+                    수정
+                </a>
+                <form method="POST" action="{% url 'recipe_ai:community_delete' post.id %}" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                    {% csrf_token %}
+                    <button type="submit" class="px-4 py-2 text-sm bg-red-600/80 text-white rounded-lg hover:bg-red-600 transition-colors">
+                        삭제
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+    </article>
+
+    <!-- 댓글 섹션 -->
+    <div class="bg-gray-800/50 backdrop-blur-sm rounded-lg border border-gray-700/50 shadow-lg p-8">
+        <h2 class="text-2xl font-bold text-white mb-6">
+            댓글 <span class="text-orange-500">{{ comments.count }}</span>
+        </h2>
+
+        <!-- 댓글 작성 (로그인 사용자만) -->
+        {% if user.is_authenticated %}
+        <form method="POST" action="{% url 'recipe_ai:comment_create' post.id %}" class="mb-8">
+            {% csrf_token %}
+            <textarea 
+                name="content" 
+                rows="4" 
+                placeholder="댓글을 입력하세요..." 
+                required
+                class="w-full px-4 py-3 rounded-lg bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:ring-2 focus:ring-orange-500 focus:border-transparent mb-3 resize-none"
+            ></textarea>
+            <div class="flex justify-end">
+                <button type="submit" class="px-6 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-all shadow-lg shadow-orange-500/30">
+                    댓글 작성
+                </button>
+            </div>
+        </form>
+        {% else %}
+        <div class="mb-8 p-4 bg-gray-700/50 border border-gray-600 rounded-lg text-center">
+            <p class="text-gray-400">
+                <a href="{% url 'account_login' %}?next={{ request.path }}" class="text-orange-500 hover:text-orange-400 font-medium">로그인</a>하시면 댓글을 작성할 수 있습니다.
+            </p>
+        </div>
+        {% endif %}
+
+        <!-- 댓글 목록 -->
+        <div class="space-y-6">
+            {% for comment in comments %}
+            <div class="border-b border-gray-700/50 pb-6 last:border-0">
+                <!-- 댓글 -->
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 rounded-full bg-orange-500/20 border border-orange-500/30 flex items-center justify-center">
+                            <span class="text-orange-400 font-medium">
+                                {{ comment.user.username|first }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="font-medium text-white">{{ comment.user.username }}</span>
+                            <span class="text-sm text-gray-500">{{ comment.created_at|date:"Y-m-d H:i" }}</span>
+                            {% if user == comment.user %}
+                            <form method="POST" action="{% url 'recipe_ai:comment_delete' comment.id %}" class="ml-auto" onsubmit="return confirm('댓글을 삭제하시겠습니까?');">
+                                {% csrf_token %}
+                                <button type="submit" class="text-sm text-red-400 hover:text-red-300">삭제</button>
+                            </form>
+                            {% endif %}
+                        </div>
+                        <p class="text-gray-300 mb-3">{{ comment.content|linebreaks }}</p>
+                        
+                        <!-- 답글 버튼 -->
+                        {% if user.is_authenticated %}
+                        <button 
+                            onclick="toggleReplyForm({{ comment.id }})" 
+                            class="text-sm text-orange-500 hover:text-orange-400"
+                        >
+                            답글
+                        </button>
+                        {% endif %}
+
+                        <!-- 답글 작성 폼 -->
+                        <div id="replyForm{{ comment.id }}" class="mt-4 hidden">
+                            <form method="POST" action="{% url 'recipe_ai:comment_create' post.id %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                                <textarea 
+                                    name="content" 
+                                    rows="3" 
+                                    placeholder="답글을 입력하세요..." 
+                                    required
+                                    class="w-full px-4 py-3 rounded-lg bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:ring-2 focus:ring-orange-500 focus:border-transparent mb-2 resize-none"
+                                ></textarea>
+                                <div class="flex justify-end gap-2">
+                                    <button 
+                                        type="button" 
+                                        onclick="toggleReplyForm({{ comment.id }})" 
+                                        class="px-4 py-2 text-sm bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 border border-gray-600"
+                                    >
+                                        취소
+                                    </button>
+                                    <button type="submit" class="px-4 py-2 text-sm bg-orange-600 text-white rounded-lg hover:bg-orange-700 shadow-lg shadow-orange-500/30">
+                                        답글 작성
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- 대댓글 목록 -->
+                        {% if comment.replies.all %}
+                        <div class="mt-4 space-y-4 pl-6 border-l-2 border-orange-500/30">
+                            {% for reply in comment.replies.all %}
+                            <div class="flex gap-3">
+                                <div class="flex-shrink-0">
+                                    <div class="w-8 h-8 rounded-full bg-blue-500/20 border border-blue-500/30 flex items-center justify-center">
+                                        <span class="text-blue-400 text-sm font-medium">
+                                            {{ reply.user.username|first }}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <span class="font-medium text-white text-sm">{{ reply.user.username }}</span>
+                                        <span class="text-xs text-gray-500">{{ reply.created_at|date:"Y-m-d H:i" }}</span>
+                                        {% if user == reply.user %}
+                                        <form method="POST" action="{% url 'recipe_ai:comment_delete' reply.id %}" class="ml-auto" onsubmit="return confirm('답글을 삭제하시겠습니까?');">
+                                            {% csrf_token %}
+                                            <button type="submit" class="text-xs text-red-400 hover:text-red-300">삭제</button>
+                                        </form>
+                                        {% endif %}
+                                    </div>
+                                    <p class="text-sm text-gray-300">{{ reply.content|linebreaks }}</p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-center text-gray-400 py-8">첫 댓글을 작성해보세요!</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+</div>
+
+<script>
+// 좋아요 버튼
+{% if user.is_authenticated %}
+document.getElementById('likeBtn').addEventListener('click', function() {
+    fetch('{% url "recipe_ai:community_like" post.id %}', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            const btn = this;
+            const count = document.getElementById('likeCount');
+            count.textContent = data.like_count;
+            
+            if (data.liked) {
+                btn.classList.remove('bg-gray-700', 'text-gray-300', 'border-gray-600', 'hover:bg-gray-600');
+                btn.classList.add('bg-red-500/20', 'text-red-400', 'border-red-500/30', 'hover:bg-red-500/30');
+                btn.querySelector('svg').setAttribute('fill', 'currentColor');
+            } else {
+                btn.classList.remove('bg-red-500/20', 'text-red-400', 'border-red-500/30', 'hover:bg-red-500/30');
+                btn.classList.add('bg-gray-700', 'text-gray-300', 'border-gray-600', 'hover:bg-gray-600');
+                btn.querySelector('svg').setAttribute('fill', 'none');
+            }
+        }
+    })
+    .catch(error => console.error('Error:', error));
+});
+{% endif %}
+
+// 답글 폼 토글
+function toggleReplyForm(commentId) {
+    const form = document.getElementById('replyForm' + commentId);
+    if (form.classList.contains('hidden')) {
+        form.classList.remove('hidden');
+        form.querySelector('textarea').focus();
+    } else {
+        form.classList.add('hidden');
+    }
+}
+</script>
+{% endblock %}
