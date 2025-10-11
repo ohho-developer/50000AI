@@ -154,13 +154,14 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-# Allauth configuration
-ACCOUNT_AUTHENTICATION_METHOD = 'username_email'  # username 또는 email 둘 다 허용
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = True  # username 필수로 변경
+# Allauth configuration (django-allauth 65+ 새 형식)
+ACCOUNT_LOGIN_METHODS = {'email', 'username'}  # 이메일 또는 username으로 로그인
+ACCOUNT_SIGNUP_FIELDS = ['username*', 'email*', 'password1*', 'password2*']  # 회원가입 필수 필드
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 5
-ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 300
+ACCOUNT_RATE_LIMITS = {
+    'login_failed': '5/m',  # 로그인 실패 제한
+    'confirm_email': '3/m',  # 이메일 확인 제한
+}
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 LOGIN_REDIRECT_URL = '/nutrients-codi/'
 ACCOUNT_SIGNUP_REDIRECT_URL = '/nutrients-codi/'

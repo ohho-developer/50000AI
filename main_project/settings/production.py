@@ -42,12 +42,12 @@ CACHES = {
     }
 }
 
-# Production logging (less verbose, file only)
+# Production logging (console only, less verbose)
 LOGGING['handlers']['console']['level'] = 'WARNING'
 LOGGING['loggers']['django']['level'] = 'WARNING'
 LOGGING['loggers']['nutrients_codi']['level'] = 'INFO'
 LOGGING['loggers']['django.db.backends'] = {
-    'handlers': ['file'],
+    'handlers': ['console'],  # file → console로 수정
     'level': 'ERROR',  # DB 쿼리 로그 최소화 (메모리 절약)
     'propagate': False,
 }
