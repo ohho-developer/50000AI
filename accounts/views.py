@@ -18,6 +18,24 @@ def terms_of_service(request):
     """이용약관 페이지"""
     return render(request, 'main_project/terms_of_service.html')
 
+def robots_txt(request):
+    """robots.txt 파일 제공"""
+    from django.http import HttpResponse
+    from pathlib import Path
+    
+    robots_path = Path(__file__).resolve().parent.parent / 'templates' / 'robots.txt'
+    with open(robots_path, 'r', encoding='utf-8') as f:
+        content = f.read()
+    
+    return HttpResponse(content, content_type='text/plain; charset=utf-8')
+
+def sitemap_xml(request):
+    """sitemap.xml 파일 제공"""
+    domain = request.build_absolute_uri('/').rstrip('/')
+    return render(request, 'sitemap.xml', {
+        'domain': domain
+    }, content_type='application/xml')
+
 @login_required
 def profile_view(request):
     """사용자 프로필 페이지"""

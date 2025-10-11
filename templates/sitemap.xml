@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <!-- 메인 페이지 -->
+    <url>
+        <loc>{{ domain }}/</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    
+    <!-- 개인정보처리방침 -->
+    <url>
+        <loc>{{ domain }}/privacy-policy/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.3</priority>
+    </url>
+    
+    <!-- 이용약관 -->
+    <url>
+        <loc>{{ domain }}/terms-of-service/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.3</priority>
+    </url>
+    
+    <!-- 뉴트리언트코디 메인 -->
+    <url>
+        <loc>{{ domain }}/nutrients-codi/</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    
+    <!-- 뉴트리언트코디 커뮤니티 -->
+    <url>
+        <loc>{{ domain }}/nutrients-codi/community/</loc>
+        <changefreq>daily</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <!-- AI 요리 추천 메인 -->
+    <url>
+        <loc>{{ domain }}/recipe-ai/</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    
+    <!-- AI 요리 추천 커뮤니티 -->
+    <url>
+        <loc>{{ domain }}/recipe-ai/community/</loc>
+        <changefreq>daily</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <!-- AI 요리 추천 즐겨찾기 -->
+    <url>
+        <loc>{{ domain }}/recipe-ai/favorites/</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+</urlset>
+

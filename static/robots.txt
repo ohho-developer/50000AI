@@ -1,0 +1,37 @@
+# 50000AI - robots.txt
+# 검색 엔진 크롤러를 위한 설정
+
+User-agent: *
+Allow: /
+Allow: /nutrients-codi/
+Allow: /recipe-ai/
+
+# 크롤링 제외 경로
+Disallow: /admin/
+Disallow: /accounts/
+Disallow: /api/
+Disallow: /static/
+Disallow: /media/
+
+# 개인정보 및 인증 관련 페이지 제외
+Disallow: /accounts/login/
+Disallow: /accounts/signup/
+Disallow: /accounts/logout/
+Disallow: /accounts/password/
+
+# 커뮤니티 작성/수정 페이지 제외
+Disallow: /nutrients-codi/community/create/
+Disallow: /nutrients-codi/community/*/edit/
+Disallow: /recipe-ai/community/create/
+Disallow: /recipe-ai/community/*/edit/
+
+# 사용자 개인 데이터 페이지 제외
+Disallow: /nutrients-codi/profile/
+Disallow: /nutrients-codi/daily/
+
+# 크롤 속도 제한 (서버 부하 방지)
+Crawl-delay: 1
+
+# Sitemap 위치
+Sitemap: https://port-0-50000ai-m36t0ncw0a88cb77.sel4.cloudtype.app/sitemap.xml
+

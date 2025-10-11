@@ -23,6 +23,8 @@ from accounts import views as accounts_views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', accounts_views.home, name='home'),
+    path('robots.txt', accounts_views.robots_txt, name='robots_txt'),
+    path('sitemap.xml', accounts_views.sitemap_xml, name='sitemap_xml'),
     path('privacy-policy/', accounts_views.privacy_policy, name='privacy_policy'),
     path('terms-of-service/', accounts_views.terms_of_service, name='terms_of_service'),
     path('accounts/', include('allauth.urls')),
