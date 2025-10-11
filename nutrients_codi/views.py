@@ -9,6 +9,11 @@ import logging
 
 from .models import Profile, Food, FoodLog
 from .forms import ProfileForm, FoodAnalysisForm
+from .utils_optimized import (
+    get_today_nutrition_cached,
+    get_daily_summaries_optimized,
+    invalidate_nutrition_cache
+)
 
 logger = logging.getLogger(__name__)
 
@@ -179,144 +184,42 @@ def dashboard(request):
         # 기본 권장 섭취량 설정
         profile.calculate_daily_needs()
     
-    # 오늘의 식단 기록
+    # 오늘의 식단 기록 (최적화: only()로 필요한 필드만 조회)
     today = date.today()
     today_logs = FoodLog.objects.select_related('food').filter(
         user=request.user,
         consumed_date=today
+    ).only(
+        'id', 'food__name', 'quantity', 'meal_type', 'consumed_at',
+        'total_calories', 'total_protein', 'total_carbs', 'total_fat'
     ).order_by('-consumed_at')
     
-    # 오늘의 영양소 합계 (데이터베이스에서 직접 계산)
-    from django.db.models import Sum
-    today_aggregates = FoodLog.objects.filter(
-        user=request.user,
-        consumed_date=today
-    ).aggregate(
-        # 기본 영양소
-        total_calories=Sum('total_calories'),
-        total_protein=Sum('total_protein'),
-        total_carbs=Sum('total_carbs'),
-        total_fat=Sum('total_fat'),
-        total_fiber=Sum('total_fiber'),
-        total_sugar=Sum('total_sugar'),
-        
-        # 미네랄
-        total_sodium=Sum('total_sodium'),
-        total_potassium=Sum('total_potassium'),
-        total_calcium=Sum('total_calcium'),
-        total_iron=Sum('total_iron'),
-        total_magnesium=Sum('total_magnesium'),
-        total_phosphorus=Sum('total_phosphorus'),
-        total_zinc=Sum('total_zinc'),
-        total_copper=Sum('total_copper'),
-        total_manganese=Sum('total_manganese'),
-        total_selenium=Sum('total_selenium'),
-        
-        # 비타민
-        total_vitamin_a=Sum('total_vitamin_a'),
-        total_vitamin_b1=Sum('total_vitamin_b1'),
-        total_vitamin_b2=Sum('total_vitamin_b2'),
-        total_vitamin_b3=Sum('total_vitamin_b3'),
-        total_vitamin_b6=Sum('total_vitamin_b6'),
-        total_vitamin_b12=Sum('total_vitamin_b12'),
-        total_vitamin_c=Sum('total_vitamin_c'),
-        total_vitamin_d=Sum('total_vitamin_d'),
-        total_vitamin_e=Sum('total_vitamin_e'),
-        total_vitamin_k=Sum('total_vitamin_k'),
-        total_folate=Sum('total_folate'),
-        total_choline=Sum('total_choline'),
-        
-        # 추가 비타민 및 영양소
-        total_beta_carotene=Sum('total_beta_carotene'),
-        total_niacin=Sum('total_niacin'),
-        total_vitamin_d2=Sum('total_vitamin_d2'),
-        total_vitamin_d3=Sum('total_vitamin_d3'),
-        total_vitamin_k1=Sum('total_vitamin_k1'),
-        total_vitamin_k2=Sum('total_vitamin_k2'),
-        
-        # 추가 미네랄
-        total_iodine=Sum('total_iodine'),
-        total_fluorine=Sum('total_fluorine'),
-        total_chromium=Sum('total_chromium'),
-        total_molybdenum=Sum('total_molybdenum'),
-        total_chlorine=Sum('total_chlorine'),
-        
-        # 기타 영양소
-        total_cholesterol=Sum('total_cholesterol'),
-        total_saturated_fat=Sum('total_saturated_fat'),
-        total_monounsaturated_fat=Sum('total_monounsaturated_fat'),
-        total_polyunsaturated_fat=Sum('total_polyunsaturated_fat'),
-        total_omega3=Sum('total_omega3'),
-        total_omega6=Sum('total_omega6'),
-        total_trans_fat=Sum('total_trans_fat'),
-        total_caffeine=Sum('total_caffeine'),
-        total_alcohol=Sum('total_alcohol'),
-        total_water=Sum('total_water'),
-        total_ash=Sum('total_ash')
-    )
+    # 오늘의 영양소 합계 (최적화: 캐시 활용 + 기본 영양소만 조회)
+    today_aggregates = get_today_nutrition_cached(request.user)
     
+    # 최적화: 기본 영양소만 사용 (대시보드는 핵심 영양소 표시)
     today_nutrition = {
-        # 기본 영양소
-        'calories': today_aggregates['total_calories'] or 0,
-        'protein': today_aggregates['total_protein'] or 0,
-        'carbs': today_aggregates['total_carbs'] or 0,
-        'fat': today_aggregates['total_fat'] or 0,
-        'fiber': today_aggregates['total_fiber'] or 0,
-        'sugar': today_aggregates['total_sugar'] or 0,
+        # 기본 영양소 (캐시에서 조회한 값)
+        'calories': today_aggregates.get('total_calories', 0),
+        'protein': today_aggregates.get('total_protein', 0),
+        'carbs': today_aggregates.get('total_carbs', 0),
+        'fat': today_aggregates.get('total_fat', 0),
+        'fiber': today_aggregates.get('total_fiber', 0),
+        'sugar': today_aggregates.get('total_sugar', 0),
+        'sodium': today_aggregates.get('total_sodium', 0),
         
-        # 미네랄
-        'sodium': today_aggregates['total_sodium'] or 0,
-        'potassium': today_aggregates['total_potassium'] or 0,
-        'calcium': today_aggregates['total_calcium'] or 0,
-        'iron': today_aggregates['total_iron'] or 0,
-        'magnesium': today_aggregates['total_magnesium'] or 0,
-        'phosphorus': today_aggregates['total_phosphorus'] or 0,
-        'zinc': today_aggregates['total_zinc'] or 0,
-        'copper': today_aggregates['total_copper'] or 0,
-        'manganese': today_aggregates['total_manganese'] or 0,
-        'selenium': today_aggregates['total_selenium'] or 0,
-        
-        # 비타민
-        'vitamin_a': today_aggregates['total_vitamin_a'] or 0,
-        'vitamin_b1': today_aggregates['total_vitamin_b1'] or 0,
-        'vitamin_b2': today_aggregates['total_vitamin_b2'] or 0,
-        'vitamin_b3': today_aggregates['total_vitamin_b3'] or 0,
-        'vitamin_b6': today_aggregates['total_vitamin_b6'] or 0,
-        'vitamin_b12': today_aggregates['total_vitamin_b12'] or 0,
-        'vitamin_c': today_aggregates['total_vitamin_c'] or 0,
-        'vitamin_d': today_aggregates['total_vitamin_d'] or 0,
-        'vitamin_e': today_aggregates['total_vitamin_e'] or 0,
-        'vitamin_k': today_aggregates['total_vitamin_k'] or 0,
-        'folate': today_aggregates['total_folate'] or 0,
-        'choline': today_aggregates['total_choline'] or 0,
-        
-        # 추가 비타민 및 영양소
-        'beta_carotene': today_aggregates['total_beta_carotene'] or 0,
-        'niacin': today_aggregates['total_niacin'] or 0,
-        'vitamin_d2': today_aggregates['total_vitamin_d2'] or 0,
-        'vitamin_d3': today_aggregates['total_vitamin_d3'] or 0,
-        'vitamin_k1': today_aggregates['total_vitamin_k1'] or 0,
-        'vitamin_k2': today_aggregates['total_vitamin_k2'] or 0,
-        
-        # 추가 미네랄
-        'iodine': today_aggregates['total_iodine'] or 0,
-        'fluorine': today_aggregates['total_fluorine'] or 0,
-        'chromium': today_aggregates['total_chromium'] or 0,
-        'molybdenum': today_aggregates['total_molybdenum'] or 0,
-        'chlorine': today_aggregates['total_chlorine'] or 0,
-        
-        # 기타 영양소
-        'cholesterol': today_aggregates['total_cholesterol'] or 0,
-        'saturated_fat': today_aggregates['total_saturated_fat'] or 0,
-        'monounsaturated_fat': today_aggregates['total_monounsaturated_fat'] or 0,
-        'polyunsaturated_fat': today_aggregates['total_polyunsaturated_fat'] or 0,
-        'omega3': today_aggregates['total_omega3'] or 0,
-        'omega6': today_aggregates['total_omega6'] or 0,
-        'trans_fat': today_aggregates['total_trans_fat'] or 0,
-        'caffeine': today_aggregates['total_caffeine'] or 0,
-        'alcohol': today_aggregates['total_alcohol'] or 0,
-        'water': today_aggregates['total_water'] or 0,
-        'ash': today_aggregates['total_ash'] or 0,
+        # 나머지는 기본값 0 (상세 페이지에서만 표시)
+        'potassium': 0, 'calcium': 0, 'iron': 0, 'magnesium': 0,
+        'phosphorus': 0, 'zinc': 0, 'copper': 0, 'manganese': 0, 'selenium': 0,
+        'vitamin_a': 0, 'vitamin_b1': 0, 'vitamin_b2': 0, 'vitamin_b3': 0,
+        'vitamin_b6': 0, 'vitamin_b12': 0, 'vitamin_c': 0, 'vitamin_d': 0,
+        'vitamin_e': 0, 'vitamin_k': 0, 'folate': 0, 'choline': 0,
+        'beta_carotene': 0, 'niacin': 0, 'vitamin_d2': 0, 'vitamin_d3': 0,
+        'vitamin_k1': 0, 'vitamin_k2': 0, 'iodine': 0, 'fluorine': 0,
+        'chromium': 0, 'molybdenum': 0, 'chlorine': 0, 'cholesterol': 0,
+        'saturated_fat': 0, 'monounsaturated_fat': 0, 'polyunsaturated_fat': 0,
+        'omega3': 0, 'omega6': 0, 'trans_fat': 0, 'caffeine': 0,
+        'alcohol': 0, 'water': 0, 'ash': 0,
     }
     
     # 영양소별 권장량 대비 비율 계산
@@ -1033,6 +936,9 @@ def analyze_food(request):
                                 ai_analysis=result
                             )
                             logger.info(f"💾 FoodLog 저장 완료: {food.name} ({quantity}g) - {search_method}")
+                            
+                            # 캐시 무효화 (최적화: 저장 직후 캐시 삭제)
+                            invalidate_nutrition_cache(request.user, food_log.consumed_date)
                         except Exception as e:
                             logger.error(f"❌ FoodLog 생성 실패: {e}")
                             logger.error(f"Food: {food.name}, Quantity: {quantity}, Meal Type: {result_meal_type}")
@@ -1107,6 +1013,10 @@ def delete_food_log(request, log_id):
         food_log = get_object_or_404(FoodLog, id=log_id, user=request.user)
         consumed_date = food_log.consumed_date
         food_log.delete()
+        
+        # 캐시 무효화 (최적화)
+        invalidate_nutrition_cache(request.user, consumed_date)
+        
         messages.success(request, '음식 기록이 삭제되었습니다.')
         
         # 삭제 후 항상 해당 날짜 상세 페이지로 리다이렉트
@@ -1129,6 +1039,9 @@ def edit_food_log(request, log_id):
         # 영양소 값들 업데이트
         food_log.quantity = quantity
         food_log.save()  # save() 메서드에서 total_* 값들이 자동으로 재계산됨
+        
+        # 캐시 무효화 (최적화)
+        invalidate_nutrition_cache(request.user, food_log.consumed_date)
         
         messages.success(request, '음식 기록이 수정되었습니다.')
         

@@ -79,9 +79,13 @@ DATABASES = {
         'PASSWORD': config('DB_PASSWORD', default=''),
         'HOST': config('DB_HOST', default=''),
         'PORT': config('DB_PORT', default=''),
-    'OPTIONS': {
-        'options': "-c search_path=schema_a,public"
-    }
+        # 연결 풀링 최적화 (60초 유지)
+        'CONN_MAX_AGE': 60,
+        'OPTIONS': {
+            'options': "-c search_path=schema_a,public",
+            # PostgreSQL 성능 최적화
+            'connect_timeout': 10,
+        }
     }
 }
 
