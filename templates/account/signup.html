@@ -108,8 +108,8 @@
             >
             <span class="text-sm text-gray-300">
                 <span class="text-red-400">*</span> 
-                <a href="#" class="text-accent hover:text-accent-dark transition-colors duration-200">이용약관</a> 및 
-                <a href="#" class="text-accent hover:text-accent-dark transition-colors duration-200">개인정보처리방침</a>에 동의합니다.
+                <a href="{% url 'terms_of_service' %}" target="_blank" class="text-accent hover:text-accent-dark transition-colors duration-200 underline">이용약관</a> 및 
+                <a href="{% url 'privacy_policy' %}" target="_blank" class="text-accent hover:text-accent-dark transition-colors duration-200 underline">개인정보처리방침</a>에 동의합니다.
             </span>
         </label>
     </div>

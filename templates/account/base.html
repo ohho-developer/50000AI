@@ -28,21 +28,27 @@
 </head>
 <body class="bg-dark text-white font-sans">
     <!-- Navigation -->
-    <nav class="bg-dark border-b border-gray-medium backdrop-blur-xl">
+    <nav class="bg-dark border-b border-gray-medium backdrop-blur-xl relative z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
                 <div class="flex items-center">
                     <a href="{% url 'home' %}" class="flex items-center space-x-3">
                         <div class="w-8 h-8 bg-gradient-to-r from-accent to-accent-dark rounded-lg flex items-center justify-center">
-                            <span class="text-dark font-bold text-sm">5K</span>
+                            <span class="text-dark font-bold text-sm">50K</span>
                         </div>
                         <h1 class="text-2xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">50000AI</h1>
                     </a>
                 </div>
                 <div class="flex items-center space-x-6">
-                    <a href="{% url 'home' %}" class="text-gray-300 hover:text-white transition-colors duration-200">홈으로</a>
                     {% if user.is_authenticated %}
                         <a href="{% url 'nutrients_codi:dashboard' %}" class="text-gray-300 hover:text-white transition-colors duration-200">뉴트리언트코디</a>
+                        <a href="{% url 'recipe_ai:index' %}" class="text-gray-300 hover:text-white transition-colors duration-200">AI 요리 추천</a>
+                        <a href="{% url 'accounts:profile' %}" class="text-gray-300 hover:text-white transition-colors duration-200">프로필</a>
+                        <a href="{% url 'account_logout' %}" class="bg-gray-medium text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition-all duration-200 border border-gray-600">로그아웃</a>
+                    {% else %}
+                        <a href="{% url 'home' %}" class="text-gray-300 hover:text-white transition-colors duration-200">홈으로</a>
+                        <a href="{% url 'account_login' %}" class="text-gray-300 hover:text-white transition-colors duration-200">로그인</a>
+                        <a href="{% url 'account_signup' %}" class="bg-gradient-to-r from-accent to-accent-dark text-dark px-6 py-2 rounded-lg hover:shadow-lg hover:shadow-accent/25 transition-all duration-200 font-medium">시작하기</a>
                     {% endif %}
                 </div>
             </div>
@@ -52,7 +58,7 @@
     <!-- Main Content -->
     <div class="min-h-screen bg-gradient-to-br from-gray-dark via-dark to-gray-dark">
         <!-- Background Pattern -->
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,255,136,0.05)_0%,transparent_50%)]"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,255,136,0.05)_0%,transparent_50%)] pointer-events-none"></div>
         
         <div class="relative flex items-center justify-center min-h-[calc(100vh-80px)] py-12">
             <div class="w-full max-w-md">
@@ -92,6 +98,19 @@
                 <!-- Footer Links -->
                 <div class="text-center mt-8">
                     {% block footer_links %}{% endblock %}
+                </div>
+                
+                <!-- Policy Links -->
+                <div class="text-center mt-6 pt-6 border-t border-gray-700">
+                    <div class="flex justify-center space-x-6">
+                        <a href="{% url 'privacy_policy' %}" class="text-xs text-gray-500 hover:text-accent transition-colors duration-200">
+                            개인정보처리방침
+                        </a>
+                        <a href="{% url 'terms_of_service' %}" class="text-xs text-gray-500 hover:text-accent transition-colors duration-200">
+                            이용약관
+                        </a>
+                    </div>
+                    <p class="text-xs text-gray-600 mt-3">© 2025 50000AI. All rights reserved.</p>
                 </div>
             </div>
         </div>

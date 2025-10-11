@@ -23,6 +23,8 @@ from accounts import views as accounts_views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', accounts_views.home, name='home'),
+    path('privacy-policy/', accounts_views.privacy_policy, name='privacy_policy'),
+    path('terms-of-service/', accounts_views.terms_of_service, name='terms_of_service'),
     path('accounts/', include('allauth.urls')),
     path('accounts/', include('accounts.urls')),
     path('nutrients-codi/', include('nutrients_codi.urls')),

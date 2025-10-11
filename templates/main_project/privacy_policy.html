@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>개인정보처리방침 - 50000AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'dark': '#0a0a0a',
+                        'gray-dark': '#1a1a1a',
+                        'gray-medium': '#2a2a2a',
+                        'accent': '#00ff88',
+                        'accent-dark': '#00cc6a'
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                        'mono': ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * {
+            word-break: keep-all;
+            word-wrap: break-word;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body class="bg-dark text-white font-sans">
+    <!-- Navigation -->
+    <nav class="bg-dark border-b border-gray-medium backdrop-blur-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center">
+                    <a href="{% url 'home' %}" class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-gradient-to-r from-accent to-accent-dark rounded-lg flex items-center justify-center">
+                            <span class="text-dark font-bold text-sm">50K</span>
+                        </div>
+                        <h1 class="text-2xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">50000AI</h1>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <a href="{% url 'home' %}" class="text-gray-300 hover:text-white transition-colors duration-200">홈으로</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="min-h-screen bg-gradient-to-b from-dark via-gray-dark to-dark py-16">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Header -->
+            <div class="mb-12">
+                <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+                    개인정보처리방침
+                </h1>
+                <p class="text-gray-400">최종 수정일: 2025년 1월 1일</p>
+            </div>
+
+            <!-- Content -->
+            <div class="bg-gray-dark/50 backdrop-blur-xl rounded-2xl border border-gray-medium p-8 space-y-8">
+                
+                <!-- 제1조 -->
+                <section>
+                    <h2 class="text-2xl font-bold text-accent mb-4">제1조 (목적)</h2>
+                    <div class="text-gray-300 space-y-3 leading-relaxed">
+                        <p>50000AI('이하 회사'라 함)는 회사가 제공하고자 하는 서비스(이하 '회사 서비스')를 이용하는 개인(이하 '이용자' 또는 '개인')의 정보(이하 '개인정보')를 보호하기 위해, 개인정보보호법, 정보통신망 이용촉진 및 정보보호 등에 관한 법률(이하 '정보통신망법') 등 관련 법령을 준수하고, 서비스 이용자의 개인정보 보호 관련한 고충을 신속하고 원활하게 처리할 수 있도록 하기 위하여 다음과 같이 개인정보처리방침(이하 '본 방침')을 수립합니다.</p>
+                    </div>
+                </section>
+
+                <!-- 제2조 -->
+                <section>
+                    <h2 class="text-2xl font-bold text-accent mb-4">제2조 (개인정보 수집 및 이용 목적)</h2>
+                    <div class="text-gray-300 space-y-3 leading-relaxed">
+                        <p>회사는 다음의 목적을 위하여 개인정보를 처리합니다. 처리하고 있는 개인정보는 다음의 목적 이외의 용도로는 이용되지 않으며, 이용 목적이 변경되는 경우에는 개인정보보호법에 따라 별도의 동의를 받는 등 필요한 조치를 이행할 예정입니다.</p>
+                        <ul class="list-disc list-inside space-y-2 ml-4">
+                            <li>회원 가입 및 관리: 회원 가입의사 확인, 회원제 서비스 제공에 따른 본인 식별·인증, 회원자격 유지·관리</li>
+                            <li>서비스 제공: AI 기반 영양 관리 서비스, AI 요리 추천 서비스 등 맞춤형 서비스 제공</li>
+                            <li>마케팅 및 광고 활용: 신규 서비스 개발 및 맞춤 서비스 제공, 이벤트 및 광고성 정보 제공 및 참여기회 제공</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- 제3조 -->
+                <section>
+                    <h2 class="text-2xl font-bold text-accent mb-4">제3조 (수집하는 개인정보의 항목)</h2>
+                    <div class="text-gray-300 space-y-3 leading-relaxed">
+                        <p>회사는 다음의 개인정보 항목을 처리하고 있습니다.</p>
+                        <div class="bg-gray-medium/50 rounded-lg p-4 space-y-2">
+                            <p class="font-semibold text-white">필수 항목</p>
+                            <ul class="list-disc list-inside ml-4 space-y-1">
+                                <li>이메일 주소, 비밀번호</li>
+                                <li>서비스 이용 기록, 접속 로그, 쿠키, 접속 IP 정보</li>
+                            </ul>
+                        </div>
+                        <div class="bg-gray-medium/50 rounded-lg p-4 space-y-2">
+                            <p class="font-semibold text-white">선택 항목</p>
+                            <ul class="list-disc list-inside ml-4 space-y-1">
+                                <li>프로필 정보: 성별, 키, 체중, 목표 등 (영양 관리 서비스 이용 시)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 제4조 -->
+                <section>
+                    <h2 class="text-2xl font-bold text-accent mb-4">제4조 (개인정보의 보유 및 이용기간)</h2>
+                    <div class="text-gray-300 space-y-3 leading-relaxed">
+                        <p>회사는 법령에 따른 개인정보 보유·이용기간 또는 정보주체로부터 개인정보를 수집시에 동의 받은 개인정보 보유·이용기간 내에서 개인정보를 처리·보유합니다.</p>
+                        <ul class="list-disc list-inside space-y-2 ml-4">
+                            <li>회원 탈퇴 시까지 (단, 관계 법령 위반에 따른 수사·조사 등이 진행 중인 경우에는 해당 수사·조사 종료 시까지)</li>
+                            <li>관계 법령에 의한 정보보유 사유: 전자상거래 등에서의 소비자 보호에 관한 법률 등 관계법령의 규정에 의하여 보존할 필요가 있는 경우 회사는 관계법령에서 정한 일정한 기간 동안 회원정보를 보관합니다.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- 제5조 -->
+                <section>
+                    <h2 class="text-2xl font-bold text-accent mb-4">제5조 (개인정보의 제3자 제공)</h2>
+                    <div class="text-gray-300 space-y-3 leading-relaxed">
+                        <p>회사는 원칙적으로 이용자의 개인정보를 제1조(개인정보의 처리 목적)에서 명시한 범위 내에서 처리하며, 이용자의 사전 동의 없이는 본래의 범위를 초과하여 처리하거나 제3자에게 제공하지 않습니다.</p>
+                        <p>다만, 다음의 경우에는 예외로 합니다:</p>
+                        <ul class="list-disc list-inside space-y-2 ml-4">
+                            <li>이용자가 사전에 동의한 경우</li>
+                            <li>법령의 규정에 의거하거나, 수사 목적으로 법령에 정해진 절차와 방법에 따라 수사기관의 요구가 있는 경우</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- 제6조 -->
+                <section>
+                    <h2 class="text-2xl font-bold text-accent mb-4">제6조 (이용자의 권리·의무 및 행사방법)</h2>
+                    <div class="text-gray-300 space-y-3 leading-relaxed">
+                        <p>이용자는 회사에 대해 언제든지 다음 각 호의 개인정보 보호 관련 권리를 행사할 수 있습니다.</p>
+                        <ul class="list-disc list-inside space-y-2 ml-4">
+                            <li>개인정보 열람요구</li>
+                            <li>오류 등이 있을 경우 정정 요구</li>
+                            <li>삭제요구</li>
+                            <li>처리정지 요구</li>
+                        </ul>
+                        <p class="mt-4">이용자는 회원정보 수정 페이지를 통해 직접 개인정보를 조회하거나 수정할 수 있으며, 회원 탈퇴를 통해 개인정보의 삭제를 요구할 수 있습니다.</p>
+                    </div>
+                </section>
+
+                <!-- 제7조 -->
+                <section>
+                    <h2 class="text-2xl font-bold text-accent mb-4">제7조 (개인정보의 파기)</h2>
+                    <div class="text-gray-300 space-y-3 leading-relaxed">
+                        <p>회사는 개인정보 보유기간의 경과, 처리목적 달성 등 개인정보가 불필요하게 되었을 때에는 지체없이 해당 개인정보를 파기합니다.</p>
+                        <p>파기 절차 및 방법은 다음과 같습니다:</p>
+                        <ul class="list-disc list-inside space-y-2 ml-4">
+                            <li>파기절차: 이용자가 입력한 정보는 목적 달성 후 별도의 DB에 옮겨져 내부 방침 및 기타 관련 법령에 따라 일정기간 저장된 후 혹은 즉시 파기됩니다.</li>
+                            <li>파기방법: 전자적 파일 형태의 정보는 기록을 재생할 수 없는 기술적 방법을 사용합니다.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- 제8조 -->
+                <section>
+                    <h2 class="text-2xl font-bold text-accent mb-4">제8조 (개인정보 보호책임자)</h2>
+                    <div class="text-gray-300 space-y-3 leading-relaxed">
+                        <p>회사는 개인정보 처리에 관한 업무를 총괄해서 책임지고, 개인정보 처리와 관련한 정보주체의 불만처리 및 피해구제를 처리하기 위하여 아래와 같이 개인정보 보호책임자를 지정하고 있습니다.</p>
+                        <div class="bg-gray-medium/50 rounded-lg p-4 space-y-2 mt-4">
+                            <p class="font-semibold text-white">개인정보 보호책임자</p>
+                            <p>이메일: hochul.kim@designusplus.com</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 제9조 -->
+                <section>
+                    <h2 class="text-2xl font-bold text-accent mb-4">제9조 (개인정보처리방침의 변경)</h2>
+                    <div class="text-gray-300 space-y-3 leading-relaxed">
+                        <p>이 개인정보처리방침은 2025년 1월 1일부터 적용됩니다.</p>
+                        <p>이전의 개인정보처리방침은 아래에서 확인하실 수 있습니다.</p>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="border-t border-gray-medium mt-12 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                    <a href="{% url 'home' %}" class="px-6 py-2 bg-gray-700/30 hover:bg-gray-700/50 text-gray-300 hover:text-white rounded-lg transition-all duration-200 text-sm border border-gray-600/30">
+                        ← 50000AI 홈으로
+                    </a>
+                    <p class="text-gray-500 text-sm">© 2025 50000AI. All rights reserved.</p>
+                    <p class="text-gray-500 text-sm">hochul.kim@designusplus.com</p>
+                    
+                    <div class="flex space-x-6 mt-4 md:mt-0">
+                        <a href="{% url 'privacy_policy' %}" class="text-accent font-medium text-sm transition-colors duration-200">개인정보처리방침</a>
+                        <a href="{% url 'terms_of_service' %}" class="text-gray-500 hover:text-accent text-sm transition-colors duration-200">이용약관</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+

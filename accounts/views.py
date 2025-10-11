@@ -10,6 +10,14 @@ def home(request):
     """50000AI 메인 홈페이지"""
     return render(request, 'main_project/home.html')
 
+def privacy_policy(request):
+    """개인정보처리방침 페이지"""
+    return render(request, 'main_project/privacy_policy.html')
+
+def terms_of_service(request):
+    """이용약관 페이지"""
+    return render(request, 'main_project/terms_of_service.html')
+
 @login_required
 def profile_view(request):
     """사용자 프로필 페이지"""

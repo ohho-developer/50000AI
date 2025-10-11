@@ -119,66 +119,37 @@
     <main class="min-h-screen">
         {% block content %}{% endblock %}
     </main>
+    <div class="flex justify-center my-8">
+        <iframe src="https://ads-partners.coupang.com/widgets.html?id=930572&template=carousel&trackingCode=AF6345294&subId=&width=400&height=140&tsource=" width="900" height="140" frameborder="0" scrolling="no" referrerpolicy="unsafe-url" browsingtopics></iframe>
+        </div>
 
-    <!-- Footer -->
-    <footer class="bg-gray-dark/30 border-t border-gray-700 mt-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div class="grid md:grid-cols-4 gap-8">
-                <!-- Brand -->
-                <div class="col-span-1">
-                    <div class="flex items-center space-x-3 mb-4">
-                        <div class="w-8 h-8 bg-gradient-to-r from-accent to-accent-dark rounded-lg flex items-center justify-center">
-                            <span class="text-dark font-bold text-sm">NC</span>
-                        </div>
-                        <h3 class="text-xl font-bold text-white">뉴트리언트코디</h3>
-                    </div>
-                    <p class="text-gray-400 text-sm leading-relaxed" id="footerDescription">
-                        AI 영양사와 함께 건강한 식단을 관리하세요
-                    </p>
+
+        <!-- Footer -->
+    <footer>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                        
+            <div class="border-t border-gray-medium mt-12 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                    <a href="{% url 'home' %}" class="px-6 py-2 bg-gray-700/30 hover:bg-gray-700/50 text-gray-300 hover:text-white rounded-lg transition-all duration-200 text-sm border border-gray-600/30">
+                        ← 50000AI 홈으로
+                    </a>
+                    <p class="text-gray-500 text-sm">© 2025 50000AI. All rights reserved.</p>
+                    <p class="text-gray-500 text-sm">hochul.kim@designusplus.com</p>
+                    
+                     <div class="flex space-x-6 mt-4 md:mt-0">
+                         <a href="{% url 'privacy_policy' %}" class="text-gray-500 hover:text-accent text-sm transition-colors duration-200">개인정보처리방침</a>
+                         <a href="{% url 'terms_of_service' %}" class="text-gray-500 hover:text-accent text-sm transition-colors duration-200">이용약관</a>
+                     </div>
                 </div>
-                
-                <!-- Services -->
-                <div>
-                    <h4 class="text-white font-semibold mb-4" id="footerServices">서비스</h4>
-                    <ul class="space-y-3">
-                        <li><span class="text-gray-400" id="footerNutrientsCodi">영양 분석</span></li>
-                        <li><span class="text-gray-400" id="footerAITutor">식단 추천</span></li>
-                        <li><span class="text-gray-400" id="footerAICounselor">칼로리 관리</span></li>
-                    </ul>
-                </div>
-                
-                <!-- Support -->
-                <div>
-                    <h4 class="text-white font-semibold mb-4" id="footerSupport">지원</h4>
-                    <ul class="space-y-3">
-                        <li><a href="#" class="text-gray-400 hover:text-accent transition-colors duration-200" id="footerHelp">도움말</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-accent transition-colors duration-200" id="footerContact">문의하기</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-accent transition-colors duration-200" id="footerPrivacy">개인정보처리방침</a></li>
-                    </ul>
-                </div>
-                
-                <!-- Contact -->
-                <div>
-                    <h4 class="text-white font-semibold mb-4" id="footerContactHeader">연락처</h4>
-                    <ul class="space-y-3">
-                        <li class="text-gray-400 text-sm" id="footerEmail">이메일: support@50000ai.com</li>
-                        <li class="text-gray-400 text-sm" id="footerPhone">전화: 02-1234-5678</li>
-                        <li><a href="{% url 'home' %}" class="text-gray-400 hover:text-accent transition-colors duration-200 text-sm">← 50000AI 홈으로</a></li>
-                    </ul>
-                </div>
-            </div>
-            
-            <!-- Copyright -->
-            <div class="border-t border-gray-700 mt-8 pt-8 text-center">
-                <p class="text-gray-400 text-sm">
-                    © 2025 50000AI. All rights reserved.
-                </p>
             </div>
         </div>
     </footer>
 
     {% block extra_scripts %}{% endblock %}
+
+
     
+
     <script>
         // 다국어 지원
         window.browserLanguage = navigator.language || navigator.userLanguage;
