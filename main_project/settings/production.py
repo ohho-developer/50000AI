@@ -21,10 +21,36 @@ SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=True, cast=bool)
 CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=True, cast=bool)
 
 
+# Database 성능 최적화 (WORKER TIMEOUT 방지)
+DATABASES['default']['CONN_MAX_AGE'] = 60  # 연결 풀링
+if 'OPTIONS' not in DATABASES['default']:
+    DATABASES['default']['OPTIONS'] = {}
+DATABASES['default']['OPTIONS'].update({
+    'connect_timeout': 10,
+})
+
+# 캐시 설정 강화 (메모리 효율성)
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'api_cache_table',
+        'TIMEOUT': 3600,  # 1시간
+        'OPTIONS': {
+            'MAX_ENTRIES': 5000,
+            'CULL_FREQUENCY': 3,
+        }
+    }
+}
+
 # Production logging (less verbose, file only)
 LOGGING['handlers']['console']['level'] = 'WARNING'
 LOGGING['loggers']['django']['level'] = 'WARNING'
 LOGGING['loggers']['nutrients_codi']['level'] = 'INFO'
+LOGGING['loggers']['django.db.backends'] = {
+    'handlers': ['file'],
+    'level': 'ERROR',  # DB 쿼리 로그 최소화 (메모리 절약)
+    'propagate': False,
+}
 LOGGING['root']['level'] = 'WARNING'
 
 
@@ -32,8 +58,8 @@ LOGGING['root']['level'] = 'WARNING'
 # Session engine (using database for simplicity)
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
-# Production static files
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+# Production static files (WhiteNoise로 처리)
+# STATICFILES_STORAGE는 base.py에서 설정됨
 
 # Production media files (use cloud storage in production)
 # DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
