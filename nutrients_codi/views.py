@@ -897,18 +897,18 @@ def analyze_food(request):
                             logger.warning(f"❌ [임베딩 검색] 오류: {e}")
                     
                     # 3. 문자열 유사도 기반 유사 음식 검색
-                    if not food:
-                        try:
-                            logger.info(f"🔍 [문자열 유사도 검색] 시도: '{food_name}'")
-                            similar_match = ai_service.find_similar_food_by_string_matching(food_name, threshold=0.95)
-                            if similar_match:
-                                food = similar_match['food']
-                                search_method = "문자열 유사도 기반 검색"
-                                logger.info(f"✅ [{search_method}] 성공: '{food_name}' -> '{food.name}' (유사도: {similar_match['similarity']:.3f})")
-                            else:
-                                logger.info(f"❌ [문자열 유사도 검색] 실패: '{food_name}' (유사도 임계값 미달)")
-                        except Exception as e:
-                            logger.error(f"❌ [문자열 유사도 검색] 오류: {e}")
+                    # if not food:
+                    #     try:
+                    #         logger.info(f"🔍 [문자열 유사도 검색] 시도: '{food_name}'")
+                    #         similar_match = ai_service.find_similar_food_by_string_matching(food_name, threshold=0.95)
+                    #         if similar_match:
+                    #             food = similar_match['food']
+                    #             search_method = "문자열 유사도 기반 검색"
+                    #             logger.info(f"✅ [{search_method}] 성공: '{food_name}' -> '{food.name}' (유사도: {similar_match['similarity']:.3f})")
+                    #         else:
+                    #             logger.info(f"❌ [문자열 유사도 검색] 실패: '{food_name}' (유사도 임계값 미달)")
+                    #     except Exception as e:
+                    #         logger.error(f"❌ [문자열 유사도 검색] 오류: {e}")
                     
                     # 4. LLM으로 새로운 음식 생성
                     if not food:
