@@ -20,7 +20,16 @@ os.environ.setdefault('LANG', 'en_US.UTF-8')
 os.environ.setdefault('LC_ALL', 'en_US.UTF-8')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=False)
+# 프로덕션에서는 무조건 DEBUG = False
+DEBUG = False
+
+# 환경변수로 명시적으로 True를 설정한 경우에만 True
+if config('DEBUG', default='False').lower() in ('true', '1', 'yes'):
+    import warnings
+    warnings.warn('DEBUG is enabled in production! This is a security risk.')
+    DEBUG = True
+
+
 
 # Production security settings (disabled for Cloudtype.app)
 SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=False, cast=bool)  # Cloudtype handles SSL
