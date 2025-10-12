@@ -735,3 +735,317 @@ msgstr "Added to favorites."
 
 msgid "즐겨찾기에서 제거되었습니다."
 msgstr "Removed from favorites."
+
+# Privacy Policy Page
+msgid "개인정보처리방침"
+msgstr "Privacy Policy"
+
+msgid "최종 수정일: 2025년 1월 1일"
+msgstr "Last Updated: January 1, 2025"
+
+msgid "제1조 (목적)"
+msgstr "Article 1 (Purpose)"
+
+msgid "50000AI('이하 회사'라 함)는 회사가 제공하고자 하는 서비스(이하 '회사 서비스')를 이용하는 개인(이하 '이용자' 또는 '개인')의 정보(이하 '개인정보')를 보호하기 위해, 개인정보보호법, 정보통신망 이용촉진 및 정보보호 등에 관한 법률(이하 '정보통신망법') 등 관련 법령을 준수하고, 서비스 이용자의 개인정보 보호 관련한 고충을 신속하고 원활하게 처리할 수 있도록 하기 위하여 다음과 같이 개인정보처리방침(이하 '본 방침')을 수립합니다."
+msgstr "50000AI (hereinafter referred to as 'the Company') establishes this Privacy Policy (hereinafter referred to as 'this Policy') to protect the information (hereinafter referred to as 'personal information') of individuals (hereinafter referred to as 'users' or 'individuals') who use the services (hereinafter referred to as 'Company Services') that the Company intends to provide, to comply with relevant laws such as the Personal Information Protection Act and the Act on Promotion of Information and Communications Network Utilization and Information Protection, and to promptly and smoothly handle complaints related to the protection of personal information of service users."
+
+msgid "제2조 (개인정보 수집 및 이용 목적)"
+msgstr "Article 2 (Purpose of Collecting and Using Personal Information)"
+
+msgid "회사는 다음의 목적을 위하여 개인정보를 처리합니다. 처리하고 있는 개인정보는 다음의 목적 이외의 용도로는 이용되지 않으며, 이용 목적이 변경되는 경우에는 개인정보보호법에 따라 별도의 동의를 받는 등 필요한 조치를 이행할 예정입니다."
+msgstr "The Company processes personal information for the following purposes. The personal information being processed will not be used for purposes other than those listed below, and if the purpose of use changes, necessary measures will be taken, such as obtaining separate consent in accordance with the Personal Information Protection Act."
+
+msgid "회원 가입 및 관리: 회원 가입의사 확인, 회원제 서비스 제공에 따른 본인 식별·인증, 회원자격 유지·관리"
+msgstr "Member registration and management: confirmation of membership intention, identification and authentication for membership services, maintenance and management of membership status"
+
+msgid "서비스 제공: AI 기반 영양 관리 서비스, AI 요리 추천 서비스 등 맞춤형 서비스 제공"
+msgstr "Service provision: AI-based nutrition management services, AI recipe recommendation services, and other personalized services"
+
+msgid "마케팅 및 광고 활용: 신규 서비스 개발 및 맞춤 서비스 제공, 이벤트 및 광고성 정보 제공 및 참여기회 제공"
+msgstr "Marketing and advertising: development of new services and provision of customized services, provision of event and promotional information and participation opportunities"
+
+msgid "제3조 (수집하는 개인정보의 항목)"
+msgstr "Article 3 (Items of Personal Information Collected)"
+
+msgid "회사는 다음의 개인정보 항목을 처리하고 있습니다."
+msgstr "The Company processes the following personal information items."
+
+msgid "필수 항목"
+msgstr "Required Items"
+
+msgid "이메일 주소, 비밀번호"
+msgstr "Email address, password"
+
+msgid "서비스 이용 기록, 접속 로그, 쿠키, 접속 IP 정보"
+msgstr "Service usage history, access logs, cookies, access IP information"
+
+msgid "선택 항목"
+msgstr "Optional Items"
+
+msgid "프로필 정보: 성별, 키, 체중, 목표 등 (영양 관리 서비스 이용 시)"
+msgstr "Profile information: gender, height, weight, goals, etc. (when using nutrition management services)"
+
+msgid "제4조 (개인정보의 보유 및 이용기간)"
+msgstr "Article 4 (Retention and Use Period of Personal Information)"
+
+msgid "회사는 법령에 따른 개인정보 보유·이용기간 또는 정보주체로부터 개인정보를 수집시에 동의 받은 개인정보 보유·이용기간 내에서 개인정보를 처리·보유합니다."
+msgstr "The Company processes and retains personal information within the retention and use period stipulated by law or the retention and use period agreed upon when collecting personal information from the data subject."
+
+msgid "회원 탈퇴 시까지 (단, 관계 법령 위반에 따른 수사·조사 등이 진행 중인 경우에는 해당 수사·조사 종료 시까지)"
+msgstr "Until membership withdrawal (however, if an investigation or inquiry is in progress due to violation of relevant laws, until the completion of such investigation or inquiry)"
+
+msgid "관계 법령에 의한 정보보유 사유: 전자상거래 등에서의 소비자 보호에 관한 법률 등 관계법령의 규정에 의하여 보존할 필요가 있는 경우 회사는 관계법령에서 정한 일정한 기간 동안 회원정보를 보관합니다."
+msgstr "Reasons for information retention by relevant laws: If it is necessary to preserve information according to provisions of relevant laws such as the Act on Consumer Protection in Electronic Commerce, the Company will retain member information for a certain period specified by relevant laws."
+
+msgid "제5조 (개인정보의 제3자 제공)"
+msgstr "Article 5 (Provision of Personal Information to Third Parties)"
+
+msgid "회사는 원칙적으로 이용자의 개인정보를 제1조(개인정보의 처리 목적)에서 명시한 범위 내에서 처리하며, 이용자의 사전 동의 없이는 본래의 범위를 초과하여 처리하거나 제3자에게 제공하지 않습니다."
+msgstr "In principle, the Company processes users' personal information within the scope specified in Article 1 (Purpose of Processing Personal Information) and does not process it beyond the original scope or provide it to third parties without the user's prior consent."
+
+msgid "다만, 다음의 경우에는 예외로 합니다:"
+msgstr "However, the following cases are exceptions:"
+
+msgid "이용자가 사전에 동의한 경우"
+msgstr "When the user has given prior consent"
+
+msgid "법령의 규정에 의거하거나, 수사 목적으로 법령에 정해진 절차와 방법에 따라 수사기관의 요구가 있는 경우"
+msgstr "When it is based on the provisions of laws or when there is a request from an investigative agency according to procedures and methods stipulated by laws for investigation purposes"
+
+msgid "제6조 (이용자의 권리·의무 및 행사방법)"
+msgstr "Article 6 (Rights and Obligations of Users and How to Exercise Them)"
+
+msgid "이용자는 회사에 대해 언제든지 다음 각 호의 개인정보 보호 관련 권리를 행사할 수 있습니다."
+msgstr "Users may exercise the following personal information protection-related rights against the Company at any time."
+
+msgid "개인정보 열람요구"
+msgstr "Request to view personal information"
+
+msgid "오류 등이 있을 경우 정정 요구"
+msgstr "Request correction if there are errors"
+
+msgid "삭제요구"
+msgstr "Request deletion"
+
+msgid "처리정지 요구"
+msgstr "Request to stop processing"
+
+msgid "이용자는 회원정보 수정 페이지를 통해 직접 개인정보를 조회하거나 수정할 수 있으며, 회원 탈퇴를 통해 개인정보의 삭제를 요구할 수 있습니다."
+msgstr "Users can directly view or modify their personal information through the member information modification page, and can request deletion of personal information through membership withdrawal."
+
+msgid "제7조 (개인정보의 파기)"
+msgstr "Article 7 (Destruction of Personal Information)"
+
+msgid "회사는 개인정보 보유기간의 경과, 처리목적 달성 등 개인정보가 불필요하게 되었을 때에는 지체없이 해당 개인정보를 파기합니다."
+msgstr "The Company destroys personal information without delay when personal information becomes unnecessary, such as when the retention period expires or the purpose of processing is achieved."
+
+msgid "파기 절차 및 방법은 다음과 같습니다:"
+msgstr "The destruction procedures and methods are as follows:"
+
+msgid "파기절차: 이용자가 입력한 정보는 목적 달성 후 별도의 DB에 옮겨져 내부 방침 및 기타 관련 법령에 따라 일정기간 저장된 후 혹은 즉시 파기됩니다."
+msgstr "Destruction procedure: Information entered by users is transferred to a separate DB after achieving its purpose and stored for a certain period according to internal policies and other relevant laws, or destroyed immediately."
+
+msgid "파기방법: 전자적 파일 형태의 정보는 기록을 재생할 수 없는 기술적 방법을 사용합니다."
+msgstr "Destruction method: For information in electronic file format, technical methods that make records irreproducible are used."
+
+msgid "제8조 (개인정보 보호책임자)"
+msgstr "Article 8 (Person in Charge of Personal Information Protection)"
+
+msgid "회사는 개인정보 처리에 관한 업무를 총괄해서 책임지고, 개인정보 처리와 관련한 정보주체의 불만처리 및 피해구제를 처리하기 위하여 아래와 같이 개인정보 보호책임자를 지정하고 있습니다."
+msgstr "The Company designates a person in charge of personal information protection as follows to take overall responsibility for work related to personal information processing and to handle complaints and remedy damages related to personal information processing by data subjects."
+
+msgid "개인정보 보호책임자"
+msgstr "Person in Charge of Personal Information Protection"
+
+msgid "이메일: hochul.kim@designusplus.com"
+msgstr "Email: hochul.kim@designusplus.com"
+
+msgid "제9조 (개인정보처리방침의 변경)"
+msgstr "Article 9 (Changes to Privacy Policy)"
+
+msgid "이 개인정보처리방침은 2025년 1월 1일부터 적용됩니다."
+msgstr "This Privacy Policy applies from January 1, 2025."
+
+msgid "이전의 개인정보처리방침은 아래에서 확인하실 수 있습니다."
+msgstr "Previous privacy policies can be found below."
+
+msgid "50000AI 홈으로"
+msgstr "Back to 50000AI Home"
+
+# Terms of Service Page
+msgid "이용약관"
+msgstr "Terms of Service"
+
+msgid "본 약관은 50000AI(이하 \"회사\")가 제공하는 AI 기반 서비스(이하 \"서비스\")의 이용과 관련하여 회사와 회원 간의 권리, 의무 및 책임사항, 기타 필요한 사항을 규정함을 목적으로 합니다."
+msgstr "These Terms of Service aim to stipulate the rights, obligations, and responsibilities between the Company and members, as well as other necessary matters, regarding the use of AI-based services (hereinafter referred to as 'Services') provided by 50000AI (hereinafter referred to as 'the Company')."
+
+msgid "제2조 (용어의 정의)"
+msgstr "Article 2 (Definition of Terms)"
+
+msgid "본 약관에서 사용하는 용어의 정의는 다음과 같습니다."
+msgstr "The definitions of terms used in these Terms are as follows."
+
+msgid "\"서비스\"란 회사가 제공하는 AI 영양사 서비스, AI 요리 추천 서비스 등 모든 부가서비스를 의미합니다."
+msgstr "'Service' means all additional services provided by the Company, including AI nutritionist services and AI recipe recommendation services."
+
+msgid "\"회원\"이라 함은 회사의 서비스에 접속하여 본 약관에 따라 회사와 이용계약을 체결하고 회사가 제공하는 서비스를 이용하는 고객을 말합니다."
+msgstr "'Member' refers to a customer who accesses the Company's service, enters into a service agreement with the Company in accordance with these Terms, and uses the services provided by the Company."
+
+msgid "\"아이디(ID)\"라 함은 회원의 식별과 서비스 이용을 위하여 회원이 등록한 이메일 주소를 말합니다."
+msgstr "'ID' refers to the email address registered by a member for identification and service use."
+
+msgid "\"비밀번호\"라 함은 회원이 부여받은 아이디와 일치되는 회원임을 확인하고 비밀보호를 위해 회원 자신이 정한 문자 또는 숫자의 조합을 의미합니다."
+msgstr "'Password' means a combination of letters or numbers set by the member to confirm that they are the member matching the assigned ID and to protect confidentiality."
+
+msgid "제3조 (약관의 효력 및 변경)"
+msgstr "Article 3 (Effect and Amendment of Terms)"
+
+msgid "1. 본 약관은 서비스를 이용하고자 하는 모든 회원에 대하여 그 효력을 발생합니다."
+msgstr "1. These Terms take effect for all members who wish to use the Service."
+
+msgid "2. 회사는 필요하다고 인정되는 경우 본 약관을 변경할 수 있으며, 회사가 약관을 변경할 경우에는 적용일자 및 변경사유를 명시하여 현행약관과 함께 서비스 초기화면에 그 적용일자 7일 이전부터 적용일자 전일까지 공지합니다."
+msgstr "2. The Company may change these Terms when deemed necessary, and when changing the Terms, the Company will announce the effective date and reason for the change along with the current Terms on the service's initial screen from 7 days before the effective date until the day before the effective date."
+
+msgid "3. 회원은 변경된 약관에 동의하지 않을 경우 회원 탈퇴를 요청할 수 있으며, 변경된 약관의 효력 발생일 이후에도 서비스를 계속 이용할 경우 약관의 변경사항에 동의한 것으로 간주됩니다."
+msgstr "3. If a member does not agree to the amended Terms, they may request membership withdrawal, and if they continue to use the Service after the effective date of the amended Terms, they are deemed to have agreed to the amendments."
+
+msgid "제4조 (회원가입)"
+msgstr "Article 4 (Membership Registration)"
+
+msgid "1. 회원가입은 이용자가 약관의 내용에 대하여 동의를 한 다음 회원가입신청을 하고 회사가 이러한 신청에 대하여 승낙함으로써 체결됩니다."
+msgstr "1. Membership registration is established when a user agrees to the Terms, applies for membership, and the Company approves such application."
+
+msgid "2. 회원가입신청서에는 다음 사항을 기재해야 합니다."
+msgstr "2. The following information must be provided in the membership application form."
+
+msgid "기타 회사가 필요하다고 인정하는 사항"
+msgstr "Other matters deemed necessary by the Company"
+
+msgid "3. 회사는 다음 각 호에 해당하는 경우에는 회원가입을 거절하거나 사후에 회원자격을 상실시킬 수 있습니다."
+msgstr "3. The Company may refuse membership registration or revoke membership in the following cases."
+
+msgid "타인의 명의를 이용한 경우"
+msgstr "Using another person's name"
+
+msgid "회원가입 신청서의 내용을 허위로 기재한 경우"
+msgstr "Providing false information in the membership application"
+
+msgid "사회의 안녕질서 또는 미풍양속을 저해할 목적으로 신청한 경우"
+msgstr "Applying with the purpose of undermining public order or morality"
+
+msgid "기타 회사가 정한 이용신청 요건이 미비 되었을 경우"
+msgstr "Failing to meet other application requirements set by the Company"
+
+msgid "제5조 (서비스의 제공 및 변경)"
+msgstr "Article 5 (Provision and Modification of Services)"
+
+msgid "1. 회사는 회원에게 아래와 같은 서비스를 제공합니다."
+msgstr "1. The Company provides members with the following services."
+
+msgid "AI 기반 영양 관리 및 분석 서비스"
+msgstr "AI-based nutrition management and analysis services"
+
+msgid "AI 기반 요리 추천 및 레시피 제공 서비스"
+msgstr "AI-based cooking recommendations and recipe provision services"
+
+msgid "커뮤니티 서비스"
+msgstr "Community services"
+
+msgid "기타 회사가 추가 개발하거나 다른 회사와의 제휴계약 등을 통해 회원에게 제공하는 일체의 서비스"
+msgstr "All other services developed by the Company or provided to members through partnership agreements with other companies"
+
+msgid "2. 회사는 서비스의 내용 및 제공일자를 변경할 수 있으며, 이 경우 변경사유 및 내용을 공지합니다."
+msgstr "2. The Company may change the content and provision date of services, and in such cases, will announce the reason and details of the change."
+
+msgid "제6조 (서비스의 중단)"
+msgstr "Article 6 (Service Suspension)"
+
+msgid "1. 회사는 컴퓨터 등 정보통신설비의 보수점검, 교체 및 고장, 통신의 두절 등의 사유가 발생한 경우에는 서비스의 제공을 일시적으로 중단할 수 있습니다."
+msgstr "1. The Company may temporarily suspend service provision in cases of maintenance, replacement, or failure of information and communication facilities such as computers, or interruption of communications."
+
+msgid "2. 회사는 제1항의 사유로 서비스의 제공이 일시적으로 중단됨으로 인하여 회원 또는 제3자가 입은 손해에 대하여 배상합니다. 단, 회사에 고의 또는 과실이 없음을 입증하는 경우에는 그러하지 아니합니다."
+msgstr "2. The Company shall compensate for damages incurred by members or third parties due to temporary suspension of service provision for reasons stated in Paragraph 1. However, this does not apply if the Company proves that there was no intent or negligence."
+
+msgid "제7조 (회원의 의무)"
+msgstr "Article 7 (Member Obligations)"
+
+msgid "1. 회원은 다음 행위를 하여서는 안 됩니다."
+msgstr "1. Members shall not engage in the following activities."
+
+msgid "신청 또는 변경 시 허위내용의 등록"
+msgstr "Registering false information when applying or making changes"
+
+msgid "타인의 정보도용"
+msgstr "Stealing other people's information"
+
+msgid "회사가 게시한 정보의 변경"
+msgstr "Altering information posted by the Company"
+
+msgid "회사가 정한 정보 이외의 정보(컴퓨터 프로그램 등) 등의 송신 또는 게시"
+msgstr "Transmitting or posting information (such as computer programs) other than that specified by the Company"
+
+msgid "회사와 기타 제3자의 저작권 등 지적재산권에 대한 침해"
+msgstr "Infringing on intellectual property rights such as copyrights of the Company and other third parties"
+
+msgid "회사 및 기타 제3자의 명예를 손상시키거나 업무를 방해하는 행위"
+msgstr "Damaging the reputation of the Company and other third parties or interfering with their business"
+
+msgid "외설 또는 폭력적인 메시지, 화상, 음성, 기타 공서양속에 반하는 정보를 서비스에 공개 또는 게시하는 행위"
+msgstr "Disclosing or posting obscene or violent messages, images, sounds, or other information contrary to public order and morals on the service"
+
+msgid "제8조 (회원 탈퇴 및 자격 상실)"
+msgstr "Article 8 (Membership Withdrawal and Disqualification)"
+
+msgid "1. 회원은 회사에 언제든지 탈퇴를 요청할 수 있으며 회사는 즉시 회원탈퇴를 처리합니다."
+msgstr "1. Members may request withdrawal at any time, and the Company will process membership withdrawal immediately."
+
+msgid "2. 회원이 다음 각 호의 사유에 해당하는 경우, 회사는 회원자격을 제한 및 정지시킬 수 있습니다."
+msgstr "2. If a member falls under any of the following reasons, the Company may restrict or suspend membership."
+
+msgid "가입 신청 시에 허위 내용을 등록한 경우"
+msgstr "Registering false information during membership application"
+
+msgid "다른 사람의 서비스 이용을 방해하거나 그 정보를 도용하는 등 전자상거래 질서를 위협하는 경우"
+msgstr "Threatening the order of e-commerce by interfering with others' use of services or stealing their information"
+
+msgid "서비스를 이용하여 법령 또는 본 약관이 금지하거나 공서양속에 반하는 행위를 하는 경우"
+msgstr "Using the service to engage in acts prohibited by laws or these Terms or contrary to public order and morals"
+
+msgid "제9조 (면책조항)"
+msgstr "Article 9 (Disclaimer)"
+
+msgid "1. 회사는 천재지변 또는 이에 준하는 불가항력으로 인하여 서비스를 제공할 수 없는 경우에는 서비스 제공에 관한 책임이 면제됩니다."
+msgstr "1. The Company is exempt from responsibility for service provision if services cannot be provided due to natural disasters or equivalent force majeure."
+
+msgid "2. 회사는 회원의 귀책사유로 인한 서비스 이용의 장애에 대하여 책임을 지지 않습니다."
+msgstr "2. The Company is not responsible for service disruptions caused by reasons attributable to members."
+
+msgid "3. 회사는 회원이 서비스를 이용하여 기대하는 영양 관리 효과나 요리 결과 등에 대하여 책임을 지지 않습니다."
+msgstr "3. The Company is not responsible for nutrition management effects or cooking results expected by members through service use."
+
+msgid "4. 회사는 회원 간 또는 회원과 제3자 상호간에 서비스를 매개로 하여 거래 등을 한 경우에는 책임이 면제됩니다."
+msgstr "4. The Company is exempt from responsibility for transactions made between members or between members and third parties through the service."
+
+msgid "제10조 (분쟁의 해결)"
+msgstr "Article 10 (Dispute Resolution)"
+
+msgid "1. 회사는 회원으로부터 제출되는 불만사항 및 의견을 우선적으로 처리합니다. 다만, 신속한 처리가 곤란한 경우에는 회원에게 그 사유와 처리일정을 즉시 통보합니다."
+msgstr "1. The Company will prioritize complaints and opinions submitted by members. However, if prompt processing is difficult, the Company will immediately notify the member of the reason and processing schedule."
+
+msgid "2. 회사와 회원간에 발생한 분쟁은 전자문서 및 전자거래 기본법 제32조 및 동 시행령 제15조에 의하여 설치된 전자문서·전자거래분쟁조정위원회의 조정에 따를 수 있습니다."
+msgstr "2. Disputes arising between the Company and members may be subject to mediation by the Electronic Document and Electronic Transaction Dispute Mediation Committee established under Article 32 of the Framework Act on Electronic Documents and Transactions and Article 15 of its Enforcement Decree."
+
+msgid "제11조 (재판권 및 준거법)"
+msgstr "Article 11 (Jurisdiction and Governing Law)"
+
+msgid "1. 본 약관은 대한민국 법률에 따라 규율되고 해석됩니다."
+msgstr "1. These Terms shall be governed by and interpreted in accordance with the laws of the Republic of Korea."
+
+msgid "2. 회사와 회원간에 발생한 분쟁에 관한 소송은 민사소송법상의 관할법원에 제소합니다."
+msgstr "2. Lawsuits regarding disputes between the Company and members shall be filed with the competent court under the Civil Procedure Act."
+
+msgid "부칙"
+msgstr "Supplementary Provisions"
+
+msgid "이 약관은 2025년 1월 1일부터 적용됩니다."
+msgstr "These Terms apply from January 1, 2025."
