@@ -1,6 +1,7 @@
 {% extends 'recipe_ai/base.html' %}
+{% load i18n %}
 
-{% block title %}즐겨찾기 레시피 - AI 요리 추천{% endblock %}
+{% block title %}{% trans "즐겨찾기 레시피" %} - {% trans "AI 요리 추천" %}{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -44,17 +45,17 @@
                             <svg class="w-8 h-8 text-accent" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                             </svg>
-                            <span>즐겨찾기 레시피</span>
+                            <span>{% trans "즐겨찾기 레시피" %}</span>
                         </span>
                     </h1>
-                    <p class="text-gray-400">저장한 레시피를 다시 보세요 (총 {{ favorites.count }}개)</p>
+                    <p class="text-gray-400">{% trans "저장한 레시피를 다시 보세요" %} ({% trans "총" %} {{ favorites.count }}{% trans "개" %})</p>
                 </div>
                 <a href="{% url 'recipe_ai:index' %}" class="px-4 py-2 bg-gray-medium hover:bg-gray-600 text-white rounded-lg transition-colors duration-200">
                     <span class="flex items-center space-x-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                         </svg>
-                        <span>새로운 검색</span>
+                        <span>{% trans "새로운 검색" %}</span>
                     </span>
                 </a>
             </div>
@@ -86,7 +87,7 @@
                 <!-- 카드 내용 -->
                 <div class="p-4">
                     <!-- 제목 -->
-                    <h3 class="text-lg font-semibold text-white mb-2 line-clamp-2 hover:text-accent transition-colors cursor-pointer" onclick="window.location.href='{% url 'recipe_ai:recipe_detail' favorite.video_id %}'">
+                    <h3 class="text-lg font-semibold text-white mb-2 line-clamp-2 hover:text-accent transition-colors cursor-pointer" onclick="window.location.href='{% url 'recipe_ai:favorite_recipe_detail' favorite.video_id %}'">
                         {{ favorite.title }}
                     </h3>
 
@@ -102,27 +103,27 @@
                             {% if favorite.sentiment_rating == 5 %}
                             <span class="rating-badge bg-green-500/20 text-green-400 border border-green-500/30">
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z"/></svg>
-                                아주 좋음
+                                {% trans "아주 좋음" %}
                             </span>
                             {% elif favorite.sentiment_rating == 4 %}
                             <span class="rating-badge bg-blue-500/20 text-blue-400 border border-blue-500/30">
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z"/></svg>
-                                좋음
+                                {% trans "좋음" %}
                             </span>
                             {% elif favorite.sentiment_rating == 3 %}
                             <span class="rating-badge bg-yellow-500/20 text-yellow-400 border border-yellow-500/30">
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm7-1a1 1 0 11-2 0 1 1 0 012 0zm-7.536 5.879a1 1 0 001.415 0 3 3 0 014.242 0 1 1 0 001.415-1.415 5 5 0 00-7.072 0 1 1 0 000 1.415z" clip-rule="evenodd"/></svg>
-                                보통
+                                {% trans "보통" %}
                             </span>
                             {% elif favorite.sentiment_rating == 2 %}
                             <span class="rating-badge bg-orange-500/20 text-orange-400 border border-orange-500/30">
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M18 9.5a1.5 1.5 0 11-3 0v-6a1.5 1.5 0 013 0v6zM14 9.667v-5.43a2 2 0 00-1.105-1.79l-.05-.025A4 4 0 0011.055 2H5.64a2 2 0 00-1.962 1.608l-1.2 6A2 2 0 004.44 12H8v4a2 2 0 002 2 1 1 0 001-1v-.667a4 4 0 01.8-2.4l1.4-1.866a4 4 0 00.8-2.4z"/></svg>
-                                별로
+                                {% trans "별로" %}
                             </span>
                             {% elif favorite.sentiment_rating == 1 %}
                             <span class="rating-badge bg-red-500/20 text-red-400 border border-red-500/30">
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M18 9.5a1.5 1.5 0 11-3 0v-6a1.5 1.5 0 013 0v6zM14 9.667v-5.43a2 2 0 00-1.105-1.79l-.05-.025A4 4 0 0011.055 2H5.64a2 2 0 00-1.962 1.608l-1.2 6A2 2 0 004.44 12H8v4a2 2 0 002 2 1 1 0 001-1v-.667a4 4 0 01.8-2.4l1.4-1.866a4 4 0 00.8-2.4z"/></svg>
-                                나쁨
+                                {% trans "나쁨" %}
                             </span>
                             {% endif %}
 
@@ -130,27 +131,27 @@
                             {% if favorite.difficulty_rating == 5 %}
                             <span class="difficulty-badge bg-red-500/20 text-red-400 border border-red-500/30">
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"/></svg>
-                                매우 어려움
+                                {% trans "매우 어려움" %}
                             </span>
                             {% elif favorite.difficulty_rating == 4 %}
                             <span class="difficulty-badge bg-orange-500/20 text-orange-400 border border-orange-500/30">
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"/></svg>
-                                어려움
+                                {% trans "어려움" %}
                             </span>
                             {% elif favorite.difficulty_rating == 3 %}
                             <span class="difficulty-badge bg-yellow-500/20 text-yellow-400 border border-yellow-500/30">
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.476.859h4.002z"/></svg>
-                                보통
+                                {% trans "보통" %}
                             </span>
                             {% elif favorite.difficulty_rating == 2 %}
                             <span class="difficulty-badge bg-blue-500/20 text-blue-400 border border-blue-500/30">
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.476.859h4.002z"/></svg>
-                                쉬움
+                                {% trans "쉬움" %}
                             </span>
                             {% elif favorite.difficulty_rating == 1 %}
                             <span class="difficulty-badge bg-green-500/20 text-green-400 border border-green-500/30">
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-                                매우 쉬움
+                                {% trans "매우 쉬움" %}
                             </span>
                             {% endif %}
                         </div>
@@ -163,10 +164,20 @@
                     <!-- 액션 버튼들 -->
                     <div class="flex items-center space-x-2">
                         <button 
-                            onclick="window.location.href='{% url 'recipe_ai:recipe_detail' favorite.video_id %}'"
+                            onclick="window.location.href='{% url 'recipe_ai:favorite_recipe_detail' favorite.video_id %}'"
                             class="flex-1 px-4 py-2 bg-accent hover:bg-accent-dark text-dark font-semibold rounded-lg transition-colors duration-200">
-                            레시피 보기
+                            {% trans "레시피 보기" %}
                         </button>
+                        {% if not favorite.recipe_ingredients or not favorite.comment_summary %}
+                        <button 
+                            onclick="enhanceFavorite('{{ favorite.video_id }}', this)"
+                            class="px-3 py-2 bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 border border-blue-500/30 rounded-lg transition-colors duration-200 text-xs"
+                            title="{% trans 'AI 분석 강화' %}">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                            </svg>
+                        </button>
+                        {% endif %}
                         <button 
                             onclick="removeFavorite('{{ favorite.video_id }}', this)"
                             class="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/30 rounded-lg transition-colors duration-200">
@@ -187,13 +198,13 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
                 </svg>
             </div>
-            <h2 class="text-2xl font-bold text-white mb-4">아직 즐겨찾기한 레시피가 없어요</h2>
-            <p class="text-gray-400 mb-8">마음에 드는 레시피를 즐겨찾기에 추가해보세요!</p>
+            <h2 class="text-2xl font-bold text-white mb-4">{% trans "아직 즐겨찾기한 레시피가 없어요" %}</h2>
+            <p class="text-gray-400 mb-8">{% trans "마음에 드는 레시피를 즐겨찾기에 추가해보세요!" %}</p>
             <a href="{% url 'recipe_ai:index' %}" class="inline-flex items-center space-x-2 px-6 py-3 bg-accent hover:bg-accent-dark text-dark font-semibold rounded-xl transition-all duration-300 transform hover:-translate-y-1">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                 </svg>
-                <span>레시피 찾아보기</span>
+                <span>{% trans "레시피 찾아보기" %}</span>
             </a>
         </div>
         {% endif %}
@@ -204,6 +215,21 @@
 <form id="csrfForm" style="display: none;">{% csrf_token %}</form>
 
 <script>
+// 언어 감지 및 번역 함수
+function getTranslation(key) {
+    const language = navigator.language || navigator.userLanguage;
+    const isEnglish = language.startsWith('en');
+    
+    const translations = {
+        '즐겨찾기에서 삭제하시겠습니까?': isEnglish ? 'Do you want to remove from favorites?' : '즐겨찾기에서 삭제하시겠습니까?',
+        '삭제에 실패했습니다.': isEnglish ? 'Failed to delete.' : '삭제에 실패했습니다.',
+        '즐겨찾기 삭제 오류:': isEnglish ? 'Favorite deletion error:' : '즐겨찾기 삭제 오류:',
+        '오류가 발생했습니다.': isEnglish ? 'An error occurred.' : '오류가 발생했습니다.'
+    };
+    
+    return translations[key] || key;
+}
+
 // 숫자 포맷팅 함수
 function formatNumber(num) {
     if (num >= 1000000) {
@@ -234,7 +260,7 @@ function getCSRFToken() {
 
 // 즐겨찾기 삭제
 async function removeFavorite(videoId, button) {
-    if (!confirm('즐겨찾기에서 삭제하시겠습니까?')) {
+    if (!confirm(getTranslation('즐겨찾기에서 삭제하시겠습니까?'))) {
         return;
     }
 
@@ -269,13 +295,13 @@ async function removeFavorite(videoId, button) {
                 }
             }, 300);
         } else {
-            alert(data.message || '삭제에 실패했습니다.');
+            alert(data.message || getTranslation('삭제에 실패했습니다.'));
             button.disabled = false;
             button.innerHTML = '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>';
         }
     } catch (error) {
-        console.error('즐겨찾기 삭제 오류:', error);
-        alert('오류가 발생했습니다.');
+        console.error(getTranslation('즐겨찾기 삭제 오류:'), error);
+        alert(getTranslation('오류가 발생했습니다.'));
         button.disabled = false;
         button.innerHTML = '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>';
     }

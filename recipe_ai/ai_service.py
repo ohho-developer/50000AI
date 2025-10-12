@@ -62,18 +62,36 @@ class RecipeAIService:
         if last_error:
             raise last_error
     
-    def recommend_menus(self, user_input: str) -> dict:
+    def recommend_menus(self, user_input: str, language: str = 'ko') -> dict:
         """
         사용자 입력을 기반으로 음식 메뉴를 추천합니다.
         
         Args:
             user_input: 사용자가 입력한 텍스트 (예: "비 오는 날 뜨끈한 국물 요리")
+            language: 언어 코드 ('ko' 또는 'en')
         
         Returns:
             dict: {"foods": ["메뉴1", "메뉴2", "메뉴3", "메뉴4"], "status": "success"}
         """
         try:
-            prompt = f"""
+            # 언어별 프롬프트
+            if language == 'en':
+                prompt = f"""
+You are a food recommendation expert. Recommend appropriate dishes based on the user's request.
+
+Rules:
+1. Recommend exactly 4 dishes
+2. Prioritize American cuisine and include diverse menu options
+3. Write dish names concisely and clearly
+4. Respond ONLY in JSON format (no other explanations)
+
+Response format:
+{{"foods": ["Dish1", "Dish2", "Dish3", "Dish4"]}}
+
+User request: {user_input}
+"""
+            else:  # 한국어 (기본)
+                prompt = f"""
 당신은 요리 추천 전문가입니다. 사용자의 요청에 따라 적절한 음식 메뉴를 추천해주세요.
 
 규칙:
@@ -88,7 +106,7 @@ class RecipeAIService:
 사용자 요청: {user_input}
 """
             
-            logger.info(f"Gemini API 호출 - 메뉴 추천: {user_input}")
+            logger.info(f"Gemini API 호출 - 메뉴 추천 ({language}): {user_input}")
             
             # 재시도 로직을 사용하여 API 호출
             response = self._retry_on_error(self.model.generate_content, prompt)
@@ -129,13 +147,14 @@ class RecipeAIService:
                 "message": "메뉴 추천 중 오류가 발생했습니다."
             }
     
-    def summarize_recipe_from_url(self, video_id: str, video_title: str) -> dict:
+    def summarize_recipe_from_url(self, video_id: str, video_title: str, language: str = 'ko') -> dict:
         """
         YouTube 링크로 직접 영상을 분석하여 레시피를 요약합니다. (Gemini 멀티모달 기능 사용)
         
         Args:
             video_id: YouTube 비디오 ID
             video_title: 영상 제목
+            language: 언어 코드 ('ko' 또는 'en')
         
         Returns:
             dict: {
@@ -147,7 +166,28 @@ class RecipeAIService:
         try:
             youtube_url = f"https://www.youtube.com/watch?v={video_id}"
             
-            prompt = f"""
+            # 언어별 프롬프트
+            if language == 'en':
+                prompt = f"""
+You are a cooking recipe analysis expert. Watch this YouTube video and summarize the recipe.
+
+Video: {youtube_url}
+Title: {video_title}
+
+Rules:
+1. Extract all main ingredients used in the video (including measurements)
+2. Organize cooking steps clearly and concisely in chronological order
+3. Include important cooking tips or precautions in the steps
+4. Respond ONLY in JSON format (no other explanations)
+
+Response format:
+{{
+  "ingredients": ["Ingredient1 (amount)", "Ingredient2 (amount)", ...],
+  "steps": ["Step 1: Description", "Step 2: Description", ...]
+}}
+"""
+            else:  # 한국어 (기본)
+                prompt = f"""
 당신은 요리 레시피 분석 전문가입니다. 이 유튜브 영상을 시청하고 레시피를 요약해주세요.
 
 영상: {youtube_url}
@@ -166,7 +206,7 @@ class RecipeAIService:
 }}
 """
             
-            logger.info(f"Gemini API 호출 (YouTube URL) - 레시피 요약: {video_title}")
+            logger.info(f"Gemini API 호출 (YouTube URL, {language}) - 레시피 요약: {video_title}")
             
             # 재시도 로직을 사용하여 API 호출
             response = self._retry_on_error(self.model.generate_content, prompt)
@@ -215,13 +255,14 @@ class RecipeAIService:
                 "method": "url"
             }
     
-    def analyze_video_comments(self, video_title: str, comments: list) -> dict:
+    def analyze_video_comments(self, video_title: str, comments: list, language: str = 'ko') -> dict:
         """
         영상의 댓글을 분석하여 시청자 평가를 요약합니다.
         
         Args:
             video_title: 영상 제목
             comments: 댓글 리스트
+            language: 언어 코드 ('ko' 또는 'en')
         
         Returns:
             dict: {
@@ -236,7 +277,43 @@ class RecipeAIService:
             # 댓글이 너무 많으면 제한
             comments_text = '\n'.join(comments[:20])
             
-            prompt = f"""
+            # 언어별 프롬프트
+            if language == 'en':
+                prompt = f"""
+You are a YouTube comment analysis expert. Analyze and summarize the comments from this recipe video.
+
+Video title: {video_title}
+
+Comments:
+{comments_text}
+
+Rules:
+1. Assess viewers' overall evaluation in 5 levels:
+   - "Very Positive": Most viewers are very satisfied and recommend it
+   - "Positive": Most viewers are satisfied and say it's good
+   - "Neutral": Positive and negative are similar or neutral
+   - "Negative": Most viewers point out disappointments or improvements
+   - "Very Negative": Most viewers are very dissatisfied
+
+2. Evaluate the recipe difficulty in 5 levels:
+   - "Very Easy": Very simple dish that beginners can easily follow
+   - "Easy": Dish that can be easily made with basic cooking experience
+   - "Medium": Requires moderate cooking skills
+   - "Hard": Requires considerable cooking experience or techniques
+   - "Very Hard": Requires professional skills or complex processes
+
+3. Summarize frequently mentioned taste, features, and tips in 50 characters or less
+4. Respond ONLY in JSON format
+
+Response format:
+{{
+  "comment_summary": "One-line summary (50 characters or less)",
+  "rating": "Very Positive" or "Positive" or "Neutral" or "Negative" or "Very Negative",
+  "difficulty": "Very Easy" or "Easy" or "Medium" or "Hard" or "Very Hard"
+}}
+"""
+            else:  # 한국어 (기본)
+                prompt = f"""
 당신은 YouTube 댓글 분석 전문가입니다. 아래 레시피 영상의 댓글들을 분석하여 요약해주세요.
 
 영상 제목: {video_title}
@@ -270,7 +347,7 @@ class RecipeAIService:
 }}
 """
             
-            logger.info(f"Gemini API 호출 - 댓글 분석: {video_title}")
+            logger.info(f"Gemini API 호출 - 댓글 분석 ({language}): {video_title}")
             
             response = self._retry_on_error(self.model.generate_content, prompt)
             response_text = response.text.strip()
@@ -317,13 +394,14 @@ class RecipeAIService:
                 "message": str(e)
             }
     
-    def summarize_recipe_from_transcript(self, video_title: str, transcript: str) -> dict:
+    def summarize_recipe_from_transcript(self, video_title: str, transcript: str, language: str = 'ko') -> dict:
         """
         유튜브 영상 자막을 분석하여 레시피를 요약합니다. (폴백 방식)
         
         Args:
             video_title: 영상 제목
             transcript: 영상 자막 텍스트
+            language: 언어 코드 ('ko' 또는 'en')
         
         Returns:
             dict: {
@@ -333,7 +411,29 @@ class RecipeAIService:
             }
         """
         try:
-            prompt = f"""
+            # 언어별 프롬프트
+            if language == 'en':
+                prompt = f"""
+You are a cooking recipe analysis expert. Analyze the YouTube video transcript below and summarize the recipe.
+
+Video title: {video_title}
+
+Transcript content:
+{transcript[:5000]}  # Limit in case transcript is too long
+
+Rules:
+1. Extract only main ingredients (including measurements)
+2. Organize cooking steps clearly and concisely
+3. Respond ONLY in JSON format
+
+Response format:
+{{
+  "ingredients": ["Ingredient1 (amount)", "Ingredient2 (amount)", ...],
+  "steps": ["Step 1: Description", "Step 2: Description", ...]
+}}
+"""
+            else:  # 한국어 (기본)
+                prompt = f"""
 당신은 요리 레시피 분석 전문가입니다. 아래 유튜브 영상의 자막을 분석하여 레시피를 요약해주세요.
 
 영상 제목: {video_title}
@@ -353,7 +453,7 @@ class RecipeAIService:
 }}
 """
             
-            logger.info(f"Gemini API 호출 (자막 방식) - 레시피 요약: {video_title}")
+            logger.info(f"Gemini API 호출 (자막 방식, {language}) - 레시피 요약: {video_title}")
             
             # 재시도 로직을 사용하여 API 호출
             response = self._retry_on_error(self.model.generate_content, prompt)

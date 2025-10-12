@@ -1,6 +1,7 @@
 {% extends 'recipe_ai/base.html' %}
+{% load i18n %}
 
-{% block title %}{{ menu_name }} 레시피 - AI 요리 추천{% endblock %}
+{% block title %}{{ menu_name }} {% trans "레시피" %} - {% trans "AI 요리 추천" %}{% endblock %}
 
 {% block content %}
 <div class="min-h-screen bg-dark">
@@ -11,7 +12,7 @@
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                 </svg>
-                메뉴 추천으로 돌아가기
+                {% trans "메뉴 추천으로 돌아가기" %}
             </a>
 
             <h1 class="text-3xl md:text-4xl font-bold mb-4">
@@ -19,11 +20,11 @@
                     {{ menu_name }}
                 </span>
                 <span class="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                    레시피
+                    {% trans "레시피" %}
                 </span>
             </h1>
             <p class="text-gray-400 text-lg">
-                마음에 드는 레시피를 선택하면 AI가 요약해드립니다
+                {% trans "마음에 드는 레시피를 선택하면 AI가 요약해드립니다" %}
             </p>
         </div>
 
@@ -66,7 +67,7 @@
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                 </svg>
-                <span>더 많은 레시피 보기 (2개)</span>
+                <span>{% trans "더 많은 레시피 보기" %} (2개)</span>
             </button>
         </div>
 
@@ -76,7 +77,7 @@
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                 </svg>
-                <span>다른 요리 찾기</span>
+                <span>{% trans "다른 요리 찾기" %}</span>
             </a>
         </div>
 
@@ -99,11 +100,11 @@
                     </div>
                     <div class="text-center space-y-3">
                         <h3 class="text-2xl font-bold text-white">
-                            AI가 레시피를 분석 중이에요
+                            {% trans "AI가 레시피를 분석 중이에요" %}
                         </h3>
                         <p class="text-gray-400">
-                            영상 자막을 추출하고 요약하고 있습니다...<br>
-                            <span class="text-sm text-gray-500">조금만 기다려주세요</span>
+                            {% trans "영상 자막을 추출하고 요약하고 있습니다..." %}<br>
+                            <span class="text-sm text-gray-500">{% trans "조금만 기다려주세요" %}</span>
                         </p>
                     </div>
                     <div class="flex justify-center mt-6 space-x-2">
@@ -163,36 +164,59 @@
     function createRecipeCard(video, analysis) {
         const hasAnalysis = analysis && analysis.has_analysis;
         
+        // 브라우저 언어 감지
+        const browserLanguage = navigator.language || navigator.userLanguage;
+        const isKorean = browserLanguage.startsWith('ko');
+        
+        // 다국어 텍스트
+        const texts = {
+            views: isKorean ? '조회수' : 'Views',
+            comments: isKorean ? '댓글' : 'Comments',
+            recipeDetail: isKorean ? '레시피 상세보기' : 'View Recipe Details',
+            favorite: isKorean ? '즐겨찾기' : 'Favorite',
+            analyzing: isKorean ? 'AI가 댓글을 분석하는 중...' : 'AI is analyzing comments...',
+            recipe: isKorean ? '레시피' : 'Recipe',
+            analyzingRecipe: isKorean ? '분석 중' : 'Analyzing',
+            loading: isKorean ? '로딩 중...' : 'Loading...',
+            errorOccurred: isKorean ? '오류가 발생했습니다.' : 'An error occurred.',
+            serverError: isKorean ? '서버에서 올바른 응답을 받지 못했습니다.' : 'Failed to receive proper response from server.',
+            quotaExceeded: isKorean ? '일일 검색 한도를 초과했습니다' : 'Daily search limit exceeded',
+            viewFavoriteRecipes: isKorean ? '즐겨찾기 레시피 보기' : 'View Favorite Recipes',
+            noRecipesFound: isKorean ? '레시피를 찾을 수 없습니다.' : 'No recipes found.',
+            toggleFavoriteError: isKorean ? '즐겨찾기 토글 오류:' : 'Favorite toggle error:',
+            checkFavoriteError: isKorean ? '즐겨찾기 상태 확인 오류:' : 'Favorite status check error:'
+        };
+        
         const ratingBadge = hasAnalysis ? `
             <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium
-                ${analysis.rating === '매우긍정적' ? 'bg-green-600/20 text-green-300 border border-green-500/50' : 
-                  analysis.rating === '긍정적' ? 'bg-green-500/10 text-green-400 border border-green-500/30' : 
-                  analysis.rating === '보통' ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/30' :
-                  analysis.rating === '부정적' ? 'bg-red-500/10 text-red-400 border border-red-500/30' :
-                  analysis.rating === '매우부정적' ? 'bg-red-600/20 text-red-300 border border-red-500/50' :
+                ${analysis.rating === '매우긍정적' || analysis.rating === 'Very Positive' ? 'bg-green-600/20 text-green-300 border border-green-500/50' : 
+                  analysis.rating === '긍정적' || analysis.rating === 'Positive' ? 'bg-green-500/10 text-green-400 border border-green-500/30' : 
+                  analysis.rating === '보통' || analysis.rating === 'Neutral' ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/30' :
+                  analysis.rating === '부정적' || analysis.rating === 'Negative' ? 'bg-red-500/10 text-red-400 border border-red-500/30' :
+                  analysis.rating === '매우부정적' || analysis.rating === 'Very Negative' ? 'bg-red-600/20 text-red-300 border border-red-500/50' :
                   'bg-gray-500/10 text-gray-400 border border-gray-500/30'}">
-                ${analysis.rating === '매우긍정적' ? '🤩 매우긍정적' : 
-                  analysis.rating === '긍정적' ? '😊 긍정적' : 
-                  analysis.rating === '보통' ? '😐 보통' :
-                  analysis.rating === '부정적' ? '😕 부정적' :
-                  analysis.rating === '매우부정적' ? '😡 매우부정적' : '😐 보통'}
+                ${analysis.rating === '매우긍정적' || analysis.rating === 'Very Positive' ? '🤩 ' + (isKorean ? '매우긍정적' : 'Very Positive') : 
+                  analysis.rating === '긍정적' || analysis.rating === 'Positive' ? '😊 ' + (isKorean ? '긍정적' : 'Positive') : 
+                  analysis.rating === '보통' || analysis.rating === 'Neutral' ? '😐 ' + (isKorean ? '보통' : 'Neutral') :
+                  analysis.rating === '부정적' || analysis.rating === 'Negative' ? '😕 ' + (isKorean ? '부정적' : 'Negative') :
+                  analysis.rating === '매우부정적' || analysis.rating === 'Very Negative' ? '😡 ' + (isKorean ? '매우부정적' : 'Very Negative') : '😐 ' + (isKorean ? '보통' : 'Neutral')}
             </span>
         ` : '';
         console.log('createRecipeCard - ratingBadge:', ratingBadge);
         
         const difficultyBadge = hasAnalysis ? `
             <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium
-                ${analysis.difficulty === '매우쉬움' ? 'bg-green-600/20 text-green-300 border border-green-500/50' : 
-                  analysis.difficulty === '쉬움' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/30' : 
-                  analysis.difficulty === '보통' ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/30' :
-                  analysis.difficulty === '어려움' ? 'bg-purple-500/10 text-purple-400 border border-purple-500/30' :
-                  analysis.difficulty === '매우어려움' ? 'bg-red-600/20 text-red-300 border border-red-500/50' :
+                ${analysis.difficulty === '매우쉬움' || analysis.difficulty === 'Very Easy' ? 'bg-green-600/20 text-green-300 border border-green-500/50' : 
+                  analysis.difficulty === '쉬움' || analysis.difficulty === 'Easy' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/30' : 
+                  analysis.difficulty === '보통' || analysis.difficulty === 'Medium' ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/30' :
+                  analysis.difficulty === '어려움' || analysis.difficulty === 'Hard' ? 'bg-purple-500/10 text-purple-400 border border-purple-500/30' :
+                  analysis.difficulty === '매우어려움' || analysis.difficulty === 'Very Hard' ? 'bg-red-600/20 text-red-300 border border-red-500/50' :
                   'bg-gray-500/10 text-gray-400 border border-gray-500/30'}">
-                ${analysis.difficulty === '매우쉬움' ? '⭐ 매우쉬움' : 
-                  analysis.difficulty === '쉬움' ? '⭐⭐ 쉬움' : 
-                  analysis.difficulty === '보통' ? '⭐⭐⭐ 보통' :
-                  analysis.difficulty === '어려움' ? '⭐⭐⭐⭐ 어려움' :
-                  analysis.difficulty === '매우어려움' ? '⭐⭐⭐⭐⭐ 매우어려움' : '⭐⭐⭐ 보통'}
+                ${analysis.difficulty === '매우쉬움' || analysis.difficulty === 'Very Easy' ? '⭐ ' + (isKorean ? '매우쉬움' : 'Very Easy') : 
+                  analysis.difficulty === '쉬움' || analysis.difficulty === 'Easy' ? '⭐⭐ ' + (isKorean ? '쉬움' : 'Easy') : 
+                  analysis.difficulty === '보통' || analysis.difficulty === 'Medium' ? '⭐⭐⭐ ' + (isKorean ? '보통' : 'Medium') :
+                  analysis.difficulty === '어려움' || analysis.difficulty === 'Hard' ? '⭐⭐⭐⭐ ' + (isKorean ? '어려움' : 'Hard') :
+                  analysis.difficulty === '매우어려움' || analysis.difficulty === 'Very Hard' ? '⭐⭐⭐⭐⭐ ' + (isKorean ? '매우어려움' : 'Very Hard') : '⭐⭐⭐ ' + (isKorean ? '보통' : 'Medium')}
             </span>
         ` : '';
         
@@ -208,7 +232,7 @@
                     onclick="toggleFavorite('${video.video_id}', event)" 
                     class="favorite-btn absolute top-4 right-4 z-10 p-2 bg-gray-dark/80 hover:bg-gray-dark rounded-full transition-all duration-200"
                     data-video-id="${video.video_id}"
-                    title="즐겨찾기">
+                    title="${texts.favorite}">
                     <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
                     </svg>
@@ -239,13 +263,13 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                                     </svg>
-                                    조회수 ${formatNumber(video.view_count || 0)}
+                                    ${texts.views} ${formatNumber(video.view_count || 0)}
                                 </span>
                                 <span class="flex items-center">
                                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
                                     </svg>
-                                    댓글 ${formatNumber(video.comment_count || 0)}
+                                    ${texts.comments} ${formatNumber(video.comment_count || 0)}
                                 </span>
                             </div>
                             ${summary ? `
@@ -266,7 +290,7 @@
                             </div>
                             `}
                             <div class="mt-4 flex items-center text-orange-400 text-sm font-medium">
-                                <span>레시피 상세보기</span>
+                                <span>${texts.recipeDetail}</span>
                                 <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                                 </svg>
@@ -308,6 +332,17 @@
     
     // 플레이스홀더 카드 생성
     function createPlaceholderCard(video) {
+        // 브라우저 언어 감지
+        const browserLanguage = navigator.language || navigator.userLanguage;
+        const isKorean = browserLanguage.startsWith('ko');
+        
+        // 다국어 텍스트
+        const texts = {
+            views: isKorean ? '조회수' : 'Views',
+            comments: isKorean ? '댓글' : 'Comments',
+            analyzing: isKorean ? 'AI가 댓글을 분석하는 중...' : 'AI is analyzing comments...'
+        };
+        
         return `
             <div class="placeholder-card bg-gray-medium/30 backdrop-blur-xl border border-gray-600 rounded-xl overflow-hidden" style="opacity: 0; transform: translateY(20px);">
                 <div class="flex flex-col sm:flex-row">
@@ -334,13 +369,13 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                                 </svg>
-                                조회수 ${formatNumber(video.view_count || 0)}
+                                ${texts.views} ${formatNumber(video.view_count || 0)}
                             </span>
                             <span class="flex items-center">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
                                 </svg>
-                                댓글 ${formatNumber(video.comment_count || 0)}
+                                ${texts.comments} ${formatNumber(video.comment_count || 0)}
                             </span>
                         </div>
                         
@@ -350,7 +385,7 @@
                                 <svg class="w-4 h-4 mr-2 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                                 </svg>
-                                <span class="animate-pulse">AI가 댓글을 분석하는 중...</span>
+                                <span class="animate-pulse">${texts.analyzing}</span>
                             </div>
                             <div class="flex gap-2">
                                 <div class="h-6 bg-gray-dark/50 rounded w-20 animate-pulse"></div>
@@ -367,6 +402,16 @@
     async function displayRecipes(videos, startIndex, count) {
         const videoList = document.getElementById('videoList');
         const endIndex = Math.min(startIndex + count, videos.length);
+        
+        // 브라우저 언어 감지
+        const browserLanguage = navigator.language || navigator.userLanguage;
+        const isKorean = browserLanguage.startsWith('ko');
+        
+        // 다국어 텍스트
+        const texts = {
+            recipe: isKorean ? '레시피' : 'Recipe',
+            analyzingRecipe: isKorean ? '분석 중' : 'Analyzing'
+        };
         
         for (let i = startIndex; i < endIndex; i++) {
             const video = videos[i];
@@ -386,7 +431,7 @@
             }, 50);
             
             // 2. 댓글 분석까지 모두 완료 (백그라운드)
-            console.log(`레시피 ${i + 1} 분석 중: ${video.title}`);
+            console.log(`${texts.recipe} ${i + 1} ${texts.analyzingRecipe}: ${video.title}`);
             const analysis = await loadRecipeDetail(video);
             
             // 3. 완성된 카드로 교체
@@ -451,6 +496,19 @@
     document.addEventListener('DOMContentLoaded', async function() {
         resetPageState();
         
+        // 브라우저 언어 감지
+        const browserLanguage = navigator.language || navigator.userLanguage;
+        const isKorean = browserLanguage.startsWith('ko');
+        
+        // 다국어 텍스트
+        const texts = {
+            serverError: isKorean ? '서버에서 올바른 응답을 받지 못했습니다.' : 'Failed to receive proper response from server.',
+            quotaExceeded: isKorean ? '일일 검색 한도를 초과했습니다' : 'Daily search limit exceeded',
+            viewFavoriteRecipes: isKorean ? '즐겨찾기 레시피 보기' : 'View Favorite Recipes',
+            noRecipesFound: isKorean ? '레시피를 찾을 수 없습니다.' : 'No recipes found.',
+            loading: isKorean ? '로딩 중...' : 'Loading...'
+        };
+        
         const menuName = '{{ menu_name }}';
         const videoList = document.getElementById('videoList');
         const initialLoading = document.getElementById('initialLoading');
@@ -477,7 +535,7 @@
             if (!contentType || !contentType.includes('application/json')) {
                 const text = await response.text();
                 console.error('Received HTML instead of JSON:', text.substring(0, 200));
-                throw new Error('서버에서 올바른 응답을 받지 못했습니다.');
+                throw new Error(texts.serverError);
             }
             
             const result = await response.json();
@@ -491,13 +549,13 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
                             </svg>
                             <div>
-                                <h3 class="text-xl font-bold mb-2">일일 검색 한도를 초과했습니다</h3>
+                                <h3 class="text-xl font-bold mb-2">${texts.quotaExceeded}</h3>
                                 <p class="text-yellow-300 mb-4">${result.message}</p>
                                 <a href="{% url 'recipe_ai:favorite_list' %}" class="inline-flex items-center px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors duration-200">
                                     <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                                     </svg>
-                                    즐겨찾기 레시피 보기
+                                    ${texts.viewFavoriteRecipes}
                                 </a>
                             </div>
                         </div>
@@ -507,7 +565,7 @@
             }
             
             if (result.status !== 'success') {
-                throw new Error(result.message || '레시피를 찾을 수 없습니다.');
+                throw new Error(result.message || texts.noRecipesFound);
             }
             
             allVideos = result.videos;
@@ -558,7 +616,7 @@
                 showMoreBtn.classList.add('opacity-50', 'cursor-not-allowed');
                 const btnText = showMoreBtn.querySelector('span');
                 const originalText = btnText.innerHTML;
-                btnText.innerHTML = '로딩 중...';
+                btnText.innerHTML = texts.loading;
                 
                 // 다음 2개 표시
                 const oldIndex = currentIndex;
@@ -586,6 +644,16 @@
     window.toggleFavorite = async function(videoId, event) {
         event.preventDefault();
         event.stopPropagation();
+        
+        // 브라우저 언어 감지
+        const browserLanguage = navigator.language || navigator.userLanguage;
+        const isKorean = browserLanguage.startsWith('ko');
+        
+        // 다국어 텍스트
+        const texts = {
+            errorOccurred: isKorean ? '오류가 발생했습니다.' : 'An error occurred.',
+            toggleFavoriteError: isKorean ? '즐겨찾기 토글 오류:' : 'Favorite toggle error:'
+        };
         
         const button = event.currentTarget;
         const svg = button.querySelector('svg');
@@ -618,11 +686,11 @@
                     svg.classList.add('text-yellow-400');
                 }
             } else {
-                alert(data.message || '오류가 발생했습니다.');
+                alert(data.message || texts.errorOccurred);
             }
         } catch (error) {
-            console.error('즐겨찾기 토글 오류:', error);
-            alert('오류가 발생했습니다.');
+            console.error(texts.toggleFavoriteError, error);
+            alert(texts.errorOccurred);
         } finally {
             button.disabled = false;
         }
@@ -630,6 +698,15 @@
     
     // 즐겨찾기 상태 확인
     async function checkFavoriteStatus(videoId) {
+        // 브라우저 언어 감지
+        const browserLanguage = navigator.language || navigator.userLanguage;
+        const isKorean = browserLanguage.startsWith('ko');
+        
+        // 다국어 텍스트
+        const texts = {
+            checkFavoriteError: isKorean ? '즐겨찾기 상태 확인 오류:' : 'Favorite status check error:'
+        };
+        
         try {
             const response = await fetch('{% url "recipe_ai:check_favorite" %}', {
                 method: 'POST',
@@ -652,7 +729,7 @@
                 }
             }
         } catch (error) {
-            console.error('즐겨찾기 상태 확인 오류:', error);
+            console.error(texts.checkFavoriteError, error);
         }
     }
     

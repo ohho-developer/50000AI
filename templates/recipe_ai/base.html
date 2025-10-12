@@ -1,9 +1,10 @@
+{% load i18n %}
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="{% get_current_language as LANGUAGE_CODE %}{{ LANGUAGE_CODE }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}AI 요리 추천 - 50000AI{% endblock %}</title>
+    <title>{% block title %}{% trans "AI 요리 추천" %} - 50000AI{% endblock %}</title>
     <script>
         // 브라우저 언어 감지
         const browserLanguage = navigator.language || navigator.userLanguage;
@@ -51,7 +52,7 @@
                             <div class="w-8 h-8 bg-gradient-to-r from-orange to-orange-dark rounded-lg flex items-center justify-center">
                                 <span class="text-white font-bold text-sm">AI</span>
                             </div>
-                            <h1 class="text-2xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">AI 요리 추천</h1>
+                            <h1 class="text-2xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">{% trans "AI 요리 추천" %}</h1>
                         </a>
                     </div>
                     
@@ -71,29 +72,29 @@
                             <div class="w-8 h-8 bg-gradient-to-r from-orange to-orange-dark rounded-lg flex items-center justify-center">
                                 <span class="text-white font-bold text-sm">AI</span>
                             </div>
-                            <h1 class="text-2xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">AI 요리 추천</h1>
+                            <h1 class="text-2xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">{% trans "AI 요리 추천" %}</h1>
                         </a>
                     </div>
                     
                     <!-- Desktop Navigation -->
                     <div class="flex items-center space-x-8">
                         <a href="{% url 'recipe_ai:index' %}" class="{% if request.path == '/recipe-ai/' %}text-orange-400 font-medium{% else %}text-gray-300 hover:text-white{% endif %} transition-colors duration-200" id="navHome">
-                            홈
+                            {% trans "홈" %}
                         </a>
                         <a href="{% url 'recipe_ai:favorite_list' %}" class="{% if 'favorites' in request.path %}text-orange-400 font-medium{% else %}text-gray-300 hover:text-white{% endif %} transition-colors duration-200 flex items-center space-x-1" id="navFavorites">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                             </svg>
-                            <span>즐겨찾기</span>
+                            <span>{% trans "즐겨찾기" %}</span>
                         </a>
                         <a href="{% url 'recipe_ai:community_list' %}" class="{% if 'community' in request.path %}text-orange-400 font-medium{% else %}text-gray-300 hover:text-white{% endif %} transition-colors duration-200" id="navCommunity">
-                            커뮤니티
+                            {% trans "커뮤니티" %}
                         </a>
                     </div>
                     
                     <!-- Desktop Actions -->
                     <div class="flex items-center">
-                        <a href="{% url 'account_logout' %}" class="bg-gray-medium text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition-all duration-200 border border-gray-600" id="navLogout">로그아웃</a>
+                        <a href="{% url 'account_logout' %}" class="bg-gray-medium text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition-all duration-200 border border-gray-600" id="navLogout">{% trans "로그아웃" %}</a>
                     </div>
                 </div>
                 
@@ -101,19 +102,19 @@
                 <div id="mobileMenu" class="md:hidden hidden pb-4 border-t border-gray-700 bg-gray-dark/95 backdrop-blur-xl shadow-lg">
                     <div class="pt-4 space-y-4">
                         <a href="{% url 'recipe_ai:index' %}" class="block px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition-colors duration-200 {% if request.path == '/recipe-ai/' %}text-orange-400 font-medium{% endif %}" id="mobileNavHome">
-                            홈
+                            {% trans "홈" %}
                         </a>
                         <a href="{% url 'recipe_ai:favorite_list' %}" class="flex items-center space-x-2 px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition-colors duration-200 {% if 'favorites' in request.path %}text-orange-400 font-medium{% endif %}" id="mobileNavFavorites">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                             </svg>
-                            <span>즐겨찾기</span>
+                            <span>{% trans "즐겨찾기" %}</span>
                         </a>
                         <a href="{% url 'recipe_ai:community_list' %}" class="block px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition-colors duration-200 {% if 'community' in request.path %}text-orange-400 font-medium{% endif %}" id="mobileNavCommunity">
-                            커뮤니티
+                            {% trans "커뮤니티" %}
                         </a>
                         <a href="{% url 'account_logout' %}" class="block px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition-colors duration-200" id="mobileNavLogout">
-                            로그아웃
+                            {% trans "로그아웃" %}
                         </a>
                     </div>
                 </div>
@@ -147,7 +148,7 @@
                             <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                             </svg>
-                            즐겨찾기 레시피 보기
+                            {% trans "즐겨찾기 레시피 보기" %}
                         </a>
                         {% endif %}
                     </div>
@@ -173,14 +174,14 @@
             <div class="border-t border-gray-medium mt-12 pt-8">
                 <div class="flex flex-col md:flex-row justify-between items-center gap-4">
                     <a href="{% url 'home' %}" class="px-6 py-2 bg-gray-700/30 hover:bg-gray-700/50 text-gray-300 hover:text-white rounded-lg transition-all duration-200 text-sm border border-gray-600/30">
-                        ← 50000AI 홈으로
+                        ← 50000AI {% trans "홈으로" %}
                     </a>
                     <p class="text-gray-500 text-sm">© 2025 50000AI. All rights reserved.</p>
                     <p class="text-gray-500 text-sm">hochul.kim@designusplus.com</p>
                     
                      <div class="flex space-x-6 mt-4 md:mt-0">
-                         <a href="{% url 'privacy_policy' %}" class="text-gray-500 hover:text-accent text-sm transition-colors duration-200">개인정보처리방침</a>
-                         <a href="{% url 'terms_of_service' %}" class="text-gray-500 hover:text-accent text-sm transition-colors duration-200">이용약관</a>
+                         <a href="{% url 'privacy_policy' %}" class="text-gray-500 hover:text-accent text-sm transition-colors duration-200">{% trans "개인정보처리방침" %}</a>
+                         <a href="{% url 'terms_of_service' %}" class="text-gray-500 hover:text-accent text-sm transition-colors duration-200">{% trans "이용약관" %}</a>
                      </div>
                 </div>
             </div>

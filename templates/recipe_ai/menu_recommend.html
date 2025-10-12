@@ -1,6 +1,7 @@
 {% extends 'recipe_ai/base.html' %}
+{% load i18n %}
 
-{% block title %}메뉴 추천 결과 - AI 요리 추천{% endblock %}
+{% block title %}{% trans "메뉴 추천 결과" %} - {% trans "AI 요리 추천" %}{% endblock %}
 
 {% block content %}
 <div class="min-h-screen bg-dark">
@@ -11,21 +12,21 @@
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                 </svg>
-                다시 검색하기
+                {% trans "다시 검색하기" %}
             </a>
             
             <div class="bg-gray-medium/30 backdrop-blur-xl border border-gray-600 rounded-xl p-6 mb-8">
-                <p class="text-gray-400 text-sm mb-2">검색어</p>
+                <p class="text-gray-400 text-sm mb-2">{% trans "검색어" %}</p>
                 <p class="text-white text-xl font-medium">{{ query }}</p>
             </div>
 
             <h1 class="text-3xl md:text-4xl font-bold mb-4">
                 <span class="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                    AI가 추천하는 메뉴
+                    {% trans "AI가 추천하는 메뉴" %}
                 </span>
             </h1>
             <p class="text-gray-400 text-lg">
-                마음에 드는 메뉴를 선택하면 레시피 영상을 찾아드립니다
+                {% trans "마음에 드는 메뉴를 선택하면 레시피 영상을 찾아드립니다" %}
             </p>
         </div>
 
@@ -47,7 +48,7 @@
                             {{ menu.name }}
                         </h3>
                         <p class="text-gray-400 text-sm group-hover:text-gray-300 transition-colors duration-300">
-                            레시피 영상 보기
+                            {% trans "레시피 영상 보기" %}
                         </p>
                     </div>
                     
@@ -68,7 +69,7 @@
                 id="loadMoreBtn" 
                 class="bg-gradient-to-r from-orange-600 to-orange-500 text-white px-8 py-4 rounded-xl font-semibold hover:from-orange-700 hover:to-orange-600 transition-all duration-200 shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 transform hover:-translate-y-1"
             >
-                더 많은 메뉴 보기
+                {% trans "더 많은 메뉴 보기" %}
             </button>
         </div>
     </div>
@@ -87,7 +88,7 @@ document.getElementById('loadMoreBtn').addEventListener('click', function() {
     
     // 버튼 비활성화 및 로딩 표시
     btn.disabled = true;
-    btn.innerHTML = '로딩 중...';
+    btn.innerHTML = '{% trans "로딩 중..." %}';
     
     // CSRF 토큰 가져오기
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
@@ -117,12 +118,12 @@ document.getElementById('loadMoreBtn').addEventListener('click', function() {
             alert(data.message);
             btn.style.display = 'none';
         } else {
-            alert('오류가 발생했습니다: ' + data.message);
+            alert('{% trans "오류가 발생했습니다:" %} ' + data.message);
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('오류가 발생했습니다.');
+        alert('{% trans "오류가 발생했습니다." %}');
     })
     .finally(() => {
         // 버튼 복원
@@ -135,6 +136,11 @@ function createMenuCard(menu) {
     const card = document.createElement('a');
     card.href = `/recipe-ai/recipe-list/${encodeURIComponent(menu.name)}/`;
     card.className = 'menu-card group bg-gradient-to-br from-gray-800/50 to-gray-700/30 backdrop-blur-sm border border-gray-600/50 rounded-2xl p-8 hover:border-orange-400/50 hover:shadow-2xl hover:shadow-orange-400/20 transition-all duration-300 transform hover:-translate-y-2';
+    
+    // 브라우저 언어 감지
+    const browserLanguage = navigator.language || navigator.userLanguage;
+    const isKorean = browserLanguage.startsWith('ko');
+    const recipeVideoText = isKorean ? '레시피 영상 보기' : 'View Recipe Video';
     
     card.innerHTML = `
         <div class="flex flex-col items-center justify-center text-center">
@@ -149,7 +155,7 @@ function createMenuCard(menu) {
                     ${menu.name}
                 </h3>
                 <p class="text-gray-400 text-sm group-hover:text-gray-300 transition-colors duration-300">
-                    레시피 영상 보기
+                    ${recipeVideoText}
                 </p>
             </div>
             

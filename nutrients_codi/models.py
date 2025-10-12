@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.utils.translation import gettext_lazy as _
 from pgvector.django import VectorField
 
 
@@ -10,8 +11,8 @@ class Profile(models.Model):
     
     # 기본 정보
     gender = models.CharField(max_length=10, choices=[
-        ('male', '남성'),
-        ('female', '여성'),
+        ('male', _('남성')),
+        ('female', _('여성')),
     ], default='male')
     
     birth_date = models.DateField(null=True, blank=True)
@@ -20,18 +21,18 @@ class Profile(models.Model):
     
     # 목표 설정
     goal = models.CharField(max_length=20, choices=[
-        ('lose_weight', '체중 감량'),
-        ('maintain_weight', '체중 유지'),
-        ('gain_weight', '체중 증가'),
-        ('muscle_gain', '근육 증가'),
+        ('lose_weight', _('체중 감량')),
+        ('maintain_weight', _('체중 유지')),
+        ('gain_weight', _('체중 증가')),
+        ('muscle_gain', _('근육 증가')),
     ], default='maintain_weight')
     
     activity_level = models.CharField(max_length=20, choices=[
-        ('sedentary', '거의 활동 없음'),
-        ('light', '가벼운 활동'),
-        ('moderate', '보통 활동'),
-        ('active', '활동적'),
-        ('very_active', '매우 활동적'),
+        ('sedentary', _('거의 활동 없음')),
+        ('light', _('가벼운 활동')),
+        ('moderate', _('보통 활동')),
+        ('active', _('활동적')),
+        ('very_active', _('매우 활동적')),
     ], default='moderate')
     
     # 계산된 권장 섭취량 (자동 계산)
@@ -458,11 +459,11 @@ class CommunityPost(models.Model):
     
     # 카테고리
     category = models.CharField(max_length=50, choices=[
-        ('tip', '식단 팁'),
-        ('question', '질문'),
-        ('review', '후기'),
-        ('recipe', '레시피'),
-        ('general', '자유게시판'),
+        ('tip', _('식단 팁')),
+        ('question', _('질문')),
+        ('review', _('후기')),
+        ('recipe', _('레시피')),
+        ('general', _('자유게시판')),
     ], default='general')
     
     # 통계

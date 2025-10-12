@@ -185,13 +185,13 @@
                         <!-- 날짜 헤더 -->
                         <div class="flex items-center justify-between mb-4">
                             <div>
-                                <h3 class="text-lg font-semibold text-white group-hover:text-accent transition-colors">
+                                <h3 class="text-lg font-semibold text-white group-hover:text-accent transition-colors date-text">
                                     {% if summary.date == today %}
                                         오늘
                                     {% elif summary.date == today|add:"-1" %}
                                         어제
                                     {% else %}
-                                        {{ summary.date|date:"m월 d일" }}
+                                        <span class="date-display" data-date="{{ summary.date|date:'Y-m-d' }}">{{ summary.date|date:"m월 d일" }}</span>
                                     {% endif %}
                                 </h3>
                             </div>
@@ -259,7 +259,7 @@
                                 {% elif summary.date == today|add:"-1" %}
                                     어제
                                 {% else %}
-                                    {{ summary.date|date:"m월 d일" }}
+                                        <span class="date-display" data-date="{{ summary.date|date:'Y-m-d' }}">{{ summary.date|date:"m월 d일" }}</span>
                                 {% endif %}
                             </h3>
                             <p class="text-xs text-gray-400 mt-1">{{ summary.food_count }}개 음식</p>
@@ -372,7 +372,11 @@
                    noRecords: '오늘의 식단 기록이 없습니다.',
                    analyzing: 'AI가 분석 중입니다',
                    pleaseWait: '잠시만 기다려주세요...',
-                   fiber: '식이섬유'
+                   fiber: '식이섬유',
+                   today: '오늘',
+                   yesterday: '어제',
+                   foods: '개 음식',
+                   clickToView: '클릭하여 상세 보기'
         },
         en: {
             mainTitle: 'Nutrients-Codi',
@@ -401,7 +405,11 @@
                    noRecords: 'No food records for today.',
                    analyzing: 'AI is analyzing',
                    pleaseWait: 'Please wait...',
-                   fiber: 'Dietary Fiber'
+                   fiber: 'Dietary Fiber',
+                   today: 'Today',
+                   yesterday: 'Yesterday',
+                   foods: ' foods',
+                   clickToView: 'Click to view details'
         }
     };
     
@@ -466,6 +474,9 @@
         if (loadingTitle) loadingTitle.textContent = dashboardT.analyzing;
         if (loadingMessage) loadingMessage.textContent = dashboardT.pleaseWait;
         
+        // 날짜 및 음식 개수 번역 업데이트
+        updateDateAndFoodCounts();
+        
         // 영양소 라벨 업데이트 (최근 기록에서)
         const proteinLabels = document.querySelectorAll('.protein-label');
         const nutrientProteins = document.querySelectorAll('.nutrient-protein');
@@ -518,10 +529,67 @@
             label.textContent = dashboardT.fat;
         });
     }
+    
+    // 날짜와 음식 개수 번역 함수
+    function updateDateAndFoodCounts() {
+        // "오늘", "어제" 텍스트 번역
+        const todayElements = document.querySelectorAll('h3.date-text');
+        todayElements.forEach(element => {
+            const text = element.textContent.trim();
+            if (text === '오늘') {
+                element.textContent = dashboardT.today;
+            } else if (text === '어제') {
+                element.textContent = dashboardT.yesterday;
+            }
+        });
+        
+        // 날짜 형식 번역 (m월 d일 -> Month Day)
+        const dateElements = document.querySelectorAll('.date-display');
+        dateElements.forEach(element => {
+            const dateStr = element.getAttribute('data-date');
+            if (dateStr) {
+                const date = new Date(dateStr);
+                
+                if (!window.isKorean) {
+                    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                                      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                    const day = date.getDate();
+                    element.textContent = `${monthNames[date.getMonth()]} ${day}`;
+                } else {
+                    // 한국어인 경우 원래 형식 유지
+                    const month = date.getMonth() + 1;
+                    const day = date.getDate();
+                    element.textContent = `${month}월 ${day}일`;
+                }
+            }
+        });
+        
+        // "개 음식" 텍스트 번역
+        const foodCountElements = document.querySelectorAll('.text-xs.text-gray-400');
+        foodCountElements.forEach(element => {
+            const text = element.textContent;
+            if (text.includes('개 음식')) {
+                const count = text.replace('개 음식', '').trim();
+                element.textContent = count + dashboardT.foods;
+            }
+        });
+        
+        // "클릭하여 상세 보기" 텍스트 번역
+        const clickElements = document.querySelectorAll('.text-xs.text-gray-500');
+        clickElements.forEach(element => {
+            const text = element.textContent.trim();
+            if (text === '클릭하여 상세 보기') {
+                element.textContent = dashboardT.clickToView;
+            }
+        });
+    }
 
     document.addEventListener('DOMContentLoaded', function() {
         // 페이지 로드 시 언어 설정 적용
         updatePageLanguage();
+        
+        // 초기 로드 시에도 날짜/음식 개수 번역 적용
+        setTimeout(updateDateAndFoodCounts, 100);
         
         // base.html의 네비게이션 및 푸터 다국어 업데이트
         if (typeof window.updateNavigationLanguage === 'function') {

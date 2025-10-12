@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 from datetime import date, timedelta
 import json
 import logging
@@ -434,7 +435,7 @@ def daily_detail(request, year, month, day):
     try:
         target_date = date(int(year), int(month), int(day))
     except (ValueError, TypeError):
-        messages.error(request, '유효하지 않은 날짜입니다.')
+        messages.error(request, _('유효하지 않은 날짜입니다.'))
         return redirect('nutrients_codi:dashboard')
     
     # 해당 날짜의 모든 음식 기록
@@ -444,7 +445,7 @@ def daily_detail(request, year, month, day):
     ).order_by('-consumed_at')
     
     if not daily_logs.exists():
-        messages.info(request, f'{target_date.strftime("%Y년 %m월 %d일")}에는 기록된 음식이 없습니다.')
+        messages.info(request, _('%(date)s에는 기록된 음식이 없습니다.') % {'date': target_date.strftime("%Y년 %m월 %d일")})
         return redirect('nutrients_codi:dashboard')
     
     # 해당 날짜의 영양소 합계
@@ -792,7 +793,7 @@ def profile_setup(request):
             profile = form.save()
             # 권장 섭취량 자동 계산
             profile.calculate_daily_needs()
-            messages.success(request, '프로필이 성공적으로 저장되었습니다!')
+            messages.success(request, _('프로필이 성공적으로 저장되었습니다!'))
             return redirect('nutrients_codi:dashboard')
     else:
         form = ProfileForm(instance=profile)
@@ -1017,7 +1018,7 @@ def delete_food_log(request, log_id):
         # 캐시 무효화 (최적화)
         invalidate_nutrition_cache(request.user, consumed_date)
         
-        messages.success(request, '음식 기록이 삭제되었습니다.')
+        messages.success(request, _('음식 기록이 삭제되었습니다.'))
         
         # 삭제 후 항상 해당 날짜 상세 페이지로 리다이렉트
         return redirect('nutrients_codi:daily_detail', 
@@ -1043,7 +1044,7 @@ def edit_food_log(request, log_id):
         # 캐시 무효화 (최적화)
         invalidate_nutrition_cache(request.user, food_log.consumed_date)
         
-        messages.success(request, '음식 기록이 수정되었습니다.')
+        messages.success(request, _('음식 기록이 수정되었습니다.'))
         
         # 일별 상세정보 페이지로 리다이렉트
         return redirect('nutrients_codi:daily_detail', 

@@ -1,9 +1,10 @@
+{% load i18n %}
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="{% get_current_language as LANGUAGE_CODE %}{{ LANGUAGE_CODE }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>50000AI - AI 서비스 플랫폼 | AI 영양사 & AI 요리 추천</title>
+    <title>{% trans "50000AI - AI 서비스 플랫폼 | AI 영양사 & AI 요리 추천" %}</title>
     
     <!-- SEO Meta Tags -->
     <meta name="description" content="50000AI는 AI 기반 영양 관리 서비스와 AI 요리 추천 서비스를 제공합니다.">
@@ -70,11 +71,11 @@
                 </div>
                 <div class="flex items-center space-x-6">
                     {% if user.is_authenticated %}
-                        <a href="{% url 'accounts:profile' %}" class="text-gray-300 hover:text-white transition-colors duration-200">프로필</a>
-                        <a href="{% url 'account_logout' %}" class="bg-gray-medium text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition-all duration-200 border border-gray-600">로그아웃</a>
+                        <a href="{% url 'accounts:profile' %}" class="text-gray-300 hover:text-white transition-colors duration-200">{% trans "프로필" %}</a>
+                        <a href="{% url 'account_logout' %}" class="bg-gray-medium text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition-all duration-200 border border-gray-600">{% trans "로그아웃" %}</a>
                     {% else %}
-                        <a href="{% url 'account_login' %}" class="text-gray-300 hover:text-white transition-colors duration-200">로그인</a>
-                        <a href="{% url 'account_signup' %}" class="bg-gradient-to-r from-accent to-accent-dark text-dark px-6 py-2 rounded-lg hover:shadow-lg hover:shadow-accent/25 transition-all duration-200 font-medium">시작하기</a>
+                        <a href="{% url 'account_login' %}" class="text-gray-300 hover:text-white transition-colors duration-200">{% trans "로그인" %}</a>
+                        <a href="{% url 'account_signup' %}" class="bg-gradient-to-r from-accent to-accent-dark text-dark px-6 py-2 rounded-lg hover:shadow-lg hover:shadow-accent/25 transition-all duration-200 font-medium">{% trans "시작하기" %}</a>
                     {% endif %}
                 </div>
             </div>
@@ -98,24 +99,23 @@
                 
                 <h1 class="text-5xl md:text-7xl font-bold mb-8 leading-tight">
                     <span class="bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
-                        AI로 더 스마트한
+                        {% trans "AI로 더 스마트한" %}
                     </span>
                     <br>
                     <span class="bg-gradient-to-r from-accent to-accent-dark bg-clip-text text-transparent">
-                        삶을 설계하세요
+                        {% trans "삶을 설계하세요" %}
                     </span>
                 </h1>
                 
                 <p class="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
-                    차세대 AI 기술로 일상의 복잡함을 단순화하고, 
-                    <span class="text-accent">개인화된 솔루션</span>을 경험하세요
+                    {% blocktrans %}차세대 AI 기술로 일상의 복잡함을 단순화하고, <span class="text-accent">개인화된 솔루션</span>을 경험하세요{% endblocktrans %}
                 </p>
                 
                 <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
                     {% if user.is_authenticated %}
                     <button onclick="scrollToServices()" class="group bg-gray-medium/50 border border-gray-600 text-white px-8 py-4 rounded-xl text-lg font-medium hover:bg-gray-medium transition-all duration-300">
                         <span class="flex items-center space-x-2">
-                            <span>AI솔루션 보기</span>
+                            <span>{% trans "AI솔루션 보기" %}</span>
                             <svg class="w-5 h-5 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
@@ -124,7 +124,7 @@
                     {% else %}
                         <a href="{% url 'account_signup' %}" class="group bg-gradient-to-r from-accent to-accent-dark text-dark px-8 py-4 rounded-xl text-lg font-semibold hover:shadow-2xl hover:shadow-accent/25 transition-all duration-300 transform hover:-translate-y-1">
                             <span class="flex items-center space-x-2">
-                                <span>무료로 시작하기</span>
+                                <span>{% trans "무료로 시작하기" %}</span>
                                 <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
                                 </svg>
@@ -147,11 +147,11 @@
                 </div>
                 <h2 class="text-4xl md:text-5xl font-bold mb-6">
                     <span class="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                        차세대 AI 솔루션
+                        {% trans "차세대 AI 솔루션" %}
                     </span>
                 </h2>
                 <p class="text-xl text-gray-400 max-w-2xl mx-auto">
-                    최첨단 AI 기술로 복잡한 문제를 단순하고 효율적으로 해결합니다
+                    {% trans "최첨단 AI 기술로 복잡한 문제를 단순하고 효율적으로 해결합니다" %}
                 </p>
             </div>
 
@@ -163,15 +163,15 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                         </svg>
                     </div>
-                    <h3 class="text-2xl font-bold text-white mb-4">뉴트리언트코디</h3>
+                    <h3 class="text-2xl font-bold text-white mb-4">{% trans "뉴트리언트코디" %}</h3>
                     <p class="text-gray-400 mb-8 leading-relaxed">
-                        자연어 처리 기술로 식단을 분석하고, 개인 맞춤형 영양 가이드를 제공하는 AI 영양사
+                        {% trans "자연어 처리 기술로 식단을 분석하고, 개인 맞춤형 영양 가이드를 제공하는 AI 영양사" %}
                     </p>
                     <div class="flex items-center justify-between">
                         {% if user.is_authenticated %}
                             <a href="{% url 'nutrients_codi:dashboard' %}" class="group/btn bg-gradient-to-r from-accent to-accent-dark text-dark px-6 py-3 rounded-xl font-semibold hover:shadow-lg hover:shadow-accent/25 transition-all duration-300">
                                 <span class="flex items-center space-x-2">
-                                    <span>시작하기</span>
+                                    <span>{% trans "시작하기" %}</span>
                                     <svg class="w-4 h-4 group-hover/btn:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
                                     </svg>
@@ -180,7 +180,7 @@
                         {% else %}
                             <a href="{% url 'account_signup' %}" class="group/btn bg-gradient-to-r from-accent to-accent-dark text-dark px-6 py-3 rounded-xl font-semibold hover:shadow-lg hover:shadow-accent/25 transition-all duration-300">
                                 <span class="flex items-center space-x-2">
-                                    <span>시작하기</span>
+                                    <span>{% trans "시작하기" %}</span>
                                     <svg class="w-4 h-4 group-hover/btn:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
                                     </svg>
@@ -198,15 +198,15 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                         </svg>
                     </div>
-                    <h3 class="text-2xl font-bold text-white mb-4">AI 요리 추천</h3>
+                    <h3 class="text-2xl font-bold text-white mb-4">{% trans "AI 요리 추천" %}</h3>
                     <p class="text-gray-400 mb-8 leading-relaxed">
-                        상황과 재료에 맞는 요리를 추천하고, AI가 레시피를 요약해주는 스마트 요리 도우미
+                        {% trans "상황과 재료에 맞는 요리를 추천하고, AI가 레시피를 요약해주는 스마트 요리 도우미" %}
                     </p>
                     <div class="flex items-center justify-between">
                         {% if user.is_authenticated %}
                             <a href="{% url 'recipe_ai:index' %}" class="group/btn bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg hover:shadow-orange-500/25 transition-all duration-300">
                                 <span class="flex items-center space-x-2">
-                                    <span>시작하기</span>
+                                    <span>{% trans "시작하기" %}</span>
                                     <svg class="w-4 h-4 group-hover/btn:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
                                     </svg>
@@ -215,7 +215,7 @@
                         {% else %}
                             <a href="{% url 'account_signup' %}" class="group/btn bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg hover:shadow-orange-500/25 transition-all duration-300">
                                 <span class="flex items-center space-x-2">
-                                    <span>시작하기</span>
+                                    <span>{% trans "시작하기" %}</span>
                                     <svg class="w-4 h-4 group-hover/btn:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
                                     </svg>
@@ -232,13 +232,13 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
                         </svg>
                     </div>
-                    <h3 class="text-2xl font-bold text-white mb-4">AI 상담사</h3>
+                    <h3 class="text-2xl font-bold text-white mb-4">{% trans "AI 상담사" %}</h3>
                     <p class="text-gray-500 mb-8 leading-relaxed">
-                        24시간 AI 심리 상담 및 멘탈 헬스케어 서비스
+                        {% trans "24시간 AI 심리 상담 및 멘탈 헬스케어 서비스" %}
                     </p>
                     <div class="flex items-center justify-between">
                         <button class="bg-gray-600 text-gray-400 px-6 py-3 rounded-xl cursor-not-allowed" disabled>
-                            준비중
+                            {% trans "준비중" %}
                         </button>
                         <span class="text-xs text-gray-600 font-mono">COMING SOON</span>
                     </div>
@@ -259,8 +259,8 @@
                     <p class="text-gray-500 text-sm">hochul.kim@designusplus.com</p>
                     
                     <div class="flex space-x-6 mt-4 md:mt-0">
-                        <a href="{% url 'privacy_policy' %}" class="text-gray-500 hover:text-accent text-sm transition-colors duration-200">개인정보처리방침</a>
-                        <a href="{% url 'terms_of_service' %}" class="text-gray-500 hover:text-accent text-sm transition-colors duration-200">이용약관</a>
+                        <a href="{% url 'privacy_policy' %}" class="text-gray-500 hover:text-accent text-sm transition-colors duration-200">{% trans "개인정보처리방침" %}</a>
+                        <a href="{% url 'terms_of_service' %}" class="text-gray-500 hover:text-accent text-sm transition-colors duration-200">{% trans "이용약관" %}</a>
                     </div>
                 </div>
             </div>

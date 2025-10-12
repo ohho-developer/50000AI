@@ -1,9 +1,10 @@
+{% load i18n %}
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="{% get_current_language as LANGUAGE_CODE %}{{ LANGUAGE_CODE }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}뉴트리언트코디 - AI 영양사{% endblock %}</title>
+    <title>{% block title %}{% trans "뉴트리언트코디" %} - {% trans "AI 영양사" %}{% endblock %}</title>
     <script>
         // 브라우저 언어 감지
         const browserLanguage = navigator.language || navigator.userLanguage;
@@ -51,7 +52,7 @@
                             <div class="w-8 h-8 bg-gradient-to-r from-accent to-accent-dark rounded-lg flex items-center justify-center">
                                 <span class="text-dark font-bold text-sm">NC</span>
                             </div>
-                            <h1 class="text-2xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">뉴트리언트코디</h1>
+                            <h1 class="text-2xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent" id="navNutrientsCodi">{% trans "뉴트리언트코디" %}</h1>
                         </a>
                     </div>
                     
@@ -71,26 +72,26 @@
                             <div class="w-8 h-8 bg-gradient-to-r from-accent to-accent-dark rounded-lg flex items-center justify-center">
                                 <span class="text-dark font-bold text-sm">NC</span>
                             </div>
-                            <h1 class="text-2xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">뉴트리언트코디</h1>
+                            <h1 class="text-2xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent" id="navNutrientsCodi">{% trans "뉴트리언트코디" %}</h1>
                         </a>
                     </div>
                     
                     <!-- Desktop Navigation -->
                     <div class="flex items-center space-x-8">
                         <a href="{% url 'nutrients_codi:dashboard' %}" class="{% if 'nutrients-codi' in request.path and 'profile' not in request.path and 'community' not in request.path %}text-accent font-medium{% else %}text-gray-300 hover:text-white{% endif %} transition-colors duration-200" id="navNutrientsCodi">
-                            대시보드
+                            {% trans "대시보드" %}
                         </a>
                         <a href="{% url 'nutrients_codi:profile_setup' %}" class="{% if 'profile' in request.path %}text-accent font-medium{% else %}text-gray-300 hover:text-white{% endif %} transition-colors duration-200" id="navProfile">
-                            프로필 설정
+                            {% trans "프로필 설정" %}
                         </a>
                         <a href="{% url 'nutrients_codi:community_list' %}" class="{% if 'community' in request.path %}text-accent font-medium{% else %}text-gray-300 hover:text-white{% endif %} transition-colors duration-200" id="navCommunity">
-                            커뮤니티
+                            {% trans "커뮤니티" %}
                         </a>
                     </div>
                     
                     <!-- Desktop Actions -->
                     <div class="flex items-center">
-                        <a href="{% url 'account_logout' %}" class="bg-gray-medium text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition-all duration-200 border border-gray-600" id="navLogout">로그아웃</a>
+                        <a href="{% url 'account_logout' %}" class="bg-gray-medium text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition-all duration-200 border border-gray-600" id="navLogout">{% trans "로그아웃" %}</a>
                     </div>
                 </div>
                 
@@ -98,16 +99,16 @@
                 <div id="mobileMenu" class="md:hidden hidden pb-4 border-t border-gray-700 bg-gray-dark/95 backdrop-blur-xl shadow-lg">
                     <div class="pt-4 space-y-4">
                         <a href="{% url 'nutrients_codi:dashboard' %}" class="block px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition-colors duration-200 {% if 'nutrients-codi' in request.path and 'community' not in request.path %}text-accent font-medium{% endif %}" id="mobileNavNutrientsCodi">
-                            대시보드
+                            {% trans "대시보드" %}
                         </a>
                         <a href="{% url 'nutrients_codi:profile_setup' %}" class="block px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition-colors duration-200 {% if 'profile-setup' in request.path %}text-accent font-medium{% endif %}" id="mobileNavProfile">
-                            프로필 설정
+                            {% trans "프로필 설정" %}
                         </a>
                         <a href="{% url 'nutrients_codi:community_list' %}" class="block px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition-colors duration-200 {% if 'community' in request.path %}text-accent font-medium{% endif %}" id="mobileNavCommunity">
-                            커뮤니티
+                            {% trans "커뮤니티" %}
                         </a>
                         <a href="{% url 'account_logout' %}" class="block px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition-colors duration-200" id="mobileNavLogout">
-                            로그아웃
+                            {% trans "로그아웃" %}
                         </a>
                     </div>
                 </div>
@@ -121,7 +122,7 @@
     </main>
     <div class="flex justify-center my-8">
         <iframe src="https://ads-partners.coupang.com/widgets.html?id=930572&template=carousel&trackingCode=AF6345294&subId=&width=400&height=140&tsource=" width="900" height="140" frameborder="0" scrolling="no" referrerpolicy="unsafe-url" browsingtopics></iframe>
-        </div>
+    </div>
 
 
         <!-- Footer -->
@@ -131,7 +132,7 @@
             <div class="border-t border-gray-medium mt-12 pt-8">
                 <div class="flex flex-col md:flex-row justify-between items-center gap-4">
                     <a href="{% url 'home' %}" class="px-6 py-2 bg-gray-700/30 hover:bg-gray-700/50 text-gray-300 hover:text-white rounded-lg transition-all duration-200 text-sm border border-gray-600/30">
-                        ← 50000AI 홈으로
+                        ← 50000AI {% trans "홈으로" %}
                     </a>
                     <p class="text-gray-500 text-sm">© 2025 50000AI. All rights reserved.</p>
                     <p class="text-gray-500 text-sm">hochul.kim@designusplus.com</p>

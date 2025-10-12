@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q, Count
 from django.http import JsonResponse
+from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_http_methods
 
 from .models import CommunityPost, CommunityComment
@@ -104,7 +105,7 @@ def community_create(request):
         youtube_url = request.POST.get('youtube_url', '').strip()
         
         if not title or not content:
-            messages.error(request, '제목과 내용을 모두 입력해주세요.')
+            messages.error(request, _('제목과 내용을 모두 입력해주세요.'))
             return render(request, 'recipe_ai/community_form.html', {
                 'categories': CommunityPost._meta.get_field('category').choices,
                 'title': title,
@@ -121,7 +122,7 @@ def community_create(request):
             youtube_url=youtube_url if youtube_url else None
         )
         
-        messages.success(request, '게시글이 작성되었습니다.')
+        messages.success(request, _('게시글이 작성되었습니다.'))
         return redirect('recipe_ai:community_detail', post_id=post.id)
     
     context = {
@@ -142,7 +143,7 @@ def community_update(request, post_id):
         youtube_url = request.POST.get('youtube_url', '').strip()
         
         if not title or not content:
-            messages.error(request, '제목과 내용을 모두 입력해주세요.')
+            messages.error(request, _('제목과 내용을 모두 입력해주세요.'))
             return render(request, 'recipe_ai/community_form.html', {
                 'post': post,
                 'categories': CommunityPost._meta.get_field('category').choices,
@@ -154,7 +155,7 @@ def community_update(request, post_id):
         post.youtube_url = youtube_url if youtube_url else None
         post.save()
         
-        messages.success(request, '게시글이 수정되었습니다.')
+        messages.success(request, _('게시글이 수정되었습니다.'))
         return redirect('recipe_ai:community_detail', post_id=post.id)
     
     context = {
@@ -170,7 +171,7 @@ def community_delete(request, post_id):
     """커뮤니티 게시글 삭제"""
     post = get_object_or_404(CommunityPost, id=post_id, user=request.user)
     post.delete()
-    messages.success(request, '게시글이 삭제되었습니다.')
+    messages.success(request, _('게시글이 삭제되었습니다.'))
     return redirect('recipe_ai:community_list')
 
 
@@ -203,7 +204,7 @@ def comment_create(request, post_id):
     parent_id = request.POST.get('parent_id')
     
     if not content:
-        messages.error(request, '댓글 내용을 입력해주세요.')
+        messages.error(request, _('댓글 내용을 입력해주세요.'))
         return redirect('recipe_ai:community_detail', post_id=post_id)
     
     parent = None
@@ -217,7 +218,7 @@ def comment_create(request, post_id):
         parent=parent
     )
     
-    messages.success(request, '댓글이 작성되었습니다.')
+    messages.success(request, _('댓글이 작성되었습니다.'))
     return redirect('recipe_ai:community_detail', post_id=post_id)
 
 
@@ -228,6 +229,6 @@ def comment_delete(request, comment_id):
     comment = get_object_or_404(CommunityComment, id=comment_id, user=request.user)
     post_id = comment.post.id
     comment.delete()
-    messages.success(request, '댓글이 삭제되었습니다.')
+    messages.success(request, _('댓글이 삭제되었습니다.'))
     return redirect('recipe_ai:community_detail', post_id=post_id)
 

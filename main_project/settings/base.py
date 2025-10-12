@@ -107,7 +107,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Internationalization
-LANGUAGE_CODE = 'ko-kr'
+LANGUAGE_CODE = 'ko-kr'  # Default language
 TIME_ZONE = 'Asia/Seoul'
 USE_I18N = True
 USE_TZ = True
@@ -118,7 +118,12 @@ LANGUAGES = [
     ('en', 'English'),
 ]
 
-LANGUAGE_DETECTION = True
+# Language cookie settings (optional but recommended)
+LANGUAGE_COOKIE_NAME = 'django_language'
+LANGUAGE_COOKIE_AGE = None  # Session cookie
+LANGUAGE_COOKIE_DOMAIN = None
+LANGUAGE_COOKIE_PATH = '/'
+
 LOCALE_PATHS = [
     BASE_DIR / 'locale',
 ]

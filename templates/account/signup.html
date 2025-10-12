@@ -1,13 +1,14 @@
 {% extends "account/base.html" %}
 {% load account %}
+{% load i18n %}
 
-{% block head_title %}회원가입{% endblock %}
+{% block head_title %}{% trans "회원가입" %}{% endblock %}
 
 {% block badge_text %}SIGN UP{% endblock %}
 
-{% block page_title %}회원가입{% endblock %}
+{% block page_title %}{% trans "회원가입" %}{% endblock %}
 
-{% block page_description %}50000AI와 함께 AI의 세계로 떠나보세요{% endblock %}
+{% block page_description %}{% trans "50000AI와 함께 AI의 세계로 떠나보세요" %}{% endblock %}
 
 {% block content %}
 <form class="space-y-6" method="POST" action="{% url 'account_signup' %}">
@@ -22,7 +23,7 @@
     <!-- Email Field -->
     <div>
         <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-2">
-            이메일 <span class="text-red-400">*</span>
+            {% trans "이메일" %} <span class="text-red-400">*</span>
         </label>
         <input 
             type="email" 
@@ -41,14 +42,14 @@
     <!-- Username Field -->
     <div>
         <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-2">
-            사용자 이름 <span class="text-red-400">*</span>
+            {% trans "사용자 이름" %} <span class="text-red-400">*</span>
         </label>
         <input 
             type="text" 
             name="{{ form.username.name }}"
             id="{{ form.username.id_for_label }}"
             class="w-full bg-gray-dark/50 border border-gray-600 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:border-accent focus:ring-2 focus:ring-accent/20 focus:outline-none transition-all duration-200"
-            placeholder="username123"
+            placeholder="{% trans 'username123' %}"
             required
             autocomplete="username"
             minlength="3"
@@ -57,20 +58,20 @@
         {% if form.username.errors %}
             <p class="mt-2 text-sm text-red-400">{{ form.username.errors.0 }}</p>
         {% endif %}
-        <p class="mt-1 text-xs text-gray-400">영문, 숫자, @/./+/-/_ 사용 가능 (3-150자)</p>
+        <p class="mt-1 text-xs text-gray-400">{% trans "영문, 숫자, @/./+/-/_ 사용 가능 (3-150자)" %}</p>
     </div>
     
     <!-- Password Field -->
     <div>
         <label for="{{ form.password1.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-2">
-            비밀번호 <span class="text-red-400">*</span>
+            {% trans "비밀번호" %} <span class="text-red-400">*</span>
         </label>
         <input 
             type="password" 
             name="{{ form.password1.name }}"
             id="{{ form.password1.id_for_label }}"
             class="w-full bg-gray-dark/50 border border-gray-600 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:border-accent focus:ring-2 focus:ring-accent/20 focus:outline-none transition-all duration-200"
-            placeholder="비밀번호를 입력하세요"
+            placeholder="{% trans '비밀번호를 입력하세요' %}"
             required
             autocomplete="new-password"
         >
@@ -82,14 +83,14 @@
     <!-- Password Confirmation Field -->
     <div>
         <label for="{{ form.password2.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-2">
-            비밀번호 확인 <span class="text-red-400">*</span>
+            {% trans "비밀번호 확인" %} <span class="text-red-400">*</span>
         </label>
         <input 
             type="password" 
             name="{{ form.password2.name }}"
             id="{{ form.password2.id_for_label }}"
             class="w-full bg-gray-dark/50 border border-gray-600 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:border-accent focus:ring-2 focus:ring-accent/20 focus:outline-none transition-all duration-200"
-            placeholder="비밀번호를 다시 입력하세요"
+            placeholder="{% trans '비밀번호를 다시 입력하세요' %}"
             required
             autocomplete="new-password"
         >
@@ -108,8 +109,8 @@
             >
             <span class="text-sm text-gray-300">
                 <span class="text-red-400">*</span> 
-                <a href="{% url 'terms_of_service' %}" target="_blank" class="text-accent hover:text-accent-dark transition-colors duration-200 underline">이용약관</a> 및 
-                <a href="{% url 'privacy_policy' %}" target="_blank" class="text-accent hover:text-accent-dark transition-colors duration-200 underline">개인정보처리방침</a>에 동의합니다.
+                <a href="{% url 'terms_of_service' %}" target="_blank" class="text-accent hover:text-accent-dark transition-colors duration-200 underline">{% trans "이용약관" %}</a> {% trans "및" %} 
+                <a href="{% url 'privacy_policy' %}" target="_blank" class="text-accent hover:text-accent-dark transition-colors duration-200 underline">{% trans "개인정보처리방침" %}</a>{% trans "에 동의합니다." %}
             </span>
         </label>
     </div>
@@ -120,7 +121,7 @@
         class="w-full bg-gradient-to-r from-accent to-accent-dark text-dark py-3 rounded-xl font-semibold hover:shadow-lg hover:shadow-accent/25 transition-all duration-300 transform hover:-translate-y-0.5"
     >
         <span class="flex items-center justify-center space-x-2">
-            <span>계정 생성하기</span>
+            <span>{% trans "계정 생성하기" %}</span>
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
             </svg>
@@ -131,9 +132,9 @@
 
 {% block footer_links %}
 <p class="text-gray-400">
-    이미 계정이 있으신가요? 
+    {% trans "이미 계정이 있으신가요?" %} 
     <a href="{% url 'account_login' %}" class="text-accent hover:text-accent-dark font-medium transition-colors duration-200">
-        로그인
+        {% trans "로그인" %}
     </a>
 </p>
 {% endblock %}

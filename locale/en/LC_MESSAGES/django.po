@@ -1,0 +1,737 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 50000AI\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-01-12 12:00+0900\n"
+"PO-Revision-Date: 2025-01-12 12:00+0900\n"
+"Last-Translator: 50000AI Team\n"
+"Language-Team: English\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+# Main Home Page
+msgid "50000AI - AI 서비스 플랫폼 | AI 영양사 & AI 요리 추천"
+msgstr "50000AI - AI Service Platform | AI Nutritionist & AI Recipe Recommendation"
+
+msgid "프로필"
+msgstr "Profile"
+
+msgid "로그아웃"
+msgstr "Logout"
+
+msgid "로그인"
+msgstr "Login"
+
+msgid "시작하기"
+msgstr "Get Started"
+
+msgid "AI로 더 스마트한"
+msgstr "Smarter Living with AI"
+
+msgid "삶을 설계하세요"
+msgstr "Design Your Life"
+
+msgid "차세대 AI 기술로 일상의 복잡함을 단순화하고, <span class=\"text-accent\">개인화된 솔루션</span>을 경험하세요"
+msgstr "Simplify daily complexities with next-generation AI technology and experience <span class=\"text-accent\">personalized solutions</span>"
+
+msgid "AI솔루션 보기"
+msgstr "View AI Solutions"
+
+msgid "무료로 시작하기"
+msgstr "Start for Free"
+
+msgid "차세대 AI 솔루션"
+msgstr "Next-Generation AI Solutions"
+
+msgid "최첨단 AI 기술로 복잡한 문제를 단순하고 효율적으로 해결합니다"
+msgstr "Solve complex problems simply and efficiently with cutting-edge AI technology"
+
+msgid "뉴트리언트코디"
+msgstr "Nutrients-Codi"
+
+msgid "자연어 처리 기술로 식단을 분석하고, 개인 맞춤형 영양 가이드를 제공하는 AI 영양사"
+msgstr "AI nutritionist that analyzes your diet with NLP technology and provides personalized nutrition guidance"
+
+msgid "AI 요리 추천"
+msgstr "AI Recipe Recommendation"
+
+msgid "상황과 재료에 맞는 요리를 추천하고, AI가 레시피를 요약해주는 스마트 요리 도우미"
+msgstr "Smart cooking assistant that recommends recipes based on situations and ingredients, with AI-powered recipe summaries"
+
+msgid "AI 상담사"
+msgstr "AI Counselor"
+
+msgid "24시간 AI 심리 상담 및 멘탈 헬스케어 서비스"
+msgstr "24/7 AI psychological counseling and mental healthcare service"
+
+msgid "준비중"
+msgstr "Coming Soon"
+
+msgid "개인정보처리방침"
+msgstr "Privacy Policy"
+
+msgid "이용약관"
+msgstr "Terms of Service"
+
+# Account Pages
+msgid "50000AI에 오신 것을 환영합니다"
+msgstr "Welcome to 50000AI"
+
+msgid "이메일 또는 사용자 이름"
+msgstr "Email or Username"
+
+msgid "이메일 또는 사용자 이름을 입력하세요"
+msgstr "Enter your email or username"
+
+msgid "이메일(예: user@example.com) 또는 사용자 이름(예: username123)을 입력하세요."
+msgstr "Enter email (e.g., user@example.com) or username (e.g., username123)."
+
+msgid "비밀번호"
+msgstr "Password"
+
+msgid "비밀번호를 입력하세요"
+msgstr "Enter your password"
+
+msgid "로그인 상태 유지"
+msgstr "Remember me"
+
+msgid "비밀번호를 잊으셨나요?"
+msgstr "Forgot your password?"
+
+msgid "아직 계정이 없으신가요?"
+msgstr "Don't have an account yet?"
+
+msgid "회원가입"
+msgstr "Sign Up"
+
+msgid "50000AI와 함께 AI의 세계로 떠나보세요"
+msgstr "Explore the world of AI with 50000AI"
+
+msgid "이메일"
+msgstr "Email"
+
+msgid "사용자 이름"
+msgstr "Username"
+
+msgid "영문, 숫자, @/./+/-/_ 사용 가능 (3-150자)"
+msgstr "English letters, numbers, @/./+/-/_ allowed (3-150 characters)"
+
+msgid "username123"
+msgstr "username123"
+
+msgid "비밀번호를 다시 입력하세요"
+msgstr "Enter your password again"
+
+msgid "최소 8자 이상이어야 합니다."
+msgstr "Must be at least 8 characters long."
+
+msgid "비밀번호 확인"
+msgstr "Confirm Password"
+
+msgid "이미 계정이 있으신가요?"
+msgstr "Already have an account?"
+
+msgid "및"
+msgstr "and"
+
+msgid "에 동의합니다."
+msgstr "I agree to the"
+
+msgid "계정 생성하기"
+msgstr "Create Account"
+
+msgid "홈으로"
+msgstr "Home"
+
+msgid "뉴트리언트코디"
+msgstr "Nutrients-Codi"
+
+msgid "AI 영양사"
+msgstr "AI Nutritionist"
+
+msgid "프로필 설정"
+msgstr "Profile Settings"
+
+msgid "대시보드"
+msgstr "Dashboard"
+
+msgid "커뮤니티"
+msgstr "Community"
+
+msgid "식단 관리 경험과 팁을 공유해보세요"
+msgstr "Share your diet management experiences and tips"
+
+msgid "전체"
+msgstr "All"
+
+msgid "최신순"
+msgstr "Latest"
+
+msgid "인기순"
+msgstr "Popular"
+
+msgid "좋아요순"
+msgstr "Most Liked"
+
+msgid "제목, 내용, 작성자 검색"
+msgstr "Search by title, content, author"
+
+msgid "개인 정보를 입력하면 AI가 맞춤형 영양 가이드를 제공합니다"
+msgstr "Enter your personal information to receive personalized nutrition guidance from AI"
+
+msgid "개인 정보"
+msgstr "Personal Information"
+
+msgid "실시간 권장 섭취량"
+msgstr "Real-time Recommended Intake"
+
+msgid "취소"
+msgstr "Cancel"
+
+msgid "프로필 저장"
+msgstr "Save Profile"
+
+msgid "성별"
+msgstr "Gender"
+
+msgid "생년월일"
+msgstr "Date of Birth"
+
+msgid "키 (cm)"
+msgstr "Height (cm)"
+
+msgid "체중 (kg)"
+msgstr "Weight (kg)"
+
+msgid "남성"
+msgstr "Male"
+
+msgid "여성"
+msgstr "Female"
+
+msgid "정확한 키를 입력해주세요 (100-250cm)"
+msgstr "Please enter your exact height (100-250cm)"
+
+msgid "현재 체중을 입력해주세요 (30-300kg)"
+msgstr "Please enter your current weight (30-300kg)"
+
+msgid "오늘 무엇을 드셨나요?"
+msgstr "What did you eat today?"
+
+msgid "예: 아침은 굶었고 점심에 제육덮밥, 저녁엔 삼겹살 2인분에 소주 한 병 마셨어요"
+msgstr "e.g., I skipped breakfast, had pork bulgogi for lunch, and samgyeopsal and soju for dinner"
+
+msgid "자연어로 편하게 입력해주세요. AI가 분석하여 영양 정보를 제공합니다."
+msgstr "Please enter naturally. AI will analyze and provide nutritional information."
+
+msgid "체중 감량"
+msgstr "Lose Weight"
+
+msgid "체중 유지"
+msgstr "Maintain Weight"
+
+msgid "체중 증가"
+msgstr "Gain Weight"
+
+msgid "근육 증가"
+msgstr "Muscle Gain"
+
+msgid "거의 활동 없음"
+msgstr "Sedentary"
+
+msgid "가벼운 활동"
+msgstr "Light Activity"
+
+msgid "보통 활동"
+msgstr "Moderate Activity"
+
+msgid "활동적"
+msgstr "Active"
+
+msgid "매우 활동적"
+msgstr "Very Active"
+
+msgid "식단 팁"
+msgstr "Diet Tips"
+
+msgid "질문"
+msgstr "Questions"
+
+msgid "후기"
+msgstr "Reviews"
+
+msgid "레시피"
+msgstr "Recipes"
+
+msgid "자유게시판"
+msgstr "Free Board"
+
+msgid "글쓰기"
+msgstr "Write Post"
+
+msgid "검색"
+msgstr "Search"
+
+msgid "유효하지 않은 날짜입니다."
+msgstr "Invalid date."
+
+msgid "%(date)s에는 기록된 음식이 없습니다."
+msgstr "No food records found for %(date)s."
+
+msgid "프로필이 성공적으로 저장되었습니다!"
+msgstr "Profile saved successfully!"
+
+msgid "음식 기록이 삭제되었습니다."
+msgstr "Food record deleted."
+
+msgid "음식 기록이 수정되었습니다."
+msgstr "Food record updated."
+
+msgid "제목과 내용을 모두 입력해주세요."
+msgstr "Please enter both title and content."
+
+msgid "게시글이 작성되었습니다."
+msgstr "Post created successfully."
+
+msgid "게시글이 수정되었습니다."
+msgstr "Post updated successfully."
+
+msgid "게시글이 삭제되었습니다."
+msgstr "Post deleted successfully."
+
+msgid "댓글 내용을 입력해주세요."
+msgstr "Please enter comment content."
+
+msgid "댓글이 작성되었습니다."
+msgstr "Comment created successfully."
+
+msgid "댓글이 삭제되었습니다."
+msgstr "Comment deleted successfully."
+
+msgid "AI 요리 추천"
+msgstr "AI Recipe Recommendation"
+
+msgid "홈"
+msgstr "Home"
+
+msgid "즐겨찾기"
+msgstr "Favorites"
+
+msgid "커뮤니티"
+msgstr "Community"
+
+msgid "로그아웃"
+msgstr "Logout"
+
+msgid "홈으로"
+msgstr "Go Home"
+
+msgid "개인정보처리방침"
+msgstr "Privacy Policy"
+
+msgid "이용약관"
+msgstr "Terms of Service"
+
+msgid "어떤 음식이 끌리시나요?"
+msgstr "What kind of food are you craving?"
+
+msgid "상황, 기분, 재료를 자유롭게 말씀해주세요. <br>\n                <span class=\"text-orange-400\">AI가 완벽한 요리를 추천</span>해드립니다."
+msgstr "Feel free to tell us about your situation, mood, or ingredients. <br>\n                <span class=\"text-orange-400\">AI will recommend</span> the perfect dish for you."
+
+msgid "예: 비 오는 날 어울리는 뜨끈한 국물 요리"
+msgstr "e.g.: Hot soup perfect for rainy days"
+
+msgid "예: 냉장고에 남은 두부랑 김치로 만들 수 있는 거"
+msgstr "e.g.: Something I can make with leftover tofu and kimchi"
+
+msgid "예: 친구들이랑 집들이할 때 좋은 안주"
+msgstr "e.g.: Good appetizers for housewarming with friends"
+
+msgid "메뉴 추천받기"
+msgstr "Get Menu Recommendations"
+
+msgid "AI가 메뉴를 찾고 있어요"
+msgstr "AI is finding menus for you"
+
+msgid "맞춤형 요리를 추천하는 중입니다..."
+msgstr "Recommending personalized dishes..."
+
+msgid "잠시만 기다려주세요"
+msgstr "Please wait a moment"
+
+msgid "날씨 기반"
+msgstr "Weather Based"
+
+msgid "비 오는 날 뜨끈한 국물"
+msgstr "Hot soup for rainy days"
+
+msgid "재료 기반"
+msgstr "Ingredient Based"
+
+msgid "남은 재료 활용"
+msgstr "Use leftover ingredients"
+
+msgid "상황 기반"
+msgstr "Situation Based"
+
+msgid "집들이 안주"
+msgstr "Housewarming appetizers"
+
+msgid "검색어를 입력해주세요!"
+msgstr "Please enter a search term!"
+
+msgid "검색어를 입력해주세요."
+msgstr "Please enter a search term."
+
+msgid "메뉴 추천에 실패했습니다."
+msgstr "Menu recommendation failed."
+
+msgid "API 키가 설정되지 않았습니다. 관리자에게 문의하세요."
+msgstr "API key is not configured. Please contact the administrator."
+
+msgid "오류가 발생했습니다. 다시 시도해주세요."
+msgstr "An error occurred. Please try again."
+
+msgid "검색어를 찾을 수 없습니다. 다시 검색해주세요."
+msgstr "Search term not found. Please search again."
+
+msgid "추가 메뉴 추천에 실패했습니다."
+msgstr "Additional menu recommendation failed."
+
+msgid "메뉴 이름이 없습니다."
+msgstr "Menu name is missing."
+
+msgid "일일 검색 한도를 초과했습니다. 내일 다시 시도해주세요."
+msgstr "Daily search limit exceeded. Please try again tomorrow."
+
+msgid "레시피를 찾을 수 없습니다."
+msgstr "Recipe not found."
+
+msgid "비디오 ID가 없습니다."
+msgstr "Video ID is missing."
+
+msgid "영상 정보를 가져올 수 없습니다."
+msgstr "Cannot retrieve video information."
+
+msgid "이미 즐겨찾기에 추가된 레시피입니다."
+msgstr "This recipe is already in your favorites."
+
+msgid "즐겨찾기에 추가되었습니다."
+msgstr "Added to favorites."
+
+msgid "즐겨찾기에서 삭제되었습니다."
+msgstr "Removed from favorites."
+
+msgid "즐겨찾기에 없는 레시피입니다."
+msgstr "This recipe is not in your favorites."
+
+msgid "즐겨찾기 레시피 보기"
+msgstr "View Favorite Recipes"
+
+msgid "검색 키워드"
+msgstr "Search Keywords"
+
+msgid "검색 시간"
+msgstr "Search Time"
+
+msgid "레시피 검색 기록"
+msgstr "Recipe Search History"
+
+msgid "YouTube 비디오 ID"
+msgstr "YouTube Video ID"
+
+msgid "레시피 제목"
+msgstr "Recipe Title"
+
+msgid "채널명"
+msgstr "Channel Name"
+
+msgid "썸네일 URL"
+msgstr "Thumbnail URL"
+
+msgid "영상 설명"
+msgstr "Video Description"
+
+msgid "조회수"
+msgstr "View Count"
+
+msgid "댓글수"
+msgstr "Comment Count"
+
+msgid "AI 댓글 요약"
+msgstr "AI Comment Summary"
+
+msgid "긍부정 평가 (1-5)"
+msgstr "Sentiment Rating (1-5)"
+
+msgid "난이도 평가 (1-5)"
+msgstr "Difficulty Rating (1-5)"
+
+msgid "긍정 키워드"
+msgstr "Positive Keywords"
+
+msgid "부정 키워드"
+msgstr "Negative Keywords"
+
+msgid "주요 재료"
+msgstr "Main Ingredients"
+
+msgid "요리 순서"
+msgstr "Cooking Steps"
+
+msgid "즐겨찾기 추가 시간"
+msgstr "Favorite Added Time"
+
+msgid "마지막 업데이트"
+msgstr "Last Updated"
+
+msgid "즐겨찾기 레시피"
+msgstr "Favorite Recipe"
+
+msgid "제목"
+msgstr "Title"
+
+msgid "내용"
+msgstr "Content"
+
+msgid "레시피 공유"
+msgstr "Recipe Sharing"
+
+msgid "질문"
+msgstr "Question"
+
+msgid "요리 후기"
+msgstr "Cooking Review"
+
+msgid "요리 팁"
+msgstr "Cooking Tips"
+
+msgid "자유게시판"
+msgstr "Free Board"
+
+msgid "카테고리"
+msgstr "Category"
+
+msgid "좋아요"
+msgstr "Likes"
+
+msgid "YouTube 링크"
+msgstr "YouTube Link"
+
+msgid "작성일"
+msgstr "Created Date"
+
+msgid "수정일"
+msgstr "Modified Date"
+
+msgid "커뮤니티 게시글"
+msgstr "Community Post"
+
+msgid "게시글"
+msgstr "Post"
+
+msgid "작성자"
+msgstr "Author"
+
+msgid "댓글 내용"
+msgstr "Comment Content"
+
+msgid "상위 댓글"
+msgstr "Parent Comment"
+
+msgid "커뮤니티 댓글"
+msgstr "Community Comment"
+
+msgid "메뉴 추천 결과"
+msgstr "Menu Recommendation Results"
+
+msgid "다시 검색하기"
+msgstr "Search Again"
+
+msgid "검색어"
+msgstr "Search Query"
+
+msgid "AI가 추천하는 메뉴"
+msgstr "AI Recommended Menu"
+
+msgid "마음에 드는 메뉴를 선택하면 레시피 영상을 찾아드립니다"
+msgstr "Select a menu you like and we'll find recipe videos for you"
+
+msgid "레시피 영상 보기"
+msgstr "View Recipe Video"
+
+msgid "더 많은 메뉴 보기"
+msgstr "View More Menus"
+
+msgid "로딩 중..."
+msgstr "Loading..."
+
+msgid "오류가 발생했습니다:"
+msgstr "An error occurred:"
+
+msgid "오류가 발생했습니다."
+msgstr "An error occurred."
+
+msgid "레시피"
+msgstr "Recipe"
+
+msgid "메뉴 추천으로 돌아가기"
+msgstr "Back to Menu Recommendations"
+
+msgid "마음에 드는 레시피를 선택하면 AI가 요약해드립니다"
+msgstr "Select a recipe you like and AI will summarize it for you"
+
+msgid "더 많은 레시피 보기"
+msgstr "View More Recipes"
+
+msgid "다른 요리 찾기"
+msgstr "Find Other Dishes"
+
+msgid "AI가 레시피를 분석 중이에요"
+msgstr "AI is analyzing the recipe"
+
+msgid "영상 자막을 추출하고 요약하고 있습니다..."
+msgstr "Extracting video subtitles and summarizing..."
+
+msgid "조금만 기다려주세요"
+msgstr "Please wait a moment"
+
+msgid "즐겨찾기"
+msgstr "Favorite"
+
+msgid "조회수"
+msgstr "Views"
+
+msgid "댓글"
+msgstr "Comments"
+
+msgid "레시피 상세보기"
+msgstr "View Recipe Details"
+
+msgid "AI가 댓글을 분석하는 중..."
+msgstr "AI is analyzing comments..."
+
+msgid "분석 중"
+msgstr "Analyzing"
+
+msgid "서버에서 올바른 응답을 받지 못했습니다."
+msgstr "Failed to receive proper response from server."
+
+msgid "일일 검색 한도를 초과했습니다"
+msgstr "Daily search limit exceeded"
+
+msgid "즐겨찾기 레시피 보기"
+msgstr "View Favorite Recipes"
+
+msgid "레시피를 찾을 수 없습니다."
+msgstr "No recipes found."
+
+msgid "즐겨찾기 토글 오류:"
+msgstr "Favorite toggle error:"
+
+msgid "즐겨찾기 상태 확인 오류:"
+msgstr "Favorite status check error:"
+
+msgid "목록으로 돌아가기"
+msgstr "Back to List"
+
+msgid "AI 요약 레시피"
+msgstr "AI Recipe Summary"
+
+msgid "AI가 영상을 직접 시청하고 분석하여 요약했습니다"
+msgstr "AI watched the video directly and analyzed it to create a summary"
+
+msgid "AI가 영상 자막을 분석하여 요약한 레시피입니다"
+msgstr "This is a recipe summarized by AI analyzing video subtitles"
+
+msgid "주요 재료"
+msgstr "Main Ingredients"
+
+msgid "요리 순서"
+msgstr "Cooking Steps"
+
+msgid "AI 분석 실패"
+msgstr "AI Analysis Failed"
+
+msgid "시도한 분석 방법:"
+msgstr "Analysis methods attempted:"
+
+msgid "1차: Gemini 영상 직접 분석"
+msgstr "1st: Gemini Direct Video Analysis"
+
+msgid "2차: 자막 추출 및 분석"
+msgstr "2nd: Subtitle Extraction and Analysis"
+
+msgid "영상을 직접 시청하시거나 다른 레시피를 선택해주세요."
+msgstr "Please watch the video directly or select another recipe."
+
+msgid "YouTube에서 보기"
+msgstr "Watch on YouTube"
+
+msgid "즐겨찾기 레시피"
+msgstr "Favorite Recipes"
+
+msgid "저장한 레시피를 다시 보세요"
+msgstr "View your saved recipes again"
+
+msgid "총"
+msgstr "Total"
+
+msgid "개"
+msgstr "items"
+
+msgid "새로운 검색"
+msgstr "New Search"
+
+msgid "아주 좋음"
+msgstr "Excellent"
+
+msgid "좋음"
+msgstr "Good"
+
+msgid "별로"
+msgstr "Poor"
+
+msgid "나쁨"
+msgstr "Bad"
+
+msgid "매우 어려움"
+msgstr "Very Difficult"
+
+msgid "어려움"
+msgstr "Difficult"
+
+msgid "쉬움"
+msgstr "Easy"
+
+msgid "매우 쉬움"
+msgstr "Very Easy"
+
+msgid "레시피 보기"
+msgstr "View Recipe"
+
+msgid "아직 즐겨찾기한 레시피가 없어요"
+msgstr "You haven't added any recipes to favorites yet"
+
+msgid "마음에 드는 레시피를 즐겨찾기에 추가해보세요!"
+msgstr "Add recipes you like to your favorites!"
+
+msgid "레시피 찾아보기"
+msgstr "Find Recipes"
+
+msgid "즐겨찾기 취소"
+msgstr "Remove from Favorites"
+
+msgid "즐겨찾기에 추가되었습니다."
+msgstr "Added to favorites."
+
+msgid "즐겨찾기에서 제거되었습니다."
+msgstr "Removed from favorites."

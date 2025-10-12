@@ -37,6 +37,11 @@ CSRF_TRUSTED_ORIGINS = [
 # Development logging (reduced verbosity)
 LOGGING['loggers']['django']['level'] = 'INFO'
 LOGGING['loggers']['nutrients_codi']['level'] = 'DEBUG'
+LOGGING['loggers']['recipe_ai'] = {
+    'handlers': ['console'],
+    'level': 'DEBUG',
+    'propagate': False,
+}
 LOGGING['root']['level'] = 'INFO'
 
 # Add specific loggers to reduce verbosity
