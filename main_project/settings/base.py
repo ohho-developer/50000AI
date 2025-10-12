@@ -4,7 +4,23 @@ Base settings for main_project project.
 
 from pathlib import Path
 import os
+import sys
 from decouple import config
+
+# UTF-8 인코딩 강제 설정 (Windows 환경)
+if sys.platform == 'win32':
+    import locale
+    # Python 3.7+ 에서만 작동
+    if hasattr(sys.stdout, 'reconfigure'):
+        try:
+            sys.stdout.reconfigure(encoding='utf-8')
+        except:
+            pass
+    if hasattr(sys.stderr, 'reconfigure'):
+        try:
+            sys.stderr.reconfigure(encoding='utf-8')
+        except:
+            pass
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent

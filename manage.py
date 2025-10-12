@@ -3,6 +3,14 @@
 import os
 import sys
 
+# Windows 환경에서 UTF-8 인코딩 강제 설정
+if sys.platform == 'win32':
+    import locale
+    if sys.stdout.encoding != 'utf-8':
+        sys.stdout.reconfigure(encoding='utf-8')
+    if sys.stderr.encoding != 'utf-8':
+        sys.stderr.reconfigure(encoding='utf-8')
+
 
 def main():
     """Run administrative tasks."""

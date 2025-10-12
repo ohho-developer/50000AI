@@ -75,15 +75,26 @@ def generate_mo_file(translations, mo_file):
     번역 딕셔너리를 .mo 파일 형식으로 생성합니다.
     GNU gettext .mo 파일 형식을 따릅니다.
     """
+    # 빈 번역 제거 및 정리
+    cleaned_translations = {}
+    for key, value in translations.items():
+        # 빈 문자열이거나 키와 값이 같으면 제외
+        if key and value and key != value:
+            cleaned_translations[key] = value
+    
     # 번역 쌍을 정렬
-    keys = sorted(translations.keys())
+    keys = sorted(cleaned_translations.keys())
     offsets = []
     ids = []
     strs = []
     
     for key in keys:
-        ids.append(key.encode('utf-8'))
-        strs.append(translations[key].encode('utf-8'))
+        try:
+            ids.append(key.encode('utf-8'))
+            strs.append(cleaned_translations[key].encode('utf-8'))
+        except Exception as e:
+            print(f"Warning: Failed to encode '{key}': {e}")
+            continue
     
     # .mo 파일 헤더 생성
     keystart = 7 * 4 + 16 * len(keys)
