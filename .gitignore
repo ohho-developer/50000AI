@@ -52,7 +52,7 @@ coverage.xml
 .pytest_cache/
 
 # Translations
-# *.mo  # .mo 파일을 배포를 위해 버전 관리에 포함
+*.mo  # .mo 파일은 인코딩 문제로 인해 제외 (배포시 서버에서 직접 컴파일)
 *.pot
 
 # Django stuff:

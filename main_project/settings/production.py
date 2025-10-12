@@ -3,21 +3,6 @@ Production settings for main_project project.
 """
 
 from .base import *
-import sys
-import locale
-
-# 프로덕션 환경에서 UTF-8 인코딩 강제 설정
-try:
-    if sys.getdefaultencoding() != 'utf-8':
-        import importlib
-        importlib.reload(sys)
-except:
-    pass
-
-# 환경 변수로 UTF-8 설정
-import os
-os.environ.setdefault('LANG', 'en_US.UTF-8')
-os.environ.setdefault('LC_ALL', 'en_US.UTF-8')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # 프로덕션에서는 무조건 DEBUG = False
