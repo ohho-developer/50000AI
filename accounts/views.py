@@ -29,6 +29,17 @@ def robots_txt(request):
     
     return HttpResponse(content, content_type='text/plain; charset=utf-8')
 
+def ads_txt(request):
+    """ads.txt 파일 제공"""
+    from django.http import HttpResponse
+    from pathlib import Path
+    
+    ads_path = Path(__file__).resolve().parent.parent / 'ads.txt'
+    with open(ads_path, 'r', encoding='utf-8') as f:
+        content = f.read()
+    
+    return HttpResponse(content, content_type='text/plain; charset=utf-8')
+
 def sitemap_xml(request):
     """sitemap.xml 파일 제공"""
     domain = request.build_absolute_uri('/').rstrip('/')
